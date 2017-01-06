@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	let input = $('#input');
 	let log = $("#log");
-
+	
 	$("html").click(function() {
         input.val(input.val()).focus();
     });       
@@ -10,6 +10,7 @@ $(document).ready(function(){
 	        text = input.val();
 	        log.append("<div class='row'>"+text+"</div>");
 	        input.val("");
+	        window.scrollTo(0,document.body.scrollHeight);
 	    }
 	});
 });

@@ -24,6 +24,7 @@ input {
 	color:#28E500;
 	font-weight:bold;
 	background-color: rgba(0,0,0,0);
+	padding-bottom: 50px;
 }
 input:focus{
 	outline:none;
