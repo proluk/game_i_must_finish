@@ -1,0 +1,30 @@
+body, html {
+	background-color: #000;
+	color: #28E500;
+	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+}
+#log {
+	display: block;
+}
+.row {
+	display: block;
+	font-weight: bold;
+	font-size: 13px;
+	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+}
+#input-container {
+	display: block;
+}
+input {
+	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+	display: inline-block;
+	border: none;
+	font-size:13px;
+	width: 100%;
+	color:#28E500;
+	font-weight:bold;
+	background-color: rgba(0,0,0,0);
+}
+input:focus{
+	outline:none;
+}
