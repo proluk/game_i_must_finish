@@ -20,8 +20,6 @@ connection blocked / not found.
 connect -force 9da0ws89ida09sud0as9
 password:
 
-te znaki przed or musza miec dokladnie dlugosc wpisane hasla ofiary od 3 do 8, jak wpisze zle dostaje wrong password try again:
-smth or 1=1
 jak wpisze tylko haslo ofiara dostaje powiadomienie (There was an attempt of connection but failed. Reason: wrong password.)
 ofiara moze wyjsc zeby zmienic id albo olac sprawe
 
@@ -45,8 +43,13 @@ i patrz jak hajs ubywa z konta ofiary dolar po dolarze
 
 pozniej robisz exit 
 
-
-
+mining bitcoins na stronach, szansa na mine programu
+programy moga zostac zablokowane jezeli duzo osob ich uzywa
+jednorazowe programy do lamania hasla
+listen () - sluchanie inputu ofiary.
+jezeli jest connection to broadcast na caly pokoj ofiary zamiast emit tylko
+mine - kopie dla siebie
+mine id - kopie dla konkretnego id
 
 kasa - ranking widoczny dla wszystkich z twoim nickiem
 	kupowanie na czarnym rynku opcji ulatwiajacych hakowanie i ochrone, od innych graczy albo od gry
