@@ -37,8 +37,9 @@ happy hour - przez pol godziny nawet jak nie grasz moga cie zhakowac
 
 //proces hakowania -->
 
-kazdy ustawia sposob hashowania swojego id widocznego na stronach internetowych, 
-gdy ktos slucha strony to ma 20% szansy na to ze w smieciach bedzie hash ktorejs osoby ze strony.
+kazdy ustawia sposob hashowania swojego id widocznego na stronach internetowych.
+Na poczatku jest to md5, pozniej można używać lepszych.
+Gdy ktos slucha strony to ma 20% szansy na to ze w smieciach bedzie hash ktorejs osoby ze strony.
 
 potem wlacza program ktory szuka hashy mogących być id w tym kawalku kodu. albo znajdzie, albo nie.
 
@@ -54,13 +55,26 @@ Trzeba sie zdecydowac czy sie chce przeznaczac hajs na zabezpieczenia czy na pro
 
 po rozszyfrowaniu hasha probuje sie polaczyc.
 
-haslo 6 znakow na poczatku, pozniej mozna dokupowac znak.
+haslo 6 znakow na poczatku, pozniej mozna dokupowac znak. (system modification)
 
 sa programy jednorazowe do rozszyfrowania hasla, maja jakis % sukcesu.
+program moze zwrocic Ci zhashowane haslo.
 
-można pracować na ulepszeniem programu.
+można pracować nad ulepszeniem programu, algorytmem do ulepszania.
+kazdy algorytm do ulepszania podbija szanse sukcesu o 10%.
+jak jest 100% kolejny algorytm podbija tier programu.
+
+programy i algorytmy mozna albo kupic na czarnym rynku.
+Albo produkować co jest czasochłonne.
+Albo wymieniać.
 
 jak sie wbije do ma dostep do inputu ofiary.
+
+muszą być boty do których mozną sie włamywać.
+
+// system upgrade
+// system modification
+// program upgrade
 
 
 
