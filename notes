@@ -3,34 +3,17 @@ open https://facebook.com
 show connected site
 https://facebook.com
 
-get connected (dodatkowe opcje po -)
-
-iasgudt97augtsd98yas
-a8is9d7ua9s7dy9a8syd
-as9d8ya9s8dy9a8ywd32
-oai2d-19duw09au0s9du
-9da0ws89ida09sud0as9
-
 close 
 connection to https://facebook.com closed.
 
 connect 9da0ws89ida09sud0as9
-connection blocked / not found.
+connection  not found.
 
-connect -force 9da0ws89ida09sud0as9
 password:
 
+feature:
 jak wpisze tylko haslo ofiara dostaje powiadomienie (There was an attempt of connection but failed. Reason: wrong password.)
 ofiara moze wyjsc zeby zmienic id albo olac sprawe
-
-connection established (ofiara dostaja komunikat ze ktos sie polaczyl, jak zrobi 'exit', haker ma 30 sec i traci polaczenie
-jak nie zrobi 'exit', ofiara moze zrobic 'get connected' i wpisac 'exit' i ten dlugi adres, i go wykopie);
-
-haker moze zrobic
-
-get connected i wykopac ofiare (exit i kod) zeby miec gwarantowane 30sec.
-
-gdy wykopal ofiare to sie bawi.
 
 show accounts
 01 - nazwa 
@@ -39,14 +22,10 @@ connect account nazwa
 --account connection established your funds are : 516 111 299 $
 account transfer <from> <to> all (w zaleznosci od tego jaki ty masz limit na swoim koncie, tyle % max bedziesz mogl zabrac);
 
-i patrz jak hajs ubywa z konta ofiary dolar po dolarze
-
-pozniej robisz exit 
-
 mining bitcoins na stronach, szansa na mine programu
 programy moga zostac zablokowane jezeli duzo osob ich uzywa
 jednorazowe programy do lamania hasla
-listen () - sluchanie inputu ofiary.
+listen - sluchanie inputu ofiary.
 jezeli jest connection to broadcast na caly pokoj ofiary zamiast emit tylko
 mine - kopie dla siebie
 mine id - kopie dla konkretnego id
@@ -55,6 +34,34 @@ kasa - ranking widoczny dla wszystkich z twoim nickiem
 	kupowanie na czarnym rynku opcji ulatwiajacych hakowanie i ochrone, od innych graczy albo od gry
 	wchodzenie i siedzenie na stronach roznych generuje zysk
 happy hour - przez pol godziny nawet jak nie grasz moga cie zhakowac
+
+//proces hakowania -->
+
+kazdy ustawia sposob hashowania swojego id widocznego na stronach internetowych, 
+gdy ktos slucha strony to ma 20% szansy na to ze w smieciach bedzie hash ktorejs osoby ze strony.
+
+potem wlacza program ktory szuka hashy mogących być id w tym kawalku kodu. albo znajdzie, albo nie.
+
+jak znajdzie, to sprawdza jaki to hash, jakims programem,
+
+MD5
+SHA-1
+SHA-256
+
+wtedy uzywa jednorazowych programów do rozszyfrowywania hasha.
+
+Trzeba sie zdecydowac czy sie chce przeznaczac hajs na zabezpieczenia czy na programy do hakowania
+
+po rozszyfrowaniu hasha probuje sie polaczyc.
+
+haslo 6 znakow na poczatku, pozniej mozna dokupowac znak.
+
+sa programy jednorazowe do rozszyfrowania hasla, maja jakis % sukcesu.
+
+można pracować na ulepszeniem programu.
+
+jak sie wbije do ma dostep do inputu ofiary.
+
 
 
 
