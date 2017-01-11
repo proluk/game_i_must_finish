@@ -1,29 +1,5 @@
-open https://facebook.com
-
-show connected site
-https://facebook.com
-
-close 
-connection to https://facebook.com closed.
-
-connect 9da0ws89ida09sud0as9
-connection  not found.
-
-password:
-
-feature:
-jak wpisze tylko haslo ofiara dostaje powiadomienie (There was an attempt of connection but failed. Reason: wrong password.)
-ofiara moze wyjsc zeby zmienic id albo olac sprawe
-
-show accounts
-01 - nazwa 
-02 - nazwa
-connect account nazwa
---account connection established your funds are : 516 111 299 $
-account transfer <from> <to> all (w zaleznosci od tego jaki ty masz limit na swoim koncie, tyle % max bedziesz mogl zabrac);
-
-mining bitcoins na stronach, szansa na mine programu
-programy moga zostac zablokowane jezeli duzo osob ich uzywa
+mozliwosc wpisywania kodow programow do skryptu shellowego "./easypass.sh", "./decrypt.sh" itd ...
+mining bitcoins na stronach
 jednorazowe programy do lamania hasla
 listen - sluchanie inputu ofiary.
 jezeli jest connection to broadcast na caly pokoj ofiary zamiast emit tylko
@@ -33,7 +9,7 @@ mine id - kopie dla konkretnego id
 kasa - ranking widoczny dla wszystkich z twoim nickiem
 	kupowanie na czarnym rynku opcji ulatwiajacych hakowanie i ochrone, od innych graczy albo od gry
 	wchodzenie i siedzenie na stronach roznych generuje zysk
-happy hour - przez pol godziny nawet jak nie grasz moga cie zhakowac
+happy hour - przez godzine nawet jak nie grasz moga cie zhakowac.
 
 //proces hakowania -->
 
