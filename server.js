@@ -4,24 +4,7 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server);
 let path = require('path');
 let urlExists = require('url-exists');
-
-const communicates = {
-	begin : "Hello",
-	tip_01 : "",
-	tip_02 : "",
-	no_command : "No such command: ",
-	connected : "Connected to: ",
-	disconnect : "You have been disconnected. ",
-	already_connected : "You are already connected somewhere.",
-	no_connection : "No connection to close.",
-	open : "Open success, connected to: ",
-	no_website : "Cannot connect. No such website: ",
-	closed : "Connection Closed.",	
-	user_connected : "Unknown user has established a connection with you.",
-	close_site_first : "Close connection to site first.",
-	disconnect_user_first : "Disconnect from user first.",
-	user_left : "Uknown user has left."
-}
+const communicates = require('./modules/communicates.js');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -34,9 +17,12 @@ app.use('/',index);
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
+	let money = 0;
 	let home = socket.id;
 	let connection = false;
+	let ssh = false;
 	let site = false;
+	//commands
 	let commands = {
 		connect : function(user, blank){
 			if ( connection ) {
@@ -64,7 +50,6 @@ io.on('connection', function(socket) {
 				}
 			} else if ( !connection && !who ) {
 				//wyrzuca siebie z domu
-
 			} else if ( !connection && who ) {
 				if (io.sockets.connected[who]) {
 			    	io.sockets.connected[who].leave(home);
@@ -117,8 +102,36 @@ io.on('connection', function(socket) {
 					socket.emit("communicate", {data: sockete});
 				}
 			}
-		}
+		},
+		ssh : function(func,blank) {
+			if ( func ) {
+				if ( func === 'account' ) {
+					socket.emit("communicate", {data: communicates.account+money});
+					ssh = true;
+				} else {
+					socket.emit("communicate", {data: communicates.no_command});
+				}
+			}
+		},
+		exit : function(blank,blank) {
+			if ( ssh ) {
+				socket.emit("communicate", {data: communicates.account_close});
+				ssh = false;
+			} else {
+				socket.emit("communicate", {data: communicates.account_error});
+			}	
+		},
+		sudo : function(command,link) {
+			if ( command ) {
+				if( command === ''){
+					
+				}
+			}
+		},
+
+
 	}
+
 	let command = [];
 
 	socket.emit("communicate", {data: communicates.begin});
@@ -132,7 +145,7 @@ io.on('connection', function(socket) {
 
 	function  veryfiCommand(data) {
 		command = data.command.split(" ");
-		commands[command[0]] ? commands[command[0]](command[1]) : socket.emit("communicate", {data: communicates.no_command+command});
+		commands[command[0]] ? commands[command[0]](command[1],command[2]) : socket.emit("communicate", {data: communicates.no_command+data.command});
 	}
 });
 
