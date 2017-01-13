@@ -17,7 +17,8 @@ const communicates = {
 	user_left : "Uknown user has left.",
 	account : "Connection to account established.",
 	account_close : "Connection to account closed.",
-	account_error : "No established connection to account."
+	account_error : "No established connection to account.",
+	account_balance : "Your account balance: "
 }
 
 module.exports = communicates;

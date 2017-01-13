@@ -106,7 +106,7 @@ io.on('connection', function(socket) {
 		ssh : function(func,blank) {
 			if ( func ) {
 				if ( func === 'account' ) {
-					socket.emit("communicate", {data: communicates.account+money});
+					socket.emit("communicate", {data: communicates.account});
 					ssh = true;
 				} else {
 					socket.emit("communicate", {data: communicates.no_command});
@@ -128,6 +128,9 @@ io.on('connection', function(socket) {
 				}
 			}
 		},
+		balance : function() {
+			ssh ? socket.emit("communicate", {data: communicates.account_balance+money}) : socket.emit("communicate", {data: communicates.account_error});
+		}
 
 
 	}
