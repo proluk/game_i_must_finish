@@ -5,6 +5,7 @@ let io = require('socket.io')(server);
 let path = require('path');
 let urlExists = require('url-exists');
 const communicates = require('./modules/communicates.js');
+let databaseModule = require('.modules/database.js');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -122,14 +123,17 @@ io.on('connection', function(socket) {
 			}	
 		},
 		sudo : function(command,link) {
-			if ( command ) {
-				if( command === ''){
-					
-				}
-			}
+
 		},
 		balance : function() {
 			ssh ? socket.emit("communicate", {data: communicates.account_balance+money}) : socket.emit("communicate", {data: communicates.account_error});
+		},
+		transfer : function(to, howmuch) {
+			if ( ssh ) {
+				// function transfer money
+			} else {
+				socket.emit("communicate", {data: communicates.account_error});
+			}
 		}
 
 

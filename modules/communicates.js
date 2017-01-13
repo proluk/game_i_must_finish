@@ -18,7 +18,8 @@ const communicates = {
 	account : "Connection to account established.",
 	account_close : "Connection to account closed.",
 	account_error : "No established connection to account.",
-	account_balance : "Your account balance: "
+	account_balance : "Your account balance: ",
+	no_sudo : "No need to use sudo."
 }
 
 module.exports = communicates;
