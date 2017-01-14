@@ -5,6 +5,7 @@ let io = require('socket.io')(server);
 let path = require('path');
 let urlExists = require('url-exists');
 let mailer = require('nodemailer');
+let pause = require('pauseable');
 
 const communicates = require('./modules/communicates.js');
 let databaseModule = require('./modules/database.js');
@@ -31,6 +32,13 @@ io.on('connection', function(socket) {
 	let connection = false;
 	let ssh = false;
 	let site = false;
+	let lis = false;
+
+	let listening = pause.setInterval(function() {
+		listenFunc();
+	},2000);
+	listening.pause();
+
 	//commands
 	let before = {
 		login : function() {
@@ -48,18 +56,37 @@ io.on('connection', function(socket) {
 				//acc activated, socket emit login
 				socket.emit("communicate", {data: communicates.account_activated});
 			});*/
+		},
+		help : function() {
+			socket.emit("communicate", {data: communicates.help_before});
+		},
+		morehelp : function() {
+			socket.emit("open-help");
 		}
 	}
 	let commands = {
+		help : function() {
+			socket.emit("communicate", {data: communicates.help_after});
+		},
+		morehelp : function() {
+			socket.emit("open-help");
+		},
+		clear : function(){
+			socket.emit('clear');
+		},
 		connect : function(user, blank){
 			if ( connection ) {
 				socket.emit("communicate", {data: communicates.already_connected});
 			} else if ( site ) {
 				socket.emit("communicate", {data: communicates.close_site_first});
 			} else {
-				connection = user;
-				socket.join(connection);
-				socket.emit("communicate", {data: communicates.connected+connection});									
+				if(io.sockets.adapter.rooms[user]) {
+					connection = user;
+					socket.join(connection);
+					socket.emit("communicate", {data: communicates.connected+connection});						
+				} else {
+					socket.emit("communicate", {data: communicates.no_such_connection});
+				}			
 			}
 		},
 		disconnect : function(who, blank) {
@@ -67,7 +94,7 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.close_site_first});
 			} else if ( connection && !who ) {
 				socket.leave(connection);
-				socket.broadcast.to(connection).emit("communicate", {data: communicates.user_left});
+				socket.emit('communicate', {data: communicates.disconnect});
 				connection = false;
 			} else if ( connection && who ) {
 				if (io.sockets.connected[who]) {
@@ -111,13 +138,25 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.no_connection});
 			}
 		},
+		listen : function() {
+			if ( site ) {
+				socket.emit('listen-process');
+				listening.resume();
+				lis = true;
+			} else {
+				socket.emit("communicate", {data: communicates.no_connection});
+			}
+		},
+		stop : function() {
+			if ( lis ) {
+				socket.emit('listen-end');
+				lis = false;
+			} else {
+				socket.emit('communicate', {data: communicates.no_listen_process});
+			}
+		},
 		show : function(blank, blank) {
-			if( site ) {
-				let inrooms = io.sockets.adapter.rooms[site];
-				for ( let sockete in inrooms.sockets ) {
-					socket.emit("communicate", {data: sockete});
-				}
-			} else if ( connection ) {
+			if ( connection ) {
 				let inrooms = io.sockets.adapter.rooms[connection];
 				for ( let sockete in inrooms.sockets ) {
 					socket.emit("communicate", {data: sockete});
@@ -175,19 +214,21 @@ io.on('connection', function(socket) {
 		acc ? veryfiCommand(data) : verifyBefore(data);
 	});
 	socket.on("disconnect", function(socket) {
-		console.log("socket disconnected");
+
 	});
 	socket.on("register-write-login-response", function(data) {
 		let tmp = hash.encrypt(data.data);
-		if ( databaseModule.checkIfLoginExists(tmp) ) {
-			socket.emit("communicate", {data: communicates.login_already_exists});
-			socket.emit('register-write-login');
-		} else {
-			tmp_login = tmp;
-			socket.emit("communicate", {data: communicates.register_password});
-			socket.emit("register-password");
-			wait_for_password_response = true;
-		}
+		databaseModule.checkIfLoginExists(tmp, function(data) {
+			if( data ) {
+				socket.emit("communicate", {data: communicates.login_already_exists});
+				socket.emit('register-write-login');
+			} else {
+				tmp_login = tmp;
+				socket.emit("communicate", {data: communicates.register_password});
+				socket.emit("register-password");
+				wait_for_password_response = true;
+			}
+		});
 	});
 	socket.on('register-password-response', function(data) {
 		let tmp = hash.encrypt(data.data);
@@ -222,7 +263,6 @@ io.on('connection', function(socket) {
 	});
 	socket.on('login-write-login-response', function(data) {
 		let tmp = hash.encrypt(data.data);
-		console.log(tmp);
 		databaseModule.checkIfLoginExists(tmp, function(data) {
 			if ( data ) {
 				socket.emit("login-password");
@@ -262,6 +302,32 @@ io.on('connection', function(socket) {
 		command = [];
 		command = data.command.split(" ");
 		before[command[0]] ? before[command[0]]() : socket.emit("communicate", {data: communicates.no_command+data.command});
+	}
+	function listenFunc(){
+		let tmp = Math.floor( (Math.random() * 100 ) + 0);
+		if ( tmp < 5 ) {
+			listening.pause();
+			let inrooms = io.sockets.adapter.rooms[site];
+			let rarray = [];
+			try {
+				for ( let sockete in inrooms.sockets ) {
+					rarray.push(sockete);
+				}				
+			} catch( err ) {
+				console.log(err);
+				socket.emit("communicate", {data: communicates.unexpected_error});
+			}
+
+			let rand = Math.floor((Math.random() * rarray.length ) + 0 );
+			if( rarray[rand] == socket.id ) {
+				//run again
+				listening.resume();
+			} else {
+				socket.emit("listen-end");
+				socket.emit("communicate", {data: communicates.found_hash+rarray[rand]});
+				listening.pause();
+			}
+		}
 	}
 });
 

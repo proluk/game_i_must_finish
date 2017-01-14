@@ -5,6 +5,14 @@ $(document).ready(function(){
 	let input = $('#input');
 	let log = $("#log");
 	let mode = 'comm';
+	let alog = $('#active-log');
+
+	let isPaused = true;
+	let inter = setInterval(function(){
+		if(!isPaused){
+			alog.text(randString());
+		}
+	},50);
 
 	socket.on("communicate", function(data) {
 		add(data.data);
@@ -38,6 +46,20 @@ $(document).ready(function(){
 	socket.on('comm', function(){
 		mode = 'comm';
 		input.attr('type','text');
+	});
+	socket.on('open-help', function() {
+		 window.open('https://mywebadventure.com');
+	});
+	socket.on('clear', function() {
+		log.empty();
+	});
+	socket.on('listen-process', function() {
+		alog.show();
+		isPaused = false;
+	});
+	socket.on('listen-end', function() {
+		alog.hide();
+		isPaused = true;
 	});
 
 	$("html").click(function() {
@@ -86,5 +108,13 @@ $(document).ready(function(){
 	function add(data){
 		log.append("<div class='row'>"+data+"</div>");
 		window.scrollTo(0,document.body.scrollHeight);
+	}
+	function randString() {
+	    let text = "";
+	    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	    for( let i=0; i < 60; i++ ) {
+	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	    }
+	    return text;
 	}
 });
