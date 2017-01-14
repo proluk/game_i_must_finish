@@ -19,7 +19,20 @@ const communicates = {
 	account_close : "Connection to account closed.",
 	account_error : "No established connection to account.",
 	account_balance : "Your account balance: ",
-	no_sudo : "No need to use sudo."
+	no_sudo : "No need to use sudo.",
+	account_activated : "You are one of us now. Log in.",
+	login_started : "Login process started. Type your login.",
+	login_already_exists : "This Login is already in database.",
+	login_not_found : "There is no such login in database",
+	login_password : "Type in password.",
+	rules_breaking : "Follow the rules. Do not play with us.",
+	email_exists : "This Email is already in database.",
+	login_success : "You are in.",
+	login_failed : "Login Failed. Try Again ",
+	register_started : "Register process started. Type your future login.",
+	register_password : "Type your password.",
+	register_email : "Type your email.",
+	register_success : "Register process finished. You can login now."
 }
 
 module.exports = communicates;
