@@ -30,7 +30,7 @@ function login(login, password, callback) {
 function registerAccount(login,password,email) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('INSERT INTO account (id,login,password,email,money) VALUES (null,?,?,?,0);',[login,password,email],function(err, results){
+            connection.query('INSERT INTO account (id,login,password,email,money,socket) VALUES (null,?,?,?,0,null);',[login,password,email],function(err, results){
                 if( err ) {
                     return err;
                 } else {
@@ -102,6 +102,69 @@ function activateAccount(hash, callback) {
     });
 }
 
+function setSocketIdToAccount(login, id){
+    connection.getConnection(function(error, connection){
+        if( !error ) {
+            connection.query('UPDATE account SET socket = ? WHERE login = ?',[id,login],  function(err, results) {
+                if ( err ) {
+                    return err;
+                } else {
+                    return true;
+                }
+            });
+        } else {
+            return 'setSocketIdToAccount database module getConnection error';
+        }       
+    });
+}
+function addMoney(to, howmuch, callback) {
+    connection.getConnection(function(error,connection){
+        if(!error){
+            connection.query('UPDATE account SET money = money + ? WHERE socket = ?', [howmuch,to], function(err, results) {
+                if ( err ) {
+                    return err;
+                } 
+            });
+        } else {
+            return 'addMoney database module getConnection error';
+        }
+    }); 
+}
+
+function getMoney(from, howmuch, callback) {
+    connection.getConnection(function(error,connection){
+        if(!error){
+            connection.query('UPDATE account SET money = money - ? WHERE socket = ?', [howmuch,from], function(err, results) {
+                if ( err ) {
+                    return err;
+                }
+            });
+        } else {
+            return 'getMoney database module getConnection error';
+        }
+    });   
+}
+
+function showBalance(socket, callback){
+    connection.getConnection(function(error,connection){
+        if(!error){
+            connection.query('SELECT money AS m FROM account WHERE socket = ?', [socket], function(err, results) {
+                if ( err ) {
+                    return err;
+                } else {
+                    callback(results[0].m);
+                }
+            });
+        } else {
+            return 'getMoney database module getConnection error';
+        }
+    });   
+}
+
+module.exports.showBalance = showBalance;
+module.exports.setSocketIdToAccount = setSocketIdToAccount;
+module.exports.addMoney = addMoney;
+module.exports.getMoney = getMoney;
 module.exports.login = login;
 module.exports.registerAccount = registerAccount;
 module.exports.checkIfEmailExists = checkIfEmailExists;

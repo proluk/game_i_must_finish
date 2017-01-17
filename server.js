@@ -33,6 +33,8 @@ io.on('connection', function(socket) {
 	let ssh = false;
 	let site = false;
 	let lis = false;
+	let login = '';
+	setSocketIdToAccount(login,socket.id);
 
 	let listening = pause.setInterval(function() {
 		listenFunc();
@@ -172,7 +174,11 @@ io.on('connection', function(socket) {
 			if ( func ) {
 				if ( func === 'account' ) {
 					socket.emit("communicate", {data: communicates.account});
-					ssh = true;
+					if ( connection ) {
+						ssh = connection;
+					} else {
+						ssh = socket.id;
+					}
 				} else {
 					socket.emit("communicate", {data: communicates.no_command});
 				}
@@ -190,11 +196,28 @@ io.on('connection', function(socket) {
 
 		},
 		balance : function() {
-			ssh ? socket.emit("communicate", {data: communicates.account_balance+money}) : socket.emit("communicate", {data: communicates.account_error});
+			if ( ssh ) {
+				databaseModule.showBalance(connection ? connection : home, function(data){
+					socket.emit("communicate", {data: communicates.account_balance+data})
+				});
+			} else {
+				socket.emit("communicate", {data: communicates.account_error});
+			}
 		},
 		transfer : function(to, howmuch) {
 			if ( ssh ) {
 				// function transfer money
+				databaseModule.showBalance(connection ? connection : home, function(data){
+					if ( data-howmuch > 0 ) {
+						databaseModule.getMoney(connection ? connection : home, howmuch, function(data){
+							databaseModule.addMoney(to,howmuch, function(data){
+
+							});
+						});						
+					} else {
+						socket.emit("communicate", {data: communicates.not_enough_money});
+					}
+				});
 			} else {
 				socket.emit("communicate", {data: communicates.account_error});
 			}
@@ -269,6 +292,7 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.login_password});
 				wait_for_login_password = true;
 				tmp_login = tmp;
+				login = tmp;
 			} else {
 				socket.emit("communicate", {data: communicates.login_not_found});
 			}
@@ -285,6 +309,7 @@ io.on('connection', function(socket) {
 					socket.emit('communicate', {data: communicates.login_success});	
 					socket.emit('comm');
 					acc = true;
+					databaseModule.setSocketIdToAccount(login,socket.id);
 				} else {
 					socket.emit('communicate', {data: communicates.login_failed});
 					socket.emit("login-write-login");	
