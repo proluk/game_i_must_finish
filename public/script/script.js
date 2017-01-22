@@ -1,4 +1,4 @@
-let socket = io.connect('http://localhost:8000');
+let socket = io.connect('http://192.168.1.7:8000');
 
 $(document).ready(function(){
 	let website = null;

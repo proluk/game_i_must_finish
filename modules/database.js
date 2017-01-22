@@ -66,7 +66,7 @@ function checkIfLoginExists(login, callback){
 function checkIfEmailExists(email){
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('SELECT COUNT(email) AS c FROM account WHERE email=?',[email],function(err, results){
+            connection.query('SELECT COUNT(email) AS c FROM account WHERE email=?;',[email],function(err, results){
                 connection.release();
                 if ( err ) {
                     return err;
@@ -88,8 +88,7 @@ function checkIfEmailExists(email){
 function activateAccount(hash, callback) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('UPDATE account AS a INNER JOIN ActivateHash AS b ON a.id = b.id SET a.active = TRUE WHERE b.hash = ? ',[hash],function(err, results){
-                connection.release();
+            connection.query('UPDATE account AS a INNER JOIN ActivateHash AS b ON a.id = b.id SET a.active = TRUE WHERE b.hash = ? ;',[hash],function(err, results){
                 if ( err ) {
                     return err;
                 } else {
@@ -99,13 +98,14 @@ function activateAccount(hash, callback) {
         } else {
             return 'activateAccounts database module getConnection error';
         }
+        connection.release();   
     });
 }
 
 function setSocketIdToAccount(login, id){
     connection.getConnection(function(error, connection){
         if( !error ) {
-            connection.query('UPDATE account SET socket = ? WHERE login = ?',[id,login],  function(err, results) {
+            connection.query('UPDATE account SET socket = ? WHERE login = ?;',[id,login],  function(err, results) {
                 if ( err ) {
                     return err;
                 } else {
@@ -113,22 +113,28 @@ function setSocketIdToAccount(login, id){
                 }
             });
         } else {
-            return 'setSocketIdToAccount database module getConnection error';
-        }       
+            console.log('setSocketIdToAccount database module getConnection error');
+        } 
+        connection.release();        
     });
 }
 function addMoney(to, howmuch, callback) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('UPDATE account SET money = money + ? WHERE socket = ?', [howmuch,to], function(err, results) {
+            connection.query('UPDATE account SET money = money + ? WHERE socket = ?;', [howmuch,to], function(err, results) {
                 if ( err ) {
+                    console.log(err);
                     return err;
-                } 
+                } else {
+                    callback(true);
+                }
             });
+
         } else {
-            return 'addMoney database module getConnection error';
+            console.log('addMoney database module getConnection error');
         }
-    }); 
+        connection.release(); 
+    });   
 }
 
 function getMoney(from, howmuch, callback) {
@@ -137,12 +143,15 @@ function getMoney(from, howmuch, callback) {
             connection.query('UPDATE account SET money = money - ? WHERE socket = ?', [howmuch,from], function(err, results) {
                 if ( err ) {
                     return err;
+                } else {
+                    callback(true);
                 }
             });
         } else {
-            return 'getMoney database module getConnection error';
+            console.log('getMoney database module getConnection error');
         }
-    });   
+        connection.release();
+    });
 }
 
 function showBalance(socket, callback){
@@ -150,15 +159,17 @@ function showBalance(socket, callback){
         if(!error){
             connection.query('SELECT money AS m FROM account WHERE socket = ?', [socket], function(err, results) {
                 if ( err ) {
+                    console.log(err);
                     return err;
                 } else {
                     callback(results[0].m);
                 }
             });
         } else {
-            return 'getMoney database module getConnection error';
+            console.log('getMoney database module getConnection error');
         }
-    });   
+        connection.release();
+    });      
 }
 
 module.exports.showBalance = showBalance;

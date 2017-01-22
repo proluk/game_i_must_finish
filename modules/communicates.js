@@ -1,18 +1,43 @@
 //communicates
-
-let connect_help = 'connect user  -  try to connect to provided user.</br>';
-let disconnect_help = 'disconnect user  -  disconnects provided user.</br>';
-let open_help = 'open url  -  opens website. Write  close  to close.</br>';
-let more_help = 'Need more help? Write  morehelp';
-
-let help_before = '</br>register  -  starts a register process. You will have to provide unique login, password and unique email.</br></br>login  -  starts a login process. Provide your login and password in further steps.</br></br>'+more_help;
-let help_after = "</br>"+connect_help+"</br>"+disconnect_help+"</br>"+open_help+"</br>"+more_help+"</br>";
-
-
-
+//before login
+let website = "https://mywebadventure.com"
+let help_commands = {
+	before : [
+		"register - create new account.",
+		"login - log in...",
+		"more - visit website for more help. "+website,
+	],
+	//after login
+	home : [
+		"clear - clears your log.",
+		"connect [id] - connects to another user.",
+		"disconnect - disconnects from user.",
+		"open [url] - open website from provided url.",
+		"close - closes current website.",
+		"ssh account - connects to account of current connection.",
+		"exit - exit account connection.",
+	],
+	open : [
+		"listen - listen website traffic to find other users.",
+		"stop - stops listen.",
+		"close - closes current website."
+	],
+	bank : [
+		"balance - check balance of connected account.",
+		"transfer [to] [howmuch] - transfer money to specific id.",
+		"exit - exit account connection."
+	]
+};
+function help(data){
+	let response = '';
+	for ( let i = 0 ; i < help_commands[data].length ; i ++ ) {
+		response += "</br>"+help_commands[data][i]+"</br>";
+	}
+	return response;
+}
 
 const communicates = {
-	begin : "Hello</br>register - to create new account</br>login - to use existing one.</br>Need help? Write: help",
+	begin : "Hello.</br>Write: help",
 	tip_01 : "",
 	tip_02 : "",
 	no_command : "No such command: ",
@@ -32,6 +57,7 @@ const communicates = {
 	account_close : "Connection to account closed.",
 	account_error : "No established connection to account.",
 	account_balance : "Your account balance: ",
+	account_close_first : "Exit ssh connection first",
 	no_sudo : "No need to use sudo.",
 	account_activated : "You are one of us now. Log in.",
 	login_started : "Login process started. Type your login.",
@@ -46,13 +72,17 @@ const communicates = {
 	register_password : "Type your password.",
 	register_email : "Type your email.",
 	register_success : "Register process finished. You can login now.",
-	help_before : help_before,
-	help_after : help_after,
 	found_hash : "Success! Found hash. Use it to connect : ",
 	no_listen_process : "No listening process found.",
-	unexpected_error : "Unexpected error occured. Refresh Page."
+	unexpected_error : "Unexpected error occured. Refresh Page.",
+	transaction_success : "Transaction finished.",
+	not_enough_money : "Not enough funds to finish transaction.",
+	provide_url : "Please do not use www. Use http:// or https://",
+	room_empty : "Looks like you are alone. Try different website.",
+	already_listening : "Listening process already running.",
+	listen_stopped : "Listening process stopped."
 }
 
 
-
-module.exports = communicates;
+module.exports.help = help;
+module.exports.communicates = communicates;
