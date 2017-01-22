@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Wersja serwera:               5.6.33-0ubuntu0.14.04.1 - (Ubuntu)
--- Serwer OS:                    debian-linux-gnu
+-- Wersja serwera:               5.7.17-log - MySQL Community Server (GPL)
+-- Serwer OS:                    Win64
 -- HeidiSQL Wersja:              9.4.0.5125
 -- --------------------------------------------------------
 
@@ -11,36 +11,8 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
--- Zrzut struktury bazy danych baza
-CREATE DATABASE IF NOT EXISTS `baza` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `baza`;
-
--- Zrzut struktury tabela baza.Account
-CREATE TABLE IF NOT EXISTS `Account` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `login` varchar(50) NOT NULL,
-  `password` varchar(50) DEFAULT NULL,
-  `money` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Data exporting was unselected.
--- Zrzut struktury tabela baza.Mines
-CREATE TABLE IF NOT EXISTS `Mines` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `link` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Data exporting was unselected.
--- Zrzut struktury tabela baza.Pass_programs
-CREATE TABLE IF NOT EXISTS `Pass_programs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
