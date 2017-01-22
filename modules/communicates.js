@@ -16,6 +16,7 @@ let help_commands = {
 		"close - closes current website.",
 		"ssh account - connects to account of current connection.",
 		"exit - exit account connection.",
+		"me - shows your id."
 	],
 	open : [
 		"listen - listen website traffic to find other users.",
@@ -25,7 +26,8 @@ let help_commands = {
 	bank : [
 		"balance - check balance of connected account.",
 		"transfer [to] [howmuch] - transfer money to specific id.",
-		"exit - exit account connection."
+		"exit - exit account connection.",
+		"me - shows your id."
 	]
 };
 function help(data){
