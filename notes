@@ -1,10 +1,22 @@
-mozliwosc wpisywania kodow programow do skryptu shellowego "./easypass.sh", "./decrypt.sh" itd ...
+na stronie internetowej bardzo dokladny poradnik.
+wirusy:
+	rickie: włącza ofierze rickrold'a blokujac mu dostep do konsoli.
+	rotator: odwraca ofierze console do gory nogami.
+	youtuber: wybierasz link do youtuba ktory puscic ofierze.
+	lilpic: wyswietla ofierze wybrany przez ciebie obrazek.
+	hashmebebe: hashuje sockety wybranym hashem.
+
+dla kazdego wirusa jest kod ktory go wylacza. kody zmieniane raz na tydzien
+
+wirusy w postaci hashy, ich działanie zapisane w bazie danych.
+
 mining bitcoins na stronach
-jednorazowe programy do lamania hasla
+
+//jednorazowe programy do lamania hasla
+
 listen - sluchanie inputu ofiary.
-jezeli jest connection to broadcast na caly pokoj ofiary zamiast emit tylko
+
 mine - kopie dla siebie
-mine id - kopie dla konkretnego id
 
 kasa - ranking widoczny dla wszystkich z twoim nickiem
 	kupowanie na czarnym rynku opcji ulatwiajacych hakowanie i ochrone, od innych graczy albo od gry
@@ -13,30 +25,11 @@ happy hour - przez godzine nawet jak nie grasz moga cie zhakowac.
 
 //proces hakowania -->
 
-kazdy ustawia sposob hashowania swojego id widocznego na stronach internetowych.
-są dostępne 3.
+hashowanie danych
 
 MD5
 SHA-1
 SHA-256
-
-Gdy ktos slucha strony to pojawiaja sie jakies ciagi znakow i co jakis czas jest widoczny czyjs hash.
-
-robi: decrypt <odpowiedni alg> <znaleziony hash>
-
-po rozszyfrowaniu hasha probuje sie polaczyc.
-
-haslo 6 znakow.
-
-sa programy jednorazowe do rozszyfrowania hasla
-program zwraca haslo
-
-można pracować nad ulepszeniem programu, algorytmem do ulepszania.
-
-programy i algorytmy mozna albo kupic na czarnym rynku.
-Albo produkować co jest czasochłonne.
-Albo wymieniać.
-
 
 // system upgrade
 // system modification
