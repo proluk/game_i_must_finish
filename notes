@@ -1,4 +1,15 @@
 na stronie internetowej bardzo dokladny poradnik.
+
+Ochrona -- Attack
+	zablokowanie ruchu z zewnatrz przez reguly bramy -- Brute Force do zresetowania ochrony, wlaczy sie po 30sec.
+	można ulepszać odporność bramy na zapchanie. 
+Gracz może mieć kilka kont. Wybrać jedno które będzie bankiem, nie będzie wydobywało bitcoinow. tylko gracz bedzie
+	wiedzial jak sie z nim polaczyc. jednak gracz może być podsłuchiwany.
+	
+	Wszystkie informacje o przeslaniu pieniedzy i otrzymaniu pieniedzy musze byc widoczne.
+
+Można się połączyć z graczem po jego nicku.
+
 wirusy:
 	rickie: włącza ofierze rickrold'a blokujac mu dostep do konsoli.
 	rotator: odwraca ofierze console do gory nogami.
