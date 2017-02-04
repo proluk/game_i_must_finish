@@ -33,10 +33,11 @@ let help_commands = {
 	]
 };
 function help(data){
-	let response = '';
+	let response = '</br>-------------------- HELP ---------------------</br>';
 	for ( let i = 0 ; i < help_commands[data].length ; i ++ ) {
 		response += "</br>"+help_commands[data][i]+"</br>";
 	}
+	response += "</br>-----------------------------------------------</br></br>";
 	return response;
 }
 

@@ -179,10 +179,10 @@ function checkMine(url, callback) {
                 if(err){
                     return err;
                 } else {
-                     if( results[0].link ) {
+                     if( results[0] ) {
                         callback(true, results[0].bitpermin);
                     } else {
-                        callback(false, results[0].bitpermin);
+                        callback(false, results[0]);
                     }
                 }
             });

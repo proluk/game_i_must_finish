@@ -163,6 +163,10 @@ io.on('connection', function(socket) {
 				socket.leave(site);
 				socket.emit("close");
 				site = false;
+				socket.emit('mine-stop');
+				minemine = false;
+				mining.pause();
+				socket.emit('communicate', {data: communicates.communicates.mine_stop});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.no_connection});
 			}
@@ -208,18 +212,23 @@ io.on('connection', function(socket) {
 
 		},
 		ssh : function(func,blank) {
-			if ( func ) {
-				if ( func === 'account' ) {
-					socket.emit("communicate", {data: communicates.communicates.account});
-					if ( connection ) {
-						bank = connection;
+			if ( !site  ){
+				if ( func ) {
+					if ( func === 'account' ) {
+						socket.emit("communicate", {data: communicates.communicates.account});
+						if ( connection ) {
+							bank = connection;
+						} else {
+							bank = hash.encrypt(socket.id);
+						}
 					} else {
-						bank = hash.encrypt(socket.id);
+						socket.emit("communicate", {data: communicates.communicates.no_command+func});
 					}
-				} else {
-					socket.emit("communicate", {data: communicates.communicates.no_command+func});
-				}
+				}				
+			} else {
+				socket.emit("communicate", {data: communicates.communicates.close_site_first});
 			}
+
 		},
 		exit : function(blank,blank) {
 			if ( bank ) {
