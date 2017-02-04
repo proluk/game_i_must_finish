@@ -16,6 +16,7 @@ wirusy:
 	youtuber: wybierasz link do youtuba ktory puscic ofierze.
 	lilpic: wyswietla ofierze wybrany przez ciebie obrazek.
 	hashmebebe: hashuje sockety wybranym hashem.
+	funnymine: zamiast wydobywac bitcoiny to tracisz bitcoiny
 
 dla kazdego wirusa jest kod ktory go wylacza. kody zmieniane raz na tydzien
 

@@ -1,4 +1,4 @@
-let socket = io.connect('http://192.168.1.7:8000');
+let socket = io.connect('http://localhost:8000');
 
 $(document).ready(function(){
 	let website = null;
@@ -8,9 +8,16 @@ $(document).ready(function(){
 	let alog = $('#active-log');
 
 	let isPaused = true;
+	let isPausedBinary = true;
 	let inter = setInterval(function(){
 		if(!isPaused){
 			alog.text(randString());
+		}
+	},50);
+
+	let binary = setInterval(function(){
+		if(!isPausedBinary){
+			alog.html(randBinary());
 		}
 	},50);
 
@@ -60,6 +67,14 @@ $(document).ready(function(){
 	socket.on('listen-end', function() {
 		alog.hide();
 		isPaused = true;
+	});
+	socket.on('mine-start', function() {
+		alog.show();
+		isPausedBinary = false;
+	});
+	socket.on('mine-stop', function() {
+		alog.hide();
+		isPausedBinary = true;
 	});
 
 	$("html").click(function() {
@@ -116,5 +131,15 @@ $(document).ready(function(){
 	        text += possible.charAt(Math.floor(Math.random() * possible.length));
 	    }
 	    return text;
+	}
+	function randBinary(){
+		let text = "";
+		for( let m = 0 ; m < 5 ; m ++ ) {
+			for( let i = 0 ; i < 60 ; i ++ ) {
+				text += Math.round((Math.random() * 1 ) + 0 );
+			}
+			text += "</br>";
+		}
+		return text;
 	}
 });

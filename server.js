@@ -33,14 +33,23 @@ io.on('connection', function(socket) {
 	let bank = false;
 	let site = false;
 	let lis = false;
+	let minemine = false;
+	let mine_per_min = 0;
 	let login = '';
 
-	var listening = pause.setInterval(function() {
+	let listening = pause.setInterval(function() {
 		if ( lis ) {
 			listenFunc();	
 		}
 	},2000);
 	listening.pause();
+
+	let mining = pause.setInterval(function() {
+		if ( minemine ) {
+			mineFunc();	
+		}
+	},60000);
+	mining.pause();
 
 	//commands
 	let before = {
@@ -171,15 +180,32 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.already_listening});
 			}
 		},
-		stop : function() {
-			if ( lis ) {
-				socket.emit('listen-end');
-				lis = false;
-				listening.pause();
-				socket.emit('communicate', {data: communicates.communicates.listen_stopped});
+		stop : function(option) {
+			if ( option ){
+				if(option == '-l'){
+					if ( lis ) {
+						socket.emit('listen-end');
+						lis = false;
+						listening.pause();
+						socket.emit('communicate', {data: communicates.communicates.listen_stopped});
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.no_listen_process});
+					}	
+				} else if ( option == '-m' ) {
+					if ( minemine ) {
+						socket.emit('mine-stop');
+						minemine = false;
+						mining.pause();
+						socket.emit('communicate', {data: communicates.communicates.mine_stop});
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.no_mine_process});
+					}	
+				}				
 			} else {
-				socket.emit('communicate', {data: communicates.communicates.no_listen_process});
+				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
+
+
 		},
 		ssh : function(func,blank) {
 			if ( func ) {
@@ -232,6 +258,24 @@ io.on('connection', function(socket) {
 				});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
+			}
+		},
+		mine : function() {
+			if ( site ) {
+				//check if site avaiable for mining
+				databaseModule.checkMine(hash.encrypt(site),function(res, bit){
+					if(res){
+						minemine = true;
+						mine_per_min = bit;
+						mining.resume();
+						socket.emit("communicate", {data: communicates.communicates.mine_start});
+						socket.emit('mine-start');
+					} else {
+						socket.emit("communicate", {data: communicates.communicates.not_mine});
+					}
+				});
+			} else {
+				socket.emit("communicate", {data: communicates.communicates.connect_mine_first});
 			}
 		},
 		me : function() {
@@ -362,6 +406,11 @@ io.on('connection', function(socket) {
 			lis = false;
 		}				
 	}
+	function mineFunc(){
+		databaseModule.addMoney(hash.encrypt(socket.id),mine_per_min, function(){
+			socket.emit("communicate", {data: "You mined: "+mine_per_min+" bitcoin."});
+		});
+	}
 	function percentageChance(percent) {
 		let tmp = Math.floor( (Math.random() * 100 ) + 0);
 		if ( tmp < percent ) { 
@@ -392,6 +441,6 @@ io.on('connection', function(socket) {
 	}
 });
 
-server.listen(8000,'192.168.1.7', function(){
+server.listen(8000, function(){
 	console.log("Server listening on port 8000...");
 });

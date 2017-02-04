@@ -20,7 +20,9 @@ let help_commands = {
 	],
 	open : [
 		"listen - listen website traffic to find other users.",
-		"stop - stops listen.",
+		"mine - mine bitcoins.",
+		"stop -l - stops listen.",
+		"stop -m - stops mining.",
 		"close - closes current website."
 	],
 	bank : [
@@ -82,7 +84,13 @@ const communicates = {
 	provide_url : "Please do not use www. Use http:// or https://",
 	room_empty : "Looks like you are alone. Try different website.",
 	already_listening : "Listening process already running.",
-	listen_stopped : "Listening process stopped."
+	listen_stopped : "Listening process stopped.",
+	not_mine : "Servers of this website, are not prepared for mining bitcoins.",
+	connect_mine_first : "Connect to the website with servers prepared for mining bitcoins first.",
+	mine_start : "Mining bitcoins process started...",
+	no_mine_process : "No mining process is running.",
+	mine_stop : "Mining bitcoins process stopped.",
+	wrong_command_use : "Command syntax error. Please check help."
 }
 
 

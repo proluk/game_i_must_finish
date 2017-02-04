@@ -172,6 +172,28 @@ function showBalance(socket, callback){
     });      
 }
 
+function checkMine(url, callback) {
+    connection.getConnection(function(error, connection){
+        if(!error){
+            connection.query('SELECT link, bitpermin FROM mines WHERE link = ?', [url], function(err, results){
+                if(err){
+                    return err;
+                } else {
+                     if( results[0].link ) {
+                        callback(true, results[0].bitpermin);
+                    } else {
+                        callback(false, results[0].bitpermin);
+                    }
+                }
+            });
+        } else {
+            console.log('checMine database module getConnection error');
+        }
+        connection.release();
+    });
+}
+
+module.exports.checkMine = checkMine;
 module.exports.showBalance = showBalance;
 module.exports.setSocketIdToAccount = setSocketIdToAccount;
 module.exports.addMoney = addMoney;
