@@ -1,11 +1,15 @@
 let socket = io.connect('http://localhost:8000');
 
 $(document).ready(function(){
+	let commands = [];
+	let command_num = 0;
 	let website = null;
 	let input = $('#input');
 	let log = $("#log");
 	let mode = 'comm';
 	let alog = $('#active-log');
+
+	input.attr('maxLength', '100');
 
 	let isPaused = true;
 	let isPausedBinary = true;
@@ -80,9 +84,8 @@ $(document).ready(function(){
 	$("html").click(function() {
         input.val(input.val()).focus();
     });       
-    $(document).keypress(function(e) {
+    $(document).on('keydown',function(e) {
 	    if(e.which == 13) {
-	    	console.log(mode);
 	    	let text = input.val();
 	    	input.val("");
 	    	if( mode === 'login-write-login' ) {
@@ -97,8 +100,26 @@ $(document).ready(function(){
 	    		registerEmail(text);
 	    	} else if ( mode === 'comm' ) {
 	    		command(text);
+	    		commands.push(text);
+	    		command_num = commands.length;
+	    	}
+	    } else if ( e.which == 38 ) {
+	    	//arrow up
+	    	if ( command_num > 0 ) {
+	    		command_num--;
+	    		input.val(commands[command_num]);
+	    	}
+	    } else if ( e.which == 40 ) {
+	    	//arrow down
+	    	if ( command_num < commands.length-1 ) {
+	    		command_num++;
+	    		input.val(commands[command_num]);
+	    	} else {
+	    		command_num = commands.length;
+	    		input.val('');
 	    	}
 	    }
+	    console.log(command_num);
 	});
 
 	function command(data) {
