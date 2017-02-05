@@ -217,22 +217,26 @@ io.on('connection', function(socket) {
 						
 						if ( connection ) {
 							potential_bank = connection;
-							if ( !databaseModule.checkPin(potential_bank, function(data){}) ) {
-								socket.emit("communicate", {data: communicates.communicates.enter_pin});
-								socket.emit('enter-pin');
-							} else {
-								bank = connection;
-								socket.emit("communicate", {data: communicates.communicates.account});
-							}						
+							databaseModule.checkPin(potential_bank, function(data){
+								if ( data != null ) {
+									socket.emit("communicate", {data: communicates.communicates.enter_pin});
+									socket.emit('enter-pin');									
+								} else {
+									bank = connection;
+									socket.emit("communicate", {data: communicates.communicates.account});									
+								}
+							});					
 						} else {
 							potential_bank = hash.encrypt(socket.id);
-							if ( !databaseModule.checkPin(potential_bank, function(data){}) ) {
-								socket.emit("communicate", {data: communicates.communicates.enter_pin});
-								socket.emit('enter-pin');
-							} else {
-								bank = hash.encrypt(socket.id);
-								socket.emit("communicate", {data: communicates.communicates.account});
-							}						
+							databaseModule.checkPin(potential_bank, function(data){
+								if ( data != null ) {
+									socket.emit("communicate", {data: communicates.communicates.enter_pin});
+									socket.emit('enter-pin');									
+								} else {
+									bank = hash.encrypt(socket.id);
+									socket.emit("communicate", {data: communicates.communicates.account});									
+								}
+							});					
 						}
 					} else {
 						socket.emit("communicate", {data: communicates.communicates.no_command+func});
@@ -411,7 +415,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on('enter-pin-response', function(data) {
 		databaseModule.checkPin(potential_bank, function(result) {
-			if ( result === data.data ) {
+			if ( result == data.data ) {
 				//success
 				bank = potential_bank;
 				socket.emit("communicate", {data: communicates.communicates.account});
