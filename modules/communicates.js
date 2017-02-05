@@ -29,7 +29,8 @@ let help_commands = {
 		"balance - check balance of connected account.",
 		"transfer [to] [howmuch] - transfer money to specific id.",
 		"exit - exit account connection.",
-		"me - shows your id."
+		"me - shows your id.",
+		"options -p - set 3 digit pin code to enter account."
 	]
 };
 function help(data){
@@ -91,7 +92,9 @@ const communicates = {
 	mine_start : "Mining bitcoins process started...",
 	no_mine_process : "No mining process is running.",
 	mine_stop : "Mining bitcoins process stopped.",
-	wrong_command_use : "Command syntax error. Please check help."
+	wrong_command_use : "Command syntax error. Please check help.",
+	wrong_pin : "Pin Code is incorrect.",
+	enter_pin : "Please enter 3 digit pin code."
 }
 
 

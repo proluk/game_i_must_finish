@@ -55,6 +55,7 @@ $(document).ready(function(){
 		input.attr('type','email');
 	});
 	socket.on('comm', function(){
+		input.attr('maxLength', '100');
 		mode = 'comm';
 		input.attr('type','text');
 	});
@@ -80,6 +81,11 @@ $(document).ready(function(){
 		alog.hide();
 		isPausedBinary = true;
 	});
+	socket.on('enter-pin', function() {
+		mode = 'enter-pin';
+		input.attr('maxLength', '3');
+		input.attr('type','password');
+	});
 
 	$("html").click(function() {
         input.val(input.val()).focus();
@@ -98,6 +104,8 @@ $(document).ready(function(){
 	    		registerPass(text);
 	    	} else if ( mode === 'register-email' ) {
 	    		registerEmail(text);
+	    	} else if ( mode === 'enter-pin' ) {
+	    		enterPin(text);
 	    	} else if ( mode === 'comm' ) {
 	    		command(text);
 	    		commands.push(text);
@@ -140,6 +148,9 @@ $(document).ready(function(){
 	}
 	function loginWriteLogin(data){
 		socket.emit('login-write-login-response', {data: data});
+	}
+	function enterPin(data){
+		socket.emit('enter-pin-response', {data: data});
 	}
 	function add(data){
 		log.append("<div class='row'>"+data+"</div>");

@@ -193,6 +193,24 @@ function checkMine(url, callback) {
     });
 }
 
+function checkPin(url, callback) {
+    connection.getConnection(function(error, connection){
+        if(!error){
+            connection.query('SELECT pin FROM account WHERE socket = ?', [url], function(err, results){
+                if ( err ) {
+                    return err;
+                } else {
+                    callback(results[0].pin);
+                }
+            });
+        } else {
+            console.log('checMPin database module getConnection error');
+        }
+        connection.release();
+    });
+}
+
+module.exports.checkPin = checkPin;
 module.exports.checkMine = checkMine;
 module.exports.showBalance = showBalance;
 module.exports.setSocketIdToAccount = setSocketIdToAccount;

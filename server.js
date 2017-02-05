@@ -31,6 +31,7 @@ io.on('connection', function(socket) {
 	let home = hash.encrypt(socket.id);
 	let connection = false;
 	let bank = false;
+	let potential_bank = false;
 	let site = false;
 	let lis = false;
 	let minemine = false;
@@ -208,18 +209,30 @@ io.on('connection', function(socket) {
 			} else {
 				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
-
-
 		},
 		ssh : function(func,blank) {
 			if ( !site  ){
 				if ( func ) {
 					if ( func === 'account' ) {
-						socket.emit("communicate", {data: communicates.communicates.account});
+						
 						if ( connection ) {
-							bank = connection;
+							potential_bank = connection;
+							if ( !databaseModule.checkPin(potential_bank, function(data){}) ) {
+								socket.emit("communicate", {data: communicates.communicates.enter_pin});
+								socket.emit('enter-pin');
+							} else {
+								bank = connection;
+								socket.emit("communicate", {data: communicates.communicates.account});
+							}						
 						} else {
-							bank = hash.encrypt(socket.id);
+							potential_bank = hash.encrypt(socket.id);
+							if ( !databaseModule.checkPin(potential_bank, function(data){}) ) {
+								socket.emit("communicate", {data: communicates.communicates.enter_pin});
+								socket.emit('enter-pin');
+							} else {
+								bank = hash.encrypt(socket.id);
+								socket.emit("communicate", {data: communicates.communicates.account});
+							}						
 						}
 					} else {
 						socket.emit("communicate", {data: communicates.communicates.no_command+func});
@@ -289,6 +302,19 @@ io.on('connection', function(socket) {
 		},
 		me : function() {
 			socket.emit("communicate", {data: "You are "+socket.id});
+		},
+		options : function(option) {
+			if ( bank ) {
+				if ( option ){
+					if( option == '-p' ){
+						
+					} else {
+
+					}				
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}				
+			}
 		}
 	}
 
@@ -382,6 +408,20 @@ io.on('connection', function(socket) {
 				}
 			});
 		}
+	});
+	socket.on('enter-pin-response', function(data) {
+		databaseModule.checkPin(potential_bank, function(result) {
+			if ( result === data.data ) {
+				//success
+				bank = potential_bank;
+				socket.emit("communicate", {data: communicates.communicates.account});
+				socket.emit('comm');
+			} else {
+				//wrong pin try again
+				socket.emit('communicate', {data: communicates.communicates.wrong_pin});
+				socket.emit('enter-pin');
+			}
+		});
 	});
 
 	function  veryfiCommand(data) {
