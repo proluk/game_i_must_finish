@@ -269,7 +269,7 @@ io.on('connection', function(socket) {
 		balance : function() {
 			if ( bank ) {
 				databaseModule.showBalance(bank, function(data){
-					socket.emit("communicate", {data: communicates.communicates.account_balance+data})
+					socket.emit("communicate", {data: communicates.communicates.account_balance+(Math.round(data*100)/100)});
 				});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
