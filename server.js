@@ -106,7 +106,8 @@ io.on('connection', function(socket) {
 				if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
 					connection = tmp;
 					socket.join(hash.decrypt(tmp));
-					socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});						
+					socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+					setPlace('');						
 				} else {
 					socket.emit("communicate", {data: communicates.communicates.no_such_connection});
 				}			
@@ -119,6 +120,7 @@ io.on('connection', function(socket) {
 				socket.leave(connection);
 				socket.emit('communicate', {data: communicates.communicates.disconnect});
 				connection = false;
+				setPlace('');
 			} else if ( connection && who ) {
 				if (io.sockets.connected[who]) {
 			    	io.sockets.connected[who].leave(connection);
@@ -148,6 +150,7 @@ io.on('connection', function(socket) {
 						if ( exists ) {
 							site = link;
 							socket.join(link);
+							setPlace(site);
 							socket.emit("open", {data: link});
 							socket.emit("communicate", {data: communicates.communicates.open+link});
 						} else {
@@ -164,10 +167,13 @@ io.on('connection', function(socket) {
 				socket.leave(site);
 				socket.emit("close");
 				site = false;
-				socket.emit('mine-stop');
-				minemine = false;
-				mining.pause();
-				socket.emit('communicate', {data: communicates.communicates.mine_stop});
+				setPlace('');
+				if ( minemine ) {
+					socket.emit('mine-stop');
+					minemine = false;
+					mining.pause();
+					socket.emit('communicate', {data: communicates.communicates.mine_stop});
+				}	
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.no_connection});
 			}
@@ -214,7 +220,6 @@ io.on('connection', function(socket) {
 			if ( !site  ){
 				if ( func ) {
 					if ( func === 'account' ) {
-						
 						if ( connection ) {
 							potential_bank = connection;
 							databaseModule.checkPin(potential_bank, function(data){
@@ -223,6 +228,7 @@ io.on('connection', function(socket) {
 									socket.emit('enter-pin');									
 								} else {
 									bank = connection;
+									setPlace('account');
 									socket.emit("communicate", {data: communicates.communicates.account});									
 								}
 							});					
@@ -234,6 +240,7 @@ io.on('connection', function(socket) {
 									socket.emit('enter-pin');									
 								} else {
 									bank = hash.encrypt(socket.id);
+									setPlace('account');
 									socket.emit("communicate", {data: communicates.communicates.account});									
 								}
 							});					
@@ -251,6 +258,7 @@ io.on('connection', function(socket) {
 			if ( bank ) {
 				socket.emit("communicate", {data: communicates.communicates.account_close});
 				bank = '';
+				setPlace('');
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}	
@@ -311,9 +319,11 @@ io.on('connection', function(socket) {
 			if ( bank ) {
 				if ( option ){
 					if( option == '-p' ){
-						
+						//set pin
+						socket.emit('communicate', {data: communicates.communicates.enter_new_pin});
+						socket.emit('set-pin');
 					} else {
-
+						socket.emit("communicate", {data: communicates.communicates.no_command+option});
 					}				
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
@@ -338,7 +348,7 @@ io.on('connection', function(socket) {
 	socket.on("register-write-login-response", function(data) {
 		let tmp = hash.encrypt(data.data);
 		databaseModule.checkIfLoginExists(tmp, function(data) {
-			if( data ) {
+			if ( data ) {
 				socket.emit("communicate", {data: communicates.communicates.login_already_exists});
 				socket.emit('register-write-login');
 			} else {
@@ -406,6 +416,7 @@ io.on('connection', function(socket) {
 					socket.emit('comm');
 					acc = true;
 					databaseModule.setSocketIdToAccount(login,hash.encrypt(socket.id));
+					setPlace('');
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.login_failed});
 					socket.emit("login-write-login");	
@@ -414,18 +425,38 @@ io.on('connection', function(socket) {
 		}
 	});
 	socket.on('enter-pin-response', function(data) {
+		let pino = hash.encrypt(data.data);
 		databaseModule.checkPin(potential_bank, function(result) {
-			if ( result == data.data ) {
+			if ( result == pino ) {
 				//success
 				bank = potential_bank;
 				socket.emit("communicate", {data: communicates.communicates.account});
 				socket.emit('comm');
+				setPlace('account');
 			} else {
 				//wrong pin try again
 				socket.emit('communicate', {data: communicates.communicates.wrong_pin});
 				socket.emit('enter-pin');
 			}
 		});
+	});
+	socket.on('set-pin-response', function(data) {
+		let num = Number(data.data);
+		if ( Number.isInteger(num) && data.data.length === 3 ) {
+			let pino = hash.encrypt(data.data);
+			databaseModule.setPin(bank, pino, function(result) {
+				if ( result ) {
+					socket.emit('communicate', {data: communicates.communicates.set_pin_success});
+					socket.emit('comm');
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.set_wrong_pin});
+					socket.emit('set-pin');
+				}
+			});
+		} else {
+			socket.emit('communicate', {data: communicates.communicates.set_wrong_pin});
+			socket.emit('set-pin');
+		}
 	});
 
 	function  veryfiCommand(data) {
@@ -491,6 +522,17 @@ io.on('connection', function(socket) {
 	}
 	function random(min,max) {
 		return Math.floor( (Math.random() * max ) + min);
+	}
+	function setPlace(place) {
+		if ( connection ) {
+			if ( place ) {
+				socket.emit('set-place', {data: hash.decrypt(connection)+":"+place});
+			} else {
+				socket.emit('set-place', {data: hash.decrypt(connection)});
+			}
+		} else {
+			socket.emit('set-place', {data: place});
+		}
 	}
 });
 

@@ -209,7 +209,25 @@ function checkPin(url, callback) {
         connection.release();
     });
 }
+function setPin(url, pin, callback) {
+    connection.getConnection(function(error, connection){
+        if(!error){
+            connection.query('UPDATE account SET pin = ? WHERE socket = ?', [pin,url], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log('setPin database module getConnection error');
+        }
+        connection.release();
+    });
+}
 
+module.exports.setPin = setPin;
 module.exports.checkPin = checkPin;
 module.exports.checkMine = checkMine;
 module.exports.showBalance = showBalance;

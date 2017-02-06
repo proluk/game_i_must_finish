@@ -94,7 +94,10 @@ const communicates = {
 	mine_stop : "Mining bitcoins process stopped.",
 	wrong_command_use : "Command syntax error. Please check help.",
 	wrong_pin : "Pin Code is incorrect.",
-	enter_pin : "Please enter 3 digit pin code."
+	enter_pin : "Please enter pin code.",
+	enter_new_pin : "Please enter 3 digits long pin code.",
+	set_wrong_pin : "Pin code you provided is wrong. Please use only digits.",
+	set_pin_success : "New pin code set."
 }
 
 

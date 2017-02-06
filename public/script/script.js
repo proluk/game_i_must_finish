@@ -8,7 +8,10 @@ $(document).ready(function(){
 	let log = $("#log");
 	let mode = 'comm';
 	let alog = $('#active-log');
+	let labelo = $('#labelo');
+	let current_place = 'guest~$ ';
 
+	labelo.text(current_place);
 	input.attr('maxLength', '100');
 
 	let isPaused = true;
@@ -25,13 +28,17 @@ $(document).ready(function(){
 		}
 	},50);
 
+	socket.on('set-place', function(data) {
+		current_place = data.data+'~$ ';
+		labelo.text(current_place);
+	});
 	socket.on("communicate", function(data) {
 		add(data.data);
 	});
 	socket.on("open", function(data){
 		website = window.open(data.data);
 	});
-	socket.on("close", function(){
+	socket.on("close", function(){s
 		website.close();
 	});
 	socket.on('login-write-login', function(){
@@ -86,6 +93,11 @@ $(document).ready(function(){
 		input.attr('maxLength', '3');
 		input.attr('type','password');
 	});
+	socket.on('set-pin', function() {
+		mode = 'set-pin';
+		input.attr('maxLength', '3');
+		input.attr('type', 'password');
+	});
 
 	$("html").click(function() {
         input.val(input.val()).focus();
@@ -106,6 +118,8 @@ $(document).ready(function(){
 	    		registerEmail(text);
 	    	} else if ( mode === 'enter-pin' ) {
 	    		enterPin(text);
+	    	} else if ( mode === 'set-pin' ) {
+	    		setPin(text);
 	    	} else if ( mode === 'comm' ) {
 	    		command(text);
 	    		commands.push(text);
@@ -131,7 +145,7 @@ $(document).ready(function(){
 	});
 
 	function command(data) {
-	    add("~$ "+data);
+	    add(current_place+data);
 		socket.emit("command", {command: data});
 	}
 	function registerLogin(data) {
@@ -151,6 +165,9 @@ $(document).ready(function(){
 	}
 	function enterPin(data){
 		socket.emit('enter-pin-response', {data: data});
+	}
+	function setPin(data){
+		socket.emit('set-pin-response', {data: data});
 	}
 	function add(data){
 		log.append("<div class='row'>"+data+"</div>");
