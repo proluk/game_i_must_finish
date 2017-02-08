@@ -1,12 +1,20 @@
+Brama ma swoją odporność.
+
+Można przeprowadzać dwa ataki na brame:
+	pierwszy connect -f : czyli tracisz tyle sily ile brama ma odpornosci. jak masz wiecej
+		to przechodzisz.
+	drugi connect : probuje się połączyć normalnie, zmniejszajac odpornosc bramy. nie tracisz siły.
+Przez brame można się przedostać po ustawieniu reguly w bramie na konkretny nick.
+Są wirusy ktore wyłączają bramę zdalnie.
+
 duzo opcji ktore moga byc wylaczone przez ofiare i atakujacego
-opcje typu wysylaj powiadomienia o probie zalogowania do konta, 
+opcje typu:
+	wysylaj powiadomienia o probie zalogowania do konta bankowego.
 	ukrywaj komendy innych graczy w twoim pokoju.
+	czy brama włączona.
 
 na stronie internetowej bardzo dokladny poradnik.
 
-Ochrona -- Attack
-	zablokowanie ruchu z zewnatrz przez reguly bramy -- Brute Force do zresetowania ochrony, wlaczy sie po 30sec.
-	można ulepszać odporność bramy na zapchanie. 
 Gracz może mieć kilka kont. Wybrać jedno które będzie bankiem, nie będzie wydobywało bitcoinow. tylko gracz bedzie
 	wiedzial jak sie z nim polaczyc. jednak gracz może być podsłuchiwany.
 	
@@ -20,7 +28,9 @@ wirusy:
 	youtuber: wybierasz link do youtuba ktory puscic ofierze.
 	lilpic: wyswietla ofierze wybrany przez ciebie obrazek.
 	hashmebebe: hashuje sockety wybranym hashem.
-	funnymine: zamiast wydobywac bitcoiny to tracisz bitcoiny
+	funnymine: zamiast wydobywac bitcoiny to tracisz bitcoiny.
+	thereisnotimetoexplain: można włączyć zdalnie kiedy chcesz. Wyłącza brame ofierze i wysyła Ci wiadomość z aktualnym
+		socketem ofiary.
 
 dla kazdego wirusa jest kod ktory go wylacza. kody zmieniane raz na tydzien
 
