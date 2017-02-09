@@ -247,7 +247,80 @@ function setPin(url, pin, callback) {
         connection.release();
     });
 }
+function addBotnetPoints(socket, howmany, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE account SET botnet = botnet + ? WHERE socket = ?', [howmany, socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("addBotnetPoints database module getConnection error");
+        }
+        connection.release();
+    });
 
+}
+function removeBotnetPoints(socket, howmany, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE account SET botnet = botnet - ? WHERE socket = ?', [howmany, socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("removeBotnetPoints database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function addGatePoints(socket, howmany, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE account SET brama = brama + ? WHERE socket = ?', [howmany, socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("addGatePoints database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function removeGatePoints(socket, howmany, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE account SET brama = brama - ? WHERE socket = ?', [howmany, socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("removeGatePoints database module getConnection error");
+        }
+        connection.release();
+    });
+}
+
+module.exports.addGatePoints = addGatePoints;
+module.exports.removeGatePoints = removeGatePoints;
+module.exports.addBotnetPoints = addBotnetPoints;
+module.exports.removeBotnetPoints = removeBotnetPoints;
 module.exports.setPin = setPin;
 module.exports.checkPin = checkPin;
 module.exports.checkMine = checkMine;
