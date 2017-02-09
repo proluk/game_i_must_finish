@@ -27,6 +27,7 @@ io.on('connection', function(socket) {
 	let wait_for_password_response = false;
 	let wait_for_email_response = false;
 	let wait_for_login_password = false;
+	let wait_for_nick_response = false;
 	let money = 0;
 	let home = hash.encrypt(socket.id);
 	let connection = false;
@@ -336,6 +337,7 @@ io.on('connection', function(socket) {
 	let tmp_login = '';
 	let tmp_email = '';
 	let tmp_pass = '';
+	let tmp_nick = '';
 
 	socket.emit("communicate", {data: communicates.communicates.begin});
 
@@ -379,14 +381,30 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.email_exists});
 				socket.emit('register-email');
 			} else {
+				socket.emit('register-nick');
+				socket.emit('communicate', {data: communicates.communicates.register_nick});
+				wait_for_email_response = false;
+				wait_for_nick_response = true;
+			}
+		}
+	});
+	socket.on('register-nick-response', function(data) {
+		let tmp = hash.encrypt(data.data);
+		tmp_nick = tmp;
+		if ( wait_for_nick_response ) {
+			if ( databaseModule.checkIfNickExists(tmp_nick)) {
+				socket.emit("communicate", {data: communicates.communicates.nick_exists});
+				socket.emit('register-nick');
+			} else {
 				//socket.emit("activate-account");
 				wait_for_email_response = false;
-				databaseModule.registerAccount(tmp_login, tmp_pass, tmp_email); 
+				databaseModule.registerAccount(tmp_login, tmp_pass, tmp_email, tmp_nick); 
 				socket.emit("communicate", {data: communicates.communicates.register_success});
 				socket.emit("comm");
 				tmp_login = '';
 				tmp_email = '';
 				tmp_pass = '';
+				tmp_nick = '';
 			}
 		}
 	});

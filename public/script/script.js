@@ -61,6 +61,10 @@ $(document).ready(function(){
 		mode = 'register-email';
 		input.attr('type','email');
 	});
+	socket.on('register-nick', function(){
+		mode = 'register-nick';
+		input.attr('type','text');
+	});
 	socket.on('comm', function(){
 		input.attr('maxLength', '100');
 		mode = 'comm';
@@ -116,6 +120,8 @@ $(document).ready(function(){
 	    		registerPass(text);
 	    	} else if ( mode === 'register-email' ) {
 	    		registerEmail(text);
+	    	} else if ( mode === 'register-nick' ) {
+	    		registerNick(text);
 	    	} else if ( mode === 'enter-pin' ) {
 	    		enterPin(text);
 	    	} else if ( mode === 'set-pin' ) {
@@ -156,6 +162,9 @@ $(document).ready(function(){
 	}
 	function registerEmail(data) {
 		socket.emit('register-email-response', {data: data});
+	}
+	function registerNick(data) {
+		socket.emit('register-nick-response', {data: data});
 	}
 	function loginWritePass(data) {
 		socket.emit('login-password-response', {data: data});

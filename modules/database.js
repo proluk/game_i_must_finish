@@ -27,10 +27,10 @@ function login(login, password, callback) {
         }
     });
 }
-function registerAccount(login,password,email) {
+function registerAccount(login,password,email,nick) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('INSERT INTO account (id,login,password,email,money,socket) VALUES (null,?,?,?,0,null);',[login,password,email],function(err, results){
+            connection.query('INSERT INTO account (id,login,password,email,nick,money,pin,brama,botnet,socket) VALUES (null,?,?,?,?,0,null,0,0,null);',[login,password,email,nick],function(err, results){
                 if( err ) {
                     return err;
                 } else {
@@ -81,6 +81,27 @@ function checkIfEmailExists(email){
             });
         } else {
             return 'checkIfEmailExists database module getConnection error';
+        }
+    });
+}
+function checkIfNickExists(nick){
+    connection.getConnection(function(error,connection){
+        if(!error){
+            connection.query('SELECT COUNT(nick) AS c FROM account WHERE nick=?;',[nick],function(err, results){
+                connection.release();
+                if ( err ) {
+                    return err;
+                } else {
+                    if( results[0].c>0 ) {
+                        return true;
+                    } else {
+                        console.log(results[0].c);
+                        return false;
+                    }
+                }
+            });
+        } else {
+            return 'checkIfNickExists database module getConnection error';
         }
     });
 }
@@ -236,6 +257,7 @@ module.exports.addMoney = addMoney;
 module.exports.getMoney = getMoney;
 module.exports.login = login;
 module.exports.registerAccount = registerAccount;
+module.exports.checkIfNickExists = checkIfNickExists;
 module.exports.checkIfEmailExists = checkIfEmailExists;
 module.exports.checkIfLoginExists = checkIfLoginExists;
 module.exports.registerAccount = registerAccount;
