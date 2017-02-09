@@ -1,11 +1,17 @@
-Brama ma swoją odporność.
+Brama ma swoją odporność. czyli mozliwosc przetworzenia okreslonej ilosci polaczen na raz.
+Każdy posiada swoj botnet ktorym moze przeprowadzac ataki na bramy. Botnet ma "sile" ktora jest ilosc polaczen na raz.
+Odporność bramy można ulepszać tak jak siłe botnetu.
 
 Można przeprowadzać dwa ataki na brame:
-	pierwszy connect -f : czyli tracisz tyle sily ile brama ma odpornosci. jak masz wiecej
-		to przechodzisz.
-	drugi connect : probuje się połączyć normalnie, zmniejszajac odpornosc bramy. nie tracisz siły.
+	pierwszy connect -f : czyli twoj botnet traci tyle sily ile brama ma odpornosci. jezeli odpornosc bramy spadnie do 0
+	to przechodzi w hub mode i mozna sie polaczyc.
+	drugi connect : probuje się połączyć normalnie. Brama traci 1 odpornosci.
+	
+Process łączenia musi troche trwać.
+Process ataku musi trwać trochę dłużej.
+	
 Przez brame można się przedostać po ustawieniu reguly w bramie na konkretny nick.
-Są wirusy ktore wyłączają bramę zdalnie.
+Są wirusy ktore wyłączają bramę zdalnie, jeżeli ofiara jest online.
 
 duzo opcji ktore moga byc wylaczone przez ofiare i atakujacego
 opcje typu:
