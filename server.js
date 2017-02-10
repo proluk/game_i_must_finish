@@ -38,6 +38,8 @@ io.on('connection', function(socket) {
 	let minemine = false;
 	let mine_per_min = 0;
 	let login = '';
+	let nick = '';
+	let rp = false; //rp - running process
 
 	let listening = pause.setInterval(function() {
 		if ( lis ) {
@@ -97,21 +99,80 @@ io.on('connection', function(socket) {
 		clear : function(){
 			socket.emit('clear');
 		},
-		connect : function(user, blank){
+		connect : function(option, user, blank){
 			let tmp = hash.encrypt(user);
 			if ( connection ) {
 				socket.emit("communicate", {data: communicates.communicates.already_connected});
 			} else if ( site ) {
 				socket.emit("communicate", {data: communicates.communicates.close_site_first});
 			} else {
-				if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
-					connection = tmp;
-					socket.join(hash.decrypt(tmp));
-					socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
-					setPlace('');						
+				//socket.emit('connection-stage-one');
+				rp = true;
+				if ( !option ) {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				} else {
-					socket.emit("communicate", {data: communicates.communicates.no_such_connection});
-				}			
+					if ( option == '-d' ) {
+						socket.emit('communicate', {data: communicates.communicates.connection_stage_one_try});
+						setTimeout(function(){
+							if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
+								socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+								//socket.emit('connection-stage-two');
+								socket.emit('communicate', {data: communicates.communicates.connection_stage_two_try});
+								setTimeout(function(){
+									let tmp_gate_points;
+									databaseModule.checkGatePoints(tmp, function(res0){
+										if ( res0 > 0 ) {
+											databaseModule.checkAuthorizedConnection(tmp , nick, function(res1) {
+												if ( res1 ) {
+													socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
+													socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+													setTimeout(function(){
+														connection = tmp;
+														socket.join(hash.decrypt(tmp));
+														socket.emit('communicate', {data: communicates.communicates.connection_established});
+														socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+														setPlace('');
+														rp = false;
+													},2000);
+												} else {
+													socket.emit('')
+													databaseModule.removeGatePoints(tmp, 1,  function(res2){
+														socket.emit("communicate", {data: communicates.communicates.connection_handshake_failed});
+														socket.emit("communicate", {data: communicates.communicates.gate_status+(res0 - 1) });
+														rp = false;
+													});												  
+												}
+											});
+										} else {
+											socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
+											socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+											setTimeout(function(){
+												connection = tmp;
+												socket.join(hash.decrypt(tmp));
+												socket.emit('communicate', {data: communicates.communicates.connection_established});
+												socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+												setPlace('');
+												rp = false;
+											},2000);
+										}
+									});
+									
+								},2000);			
+							} else {
+								socket.emit("communicate", {data: communicates.communicates.no_such_connection});
+							}						
+						},2000);					
+					} else if ( option == '-f' ) {
+						//preform botnet attack
+						rp = true;
+						//preparing botnet
+						//botnet ready
+						//check connection
+						//connection exist
+						//
+					} 					
+				}
+
 			}
 		},
 		disconnect : function(who, blank) {
@@ -342,7 +403,9 @@ io.on('connection', function(socket) {
 	socket.emit("communicate", {data: communicates.communicates.begin});
 
 	socket.on("command", function(data) {
-		acc ? veryfiCommand(data) : verifyBefore(data);
+		if ( !rp ) {
+			acc ? veryfiCommand(data) : verifyBefore(data);			
+		}
 	});
 	socket.on("disconnect", function(socket) {
 
@@ -433,7 +496,12 @@ io.on('connection', function(socket) {
 					socket.emit('communicate', {data: communicates.communicates.login_success});	
 					socket.emit('comm');
 					acc = true;
-					databaseModule.setSocketIdToAccount(login,hash.encrypt(socket.id));
+					databaseModule.setSocketIdToAccount(login,hash.encrypt(socket.id), function(){
+						databaseModule.getNickFromSocket(hash.encrypt(socket.id), function(e){
+							nick = e;
+						});						
+					});
+
 					setPlace('');
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.login_failed});

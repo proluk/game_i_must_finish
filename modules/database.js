@@ -123,13 +123,14 @@ function activateAccount(hash, callback) {
     });
 }
 
-function setSocketIdToAccount(login, id){
+function setSocketIdToAccount(login, id, callback){
     connection.getConnection(function(error, connection){
         if( !error ) {
             connection.query('UPDATE account SET socket = ? WHERE login = ?;',[id,login],  function(err, results) {
                 if ( err ) {
                     return err;
                 } else {
+                    callback();
                     return true;
                 }
             });
@@ -316,7 +317,65 @@ function removeGatePoints(socket, howmany, callback){
         connection.release();
     });
 }
+function checkGatePoints(socket, callback) {
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT brama AS b FROM account WHERE socket = ?', [socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(results[0].b);
+                }
+            });
+        } else {
+            console.log("removeGatePoints database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function getNickFromSocket ( socket , callback ) {
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT nick AS n FROM account WHERE socket = ?', [socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(results[0].n);
+                }
+            });
+        } else {
+            console.log("removeGatePoints database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function checkAuthorizedConnection(ine , name, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT COUNT(a.id) AS res FROM account AS a INNER JOIN authorizedConnections AS ac ON a.id = ac.id WHERE a.socket = ? AND ac.nick = ?', [ine , name], function(err , results){
+                if ( err ) {
+                    console.log(err);
+                    return err;
+                } else {
+                    if ( results[0].res > 0 ) {
+                        callback(true);
+                    } else {
+                        callback(false);
+                    }
+                }
+            });            
+        } else {
+            console.log("checkAuthorizedConnection database module getConnection error");
+        }
+        connection.release();
+    });
+}
 
+module.exports.getNickFromSocket = getNickFromSocket;
+module.exports.checkGatePoints = checkGatePoints;
+module.exports.checkAuthorizedConnection = checkAuthorizedConnection;
 module.exports.addGatePoints = addGatePoints;
 module.exports.removeGatePoints = removeGatePoints;
 module.exports.addBotnetPoints = addBotnetPoints;

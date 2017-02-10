@@ -99,7 +99,16 @@ const communicates = {
 	enter_pin : "Please enter pin code.",
 	enter_new_pin : "Please enter 3 digits long pin code.",
 	set_wrong_pin : "Pin code you provided is wrong. Please use only digits.",
-	set_pin_success : "New pin code set."
+	set_pin_success : "New pin code set.",
+	connection_stage_one_try : "Connection process starting. Checking connection...",
+	connection_stage_one_success : "Connection exists.",
+	connection_stage_two_try : "Handshake to Gate process starting... Sending SYN",
+	connection_handshake_failed  : "Hanshake to Gate failed.",
+	connection_remove_gate_points : "Gate Response : Unauthorized connection.",
+	connection_stage_two_success : "SYN-ACK Recived",
+	connection_pre_established : "Sending ACK.",
+	connection_established : "Connection Established.",
+	gate_status : "Gate status : "
 }
 
 
