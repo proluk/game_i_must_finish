@@ -105,7 +105,23 @@ function checkIfNickExists(nick){
         }
     });
 }
-
+function checkIfSocketInDatabase(socket, callback){
+    connection.getConnection(function(error,connection){
+        if(!error){
+            connection.query('SELECT COUNT(socket) AS c FROM account WHERE socket=?;',[socket],function(err, results){
+                connection.release();
+                if ( err ) {
+                    return err;
+                    callback(0);
+                } else {
+                    callback(results[0].c);
+                }
+            });
+        } else {
+            return 'checkIfNickExists database module getConnection error';
+        }
+    });       
+}
 function activateAccount(hash, callback) {
     connection.getConnection(function(error,connection){
         if(!error){
@@ -283,6 +299,23 @@ function removeBotnetPoints(socket, howmany, callback){
         connection.release();
     });
 }
+function checkBotnetPoints(socket , callback ){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT botnet AS b FROM account WHERE socket = ?', [socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(results[0].b);
+                }
+            });
+        } else {
+            console.log("removeGatePoints database module getConnection error");
+        }
+        connection.release();
+    });   
+}
 function addGatePoints(socket, howmany, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
@@ -373,6 +406,8 @@ function checkAuthorizedConnection(ine , name, callback){
     });
 }
 
+module.exports.checkBotnetPoints = checkBotnetPoints;
+module.exports.checkIfSocketInDatabase = checkIfSocketInDatabase;
 module.exports.getNickFromSocket = getNickFromSocket;
 module.exports.checkGatePoints = checkGatePoints;
 module.exports.checkAuthorizedConnection = checkAuthorizedConnection;

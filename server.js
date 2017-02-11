@@ -111,7 +111,7 @@ io.on('connection', function(socket) {
 				if ( !option ) {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				} else {
-					if ( option == '-d' ) {
+					if ( option == '-d' ) { //d - direct
 						socket.emit('communicate', {data: communicates.communicates.connection_stage_one_try});
 						setTimeout(function(){
 							if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
@@ -133,7 +133,7 @@ io.on('connection', function(socket) {
 														socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
 														setPlace('');
 														rp = false;
-													},2000);
+													},3000);
 												} else {
 													socket.emit('')
 													databaseModule.removeGatePoints(tmp, 1,  function(res2){
@@ -153,24 +153,62 @@ io.on('connection', function(socket) {
 												socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
 												setPlace('');
 												rp = false;
-											},2000);
+											},3000);
 										}
 									});
 									
-								},2000);			
+								},3000);			
 							} else {
 								socket.emit("communicate", {data: communicates.communicates.no_such_connection});
 							}						
 						},2000);					
-					} else if ( option == '-f' ) {
+					} else if ( option == '-f' ) { // f - force
 						//preform botnet attack
 						rp = true;
-						//preparing botnet
-						//botnet ready
-						//check connection
-						//connection exist
-						//
-					} 					
+						socket.emit('communicate', {data: communicates.communicates.preparing_botnet});
+						let botnet_strength = 0;
+						let gate_strength = 0;
+						databaseModule.checkBotnetPoints(home, function(res0){
+							setTimeout(function(){
+								botnet_strength = res0;
+								socket.emit('communicate', {data: communicates.communicates.botnet_ready});
+								socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
+								databaseModule.checkIfSocketInDatabase(tmp , function(res1){
+									setTimeout(function(){
+										if ( res1 > 0 ) {
+											socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+											socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
+											databaseModule.checkGatePoints(tmp, function(res2) {
+												gate_strength = res2;
+												socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
+												if ( botnet_strength >= gate_strength ) {
+													databaseModule.removeBotnetPoints(home, gate_strength, function(res3){
+														socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+gate_strength});
+														databaseModule.removeGatePoints(tmp, gate_strength , function(res4){
+															socket.emit('communicate', {data: communicates.communicates.gate_status+"0"});
+															rp = false;
+														});
+													});
+												} else {
+													databaseModule.removeBotnetPoints(home, botnet_strength, function(res3){
+														socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+botnet_strength});
+														databaseModule.removeGatePoints(tmp, botnet_strength , function(res4){
+															socket.emit('communicate', {data: communicates.communicates.gate_status+(gate_strength - botnet_strength)});
+															rp = false;
+														});
+													});
+												}
+											});
+										} else {
+											socket.emit('communicate', {data: communicates.communicates.no_such_connection});
+											//end
+										}
+									},3000);
+								});
+							},3000);
+						});
+						rp = false;
+					} 		
 				}
 
 			}

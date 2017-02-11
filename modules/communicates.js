@@ -108,7 +108,12 @@ const communicates = {
 	connection_stage_two_success : "SYN-ACK Recived",
 	connection_pre_established : "Sending ACK.",
 	connection_established : "Connection Established.",
-	gate_status : "Gate status : "
+	gate_status : "Gate status : ",
+	preparing_botnet : "Preparing Botnet...",
+	botnet_ready : "Preparing Botnet finished.",
+	botnet_attack_start : "Botnet connection process begin...",
+	botnet_attack_finished : "Botnet connection process finished.",
+	botnet_points_removed : "The number of connections has decrased by: "
 }
 
 
