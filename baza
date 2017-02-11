@@ -22,10 +22,23 @@ CREATE TABLE IF NOT EXISTS `account` (
   `login` varchar(50) NOT NULL,
   `password` varchar(50) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
-  `money` double DEFAULT NULL,
+  `nick` varchar(50) DEFAULT NULL,
+  `money` double DEFAULT '0',
+  `pin` varchar(50) DEFAULT NULL,
+  `brama` int(11) DEFAULT '0',
+  `botnet` int(11) DEFAULT '0',
   `socket` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+-- Zrzut struktury tabela baza.authorizedconnections
+CREATE TABLE IF NOT EXISTS `authorizedconnections` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nick` varchar(50) DEFAULT '0',
+  KEY `FK_authorizedconnections_account` (`id`),
+  CONSTRAINT `FK_authorizedconnections_account` FOREIGN KEY (`id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Zrzut struktury tabela baza.mines
@@ -34,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `mines` (
   `link` varchar(50) DEFAULT NULL,
   `bitpermin` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Zrzut struktury tabela baza.pass_programs
