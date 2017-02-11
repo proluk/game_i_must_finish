@@ -189,6 +189,7 @@ io.on('connection', function(socket) {
 		listen : function() {
 			if ( !lis ) {
 				if ( site ) {
+					socket.emit('communicate' , {data: communicates.communicates.listen_process_begin});
 					socket.emit('listen-process');
 					lis = true;
 					listening.resume();

@@ -10,14 +10,14 @@ let help_commands = {
 	//after login
 	home : [
 		"clear - clears your log.",
-		"connect -d <i>id</i> - direct connect to user.",
-		"connect -f <i>id</i> - preform botnet attack to Gate of provided id.",
+		"connect -d <i>address</i> - direct connect to user.",
+		"connect -f <i>address</i> - preform botnet attack to Gate of provided address.",
 		"disconnect - disconnects from user.",
 		"open <i>url</i> - open website from provided url.",
 		"close - closes current website.",
 		"ssh account - connects to account of current connection.",
 		"exit - exit account connection.",
-		"me - shows your id."
+		"me - shows your address."
 	],
 	open : [
 		"listen - listen website traffic to find other users.",
@@ -28,9 +28,9 @@ let help_commands = {
 	],
 	bank : [
 		"balance - check balance of connected account.",
-		"transfer <i>to</i> <i>howmuch</i> - transfer money to specific id.",
+		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
 		"exit - exit account connection.",
-		"me - shows your id.",
+		"me - shows your address.",
 		"options -p - set 3 digit pin code to enter account."
 	]
 };
@@ -74,7 +74,7 @@ const communicates = {
 	rules_breaking : "Follow the rules. Do not play with us.",
 	email_exists : "This Email is already in database.",
 	nick_exists : "This Nick is already in database.",
-	login_success : "You are in. Type <i>help</i> everytime you want to see avaiable commands.",
+	login_success : "You are in. Type <i>help</i> everytime you want to see available commands.",
 	login_failed : "Login Failed. Try Again ",
 	register_started : "Register process started. Follow further instructions.</br> Type your future unique login.",
 	register_password : "Write your password.",
@@ -82,6 +82,7 @@ const communicates = {
 	register_nick : "Write your unique nick. Your nick will be visible for other users.</br>For security reasons, make it different from your login.",
 	register_success : "Register process finished. You can enter the game now. Type <i>login</i> and follow instructions.",
 	found_hash : "Success! Found hash. Use it to connect : ",
+	listen_process_begin : "Listening website traffic...",
 	no_listen_process : "No listening process found.",
 	unexpected_error : "Unexpected error occured. Refresh Page.",
 	transaction_success : "Transaction finished.",
@@ -114,7 +115,7 @@ const communicates = {
 	botnet_ready : "Preparing Botnet finished.",
 	botnet_attack_start : "Botnet connection process begin...",
 	botnet_attack_finished : "Botnet connection process finished.",
-	botnet_points_removed : "The number of connections has decrased by: "
+	botnet_points_removed : "The number of artificial connections of your Botnet has decrased by: "
 }
 
 

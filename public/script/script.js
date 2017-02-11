@@ -18,7 +18,7 @@ $(document).ready(function(){
 	let isPausedBinary = true;
 	let inter = setInterval(function(){
 		if(!isPaused){
-			alog.text(randString());
+			alog.html(randString());
 		}
 	},50);
 
@@ -185,9 +185,13 @@ $(document).ready(function(){
 	function randString() {
 	    let text = "";
 	    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	    for( let i=0; i < 60; i++ ) {
-	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	    for( let m = 0 ; m < 3 ; m ++ ) {
+		    for( let i=0; i < 80; i++ ) {
+		        text += possible.charAt(Math.floor(Math.random() * possible.length));
+		    }
+		    text+='</br>';    	
 	    }
+
 	    return text;
 	}
 	function randBinary(){
