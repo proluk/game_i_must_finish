@@ -107,108 +107,16 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.close_site_first});
 			} else {
 				//socket.emit('connection-stage-one');
-				rp = true;
 				if ( !option ) {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				} else {
 					if ( option == '-d' ) { //d - direct
-						socket.emit('communicate', {data: communicates.communicates.connection_stage_one_try});
-						setTimeout(function(){
-							if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
-								socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
-								//socket.emit('connection-stage-two');
-								socket.emit('communicate', {data: communicates.communicates.connection_stage_two_try});
-								setTimeout(function(){
-									let tmp_gate_points;
-									databaseModule.checkGatePoints(tmp, function(res0){
-										if ( res0 > 0 ) {
-											databaseModule.checkAuthorizedConnection(tmp , nick, function(res1) {
-												if ( res1 ) {
-													socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
-													socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
-													setTimeout(function(){
-														connection = tmp;
-														socket.join(hash.decrypt(tmp));
-														socket.emit('communicate', {data: communicates.communicates.connection_established});
-														socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
-														setPlace('');
-														rp = false;
-													},3000);
-												} else {
-													socket.emit('')
-													databaseModule.removeGatePoints(tmp, 1,  function(res2){
-														socket.emit("communicate", {data: communicates.communicates.connection_handshake_failed});
-														socket.emit("communicate", {data: communicates.communicates.gate_status+(res0 - 1) });
-														rp = false;
-													});												  
-												}
-											});
-										} else {
-											socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
-											socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
-											setTimeout(function(){
-												connection = tmp;
-												socket.join(hash.decrypt(tmp));
-												socket.emit('communicate', {data: communicates.communicates.connection_established});
-												socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
-												setPlace('');
-												rp = false;
-											},3000);
-										}
-									});
-									
-								},3000);			
-							} else {
-								socket.emit("communicate", {data: communicates.communicates.no_such_connection});
-							}						
-						},2000);					
+						directConnection(tmp);
 					} else if ( option == '-f' ) { // f - force
-						//preform botnet attack
-						rp = true;
-						socket.emit('communicate', {data: communicates.communicates.preparing_botnet});
-						let botnet_strength = 0;
-						let gate_strength = 0;
-						databaseModule.checkBotnetPoints(home, function(res0){
-							setTimeout(function(){
-								botnet_strength = res0;
-								socket.emit('communicate', {data: communicates.communicates.botnet_ready});
-								socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
-								databaseModule.checkIfSocketInDatabase(tmp , function(res1){
-									setTimeout(function(){
-										if ( res1 > 0 ) {
-											socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
-											socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
-											databaseModule.checkGatePoints(tmp, function(res2) {
-												gate_strength = res2;
-												socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
-												if ( botnet_strength >= gate_strength ) {
-													databaseModule.removeBotnetPoints(home, gate_strength, function(res3){
-														socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+gate_strength});
-														databaseModule.removeGatePoints(tmp, gate_strength , function(res4){
-															socket.emit('communicate', {data: communicates.communicates.gate_status+"0"});
-															rp = false;
-														});
-													});
-												} else {
-													databaseModule.removeBotnetPoints(home, botnet_strength, function(res3){
-														socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+botnet_strength});
-														databaseModule.removeGatePoints(tmp, botnet_strength , function(res4){
-															socket.emit('communicate', {data: communicates.communicates.gate_status+(gate_strength - botnet_strength)});
-															rp = false;
-														});
-													});
-												}
-											});
-										} else {
-											socket.emit('communicate', {data: communicates.communicates.no_such_connection});
-											//end
-										}
-									},3000);
-								});
-							},3000);
-						});
-						rp = false;
-					} 		
+						botnetAttack(tmp);
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+					}	
 				}
 
 			}
@@ -657,6 +565,98 @@ io.on('connection', function(socket) {
 		} else {
 			socket.emit('set-place', {data: place});
 		}
+	}
+	function botnetAttack(tmp){
+		//preform botnet attack
+		socket.emit('communicate', {data: communicates.communicates.preparing_botnet});
+		let botnet_strength = 0;
+		let gate_strength = 0;
+		databaseModule.checkBotnetPoints(home, function(res0){
+			setTimeout(function(){
+				botnet_strength = res0;
+				socket.emit('communicate', {data: communicates.communicates.botnet_ready});
+				socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
+				databaseModule.checkIfSocketInDatabase(tmp , function(res1){
+					setTimeout(function(){
+						if ( res1 > 0 ) {
+							socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+							socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
+							databaseModule.checkGatePoints(tmp, function(res2) {
+								gate_strength = res2;
+								socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
+								if ( botnet_strength >= gate_strength ) {
+									databaseModule.removeBotnetPoints(home, gate_strength, function(res3){
+										socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+gate_strength});
+										databaseModule.removeGatePoints(tmp, gate_strength , function(res4){
+											socket.emit('communicate', {data: communicates.communicates.gate_status+"0"});
+										});
+									});
+								} else {
+									databaseModule.removeBotnetPoints(home, botnet_strength, function(res3){
+										socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+botnet_strength});
+										databaseModule.removeGatePoints(tmp, botnet_strength , function(res4){
+											socket.emit('communicate', {data: communicates.communicates.gate_status+(gate_strength - botnet_strength)})
+										});
+									});
+								}
+							});
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.no_such_connection});
+							//end
+						}
+					},3000);
+				});
+			},3000);
+		});
+	}
+	function directConnection(tmp){
+		socket.emit('communicate', {data: communicates.communicates.connection_stage_one_try});
+		setTimeout(function(){
+			if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
+				socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+				//socket.emit('connection-stage-two');
+				socket.emit('communicate', {data: communicates.communicates.connection_stage_two_try});
+				setTimeout(function(){
+					let tmp_gate_points;
+					databaseModule.checkGatePoints(tmp, function(res0){
+						if ( res0 > 0 ) {
+							databaseModule.checkAuthorizedConnection(tmp , nick, function(res1) {
+								if ( res1 ) {
+									socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
+									socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+									setTimeout(function(){
+										connection = tmp;
+										socket.join(hash.decrypt(tmp));
+										socket.emit('communicate', {data: communicates.communicates.connection_established});
+										socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+										setPlace('');
+									},3000);
+								} else {
+									socket.emit('')
+									databaseModule.removeGatePoints(tmp, 1,  function(res2){
+										socket.emit("communicate", {data: communicates.communicates.connection_handshake_failed});
+										socket.emit("communicate", {data: communicates.communicates.gate_status+(res0 - 1) });
+									});												  
+								}
+							});
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
+							socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+							setTimeout(function(){
+								connection = tmp;
+								socket.join(hash.decrypt(tmp));
+								socket.emit('communicate', {data: communicates.communicates.connection_established});
+								socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+								setPlace('');
+							},3000);
+						}
+					});
+					
+				},3000);			
+			} else {
+				socket.emit("communicate", {data: communicates.communicates.no_such_connection});
+			}						
+		},2000);
 	}
 });
 

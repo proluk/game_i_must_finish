@@ -10,9 +10,10 @@ let help_commands = {
 	//after login
 	home : [
 		"clear - clears your log.",
-		"connect [id] - connects to another user.",
+		"connect -d <i>id</i> - direct connect to user.",
+		"connect -f <i>id</i> - preform botnet attack to Gate of provided id.",
 		"disconnect - disconnects from user.",
-		"open [url] - open website from provided url.",
+		"open <i>url</i> - open website from provided url.",
 		"close - closes current website.",
 		"ssh account - connects to account of current connection.",
 		"exit - exit account connection.",
@@ -27,7 +28,7 @@ let help_commands = {
 	],
 	bank : [
 		"balance - check balance of connected account.",
-		"transfer [to] [howmuch] - transfer money to specific id.",
+		"transfer <i>to</i> <i>howmuch</i> - transfer money to specific id.",
 		"exit - exit account connection.",
 		"me - shows your id.",
 		"options -p - set 3 digit pin code to enter account."
@@ -43,7 +44,7 @@ function help(data){
 }
 
 const communicates = {
-	begin : "Hello.</br>Write: help",
+	begin : "Hello. New here? write <i>help</i> to see all avaiable commands.",
 	tip_01 : "",
 	tip_02 : "",
 	no_command : "No such command: ",
@@ -73,13 +74,13 @@ const communicates = {
 	rules_breaking : "Follow the rules. Do not play with us.",
 	email_exists : "This Email is already in database.",
 	nick_exists : "This Nick is already in database.",
-	login_success : "You are in.",
+	login_success : "You are in. Type <i>help</i> everytime you want to see avaiable commands.",
 	login_failed : "Login Failed. Try Again ",
-	register_started : "Register process started. Type your future login.",
+	register_started : "Register process started. Follow further instructions.</br> Type your future unique login.",
 	register_password : "Write your password.",
-	register_email : "Write your email.",
-	register_nick : "Write you nick",
-	register_success : "Register process finished. You can login now.",
+	register_email : "Write your unique email.",
+	register_nick : "Write your unique nick. Your nick will be visible for other users.</br>For security reasons, make it different from your login.",
+	register_success : "Register process finished. You can enter the game now. Type <i>login</i> and follow instructions.",
 	found_hash : "Success! Found hash. Use it to connect : ",
 	no_listen_process : "No listening process found.",
 	unexpected_error : "Unexpected error occured. Refresh Page.",
