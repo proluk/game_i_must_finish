@@ -405,7 +405,26 @@ function checkAuthorizedConnection(ine , name, callback){
         connection.release();
     });
 }
+function systemStats(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT nick, pin, botnet, brama FROM account WHERE socket = ?', [socket], function(err , results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                    return err;
+                } else {
+                    callback(results[0]);
+                }
+            });            
+        } else {
+            console.log("checkAuthorizedConnection database module getConnection error");
+        }
+        connection.release();
+    });
+}
 
+module.exports.systemStats = systemStats;
 module.exports.checkBotnetPoints = checkBotnetPoints;
 module.exports.checkIfSocketInDatabase = checkIfSocketInDatabase;
 module.exports.getNickFromSocket = getNickFromSocket;

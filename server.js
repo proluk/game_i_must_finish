@@ -21,6 +21,10 @@ let index = require(path.join(__dirname, '/routes/index.js'));
 
 app.use('/',index);
 
+let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
+let botnet_price = 0.1;
+let gate_price = 0.05;
+
 io.on('connection', function(socket) {
 	socket.join(socket.id);
 	let acc = false;
@@ -39,7 +43,7 @@ io.on('connection', function(socket) {
 	let mine_per_min = 0;
 	let login = '';
 	let nick = '';
-	let rp = false; //rp - running process
+	let tor = false;
 
 	let listening = pause.setInterval(function() {
 		if ( lis ) {
@@ -88,8 +92,10 @@ io.on('connection', function(socket) {
 				help_data = communicates.help('bank');
 			} else if ( connection || home && !site ) { 
 				help_data = communicates.help('home');
-			} else if ( site ) {
-				help_data = communicates.help('open');
+			} else if ( site && !tor ) {
+				help_data = communicates.help('openw');
+			} else if ( site && tor ) {
+				help_data = communicates.help('opent');
 			}
 			socket.emit("communicate", {data: help_data});
 		},
@@ -143,7 +149,7 @@ io.on('connection', function(socket) {
 				}
 			}
 		},
-		open : function ( link , blank ) {
+		open : function ( option, link , blank ) {
 			if ( site ) {
 				socket.emit("communicate", {data: communicates.communicates.already_connected});
 			} else if ( connection ) {
@@ -151,22 +157,38 @@ io.on('connection', function(socket) {
 			} else if ( bank ) {
 				socket.emit("communicate", {data: communicates.communicates.account_close_first});
 			} else {
-				if ( link.indexOf('www.') == 0  ) {
-					socket.emit("communicate", {data: communicates.communicates.provide_url});
-				} else {
-					urlExists(link, function(err, exists) {
-						if ( exists ) {
-							site = link;
+				if ( option && link ) {
+					if ( option == '-w' ) {
+						if ( link.indexOf('www.') == 0  ) {
+							socket.emit("communicate", {data: communicates.communicates.provide_url});
+						} else {
+							urlExists(link, function(err, exists) {
+								if ( exists ) {
+									site = link;
+									socket.join(link);
+									setPlace(site);
+									socket.emit("open", {data: link});
+									socket.emit("communicate", {data: communicates.communicates.open+link});
+								} else {
+									socket.emit("communicate", {data: communicates.communicates.no_website+link});
+								}
+							});					
+						}
+					} else if ( option == '-t' ) {
+						if ( link != onion_website ) { 
+							socket.emit("communicate", {data: communicates.communicates.no_website+link});
+						} else {
+							tor = onion_website;
+							site = onion_website;
 							socket.join(link);
 							setPlace(site);
-							socket.emit("open", {data: link});
 							socket.emit("communicate", {data: communicates.communicates.open+link});
-						} else {
-							socket.emit("communicate", {data: communicates.communicates.no_website+link});
+							socket.emit("communicate", {data: communicates.communicates.tor_connection});
 						}
-					});					
+					}
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				}
-
 			}
 		},
 		close : function(blank, blank){
@@ -175,6 +197,7 @@ io.on('connection', function(socket) {
 				socket.leave(site);
 				socket.emit("close");
 				site = false;
+				tor = false;
 				setPlace('');
 				if ( minemine ) {
 					socket.emit('mine-stop');
@@ -337,6 +360,71 @@ io.on('connection', function(socket) {
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				}				
+			} else {
+
+			}
+		},
+		buy : function( option , howmany ) {
+			if ( tor ) {
+				if ( option && howmany ) {
+					if ( option == '-b' ) {
+						//buy botnet
+						databaseModule.showBalance(home, function(res){
+							if ( howmany * botnet_price <= res ) {
+								databaseModule.getMoney(home, (howmany*botnet_price), function(res){
+									databaseModule.addBotnetPoints(home, howmany, function(res){
+										socket.emit('communicate', {data: communicates.communicates.transaction_success});
+									});
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
+							}
+						});
+					} else if ( option == '-g' ) {
+						// buy gate
+						databaseModule.showBalance(home, function(res){
+							if ( howmany * gate_price <= res ) {
+								databaseModule.getMoney(home, (howmany*gate_price), function(res){
+									databaseModule.addGatePoints(home, howmany, function(res){
+										socket.emit('communicate', {data: communicates.communicates.transaction_success});
+									});
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
+							}
+						});
+					}
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}				
+			} else {
+				socket.emit('communicate' , {data: communicates.communicates.connect_to_tor_website_first});
+			}
+		},
+		system : function(){
+			if ( site ) {
+				socket.emit("communicate", {data: communicates.communicates.already_connected});
+			} else if ( bank ) {
+				socket.emit("communicate", {data: communicates.communicates.account_close_first});
+			} else {	
+				let stats = '</br>~~~~~~~~ SYSTEM ~~~~~~~~~~ </br></br>';
+				if ( connection ) {
+					databaseModule.systemStats(connection, function(res){
+						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick))+"</br></br>";
+						stats += "Hashed Account Pin : "+hash.simpleEncrypt(hash.decrypt(res.pin))+"</br></br>";
+						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet)+"</br></br>";
+						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama)+"</br></br>";
+						socket.emit('communicate', {data: stats});
+					});
+				} else {
+					databaseModule.systemStats(home, function(res){
+						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
+						stats += "Account Pin : "+hash.decrypt(res.pin)+"</br></br>";
+						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
+						stats += "Gate Connections Resistance : "+res.brama+"</br></br>";
+						socket.emit('communicate', {data: stats});
+					});
+				}
 			}
 		}
 	}
@@ -350,9 +438,7 @@ io.on('connection', function(socket) {
 	socket.emit("communicate", {data: communicates.communicates.begin});
 
 	socket.on("command", function(data) {
-		if ( !rp ) {
-			acc ? veryfiCommand(data) : verifyBefore(data);			
-		}
+		acc ? veryfiCommand(data) : verifyBefore(data);			
 	});
 	socket.on("disconnect", function(socket) {
 

@@ -13,17 +13,26 @@ let help_commands = {
 		"connect -d <i>address</i> - direct connect to user.",
 		"connect -f <i>address</i> - preform botnet attack to Gate of provided address.",
 		"disconnect - disconnects from user.",
-		"open <i>url</i> - open website from provided url.",
+		"open -w <i>url</i> - open website from provided url.",
+		"open -t <i>url</i> - open TOR onion website.",
 		"close - closes current website.",
 		"ssh account - connects to account of current connection.",
 		"exit - exit account connection.",
+		"system - shows information about account.",
 		"me - shows your address."
 	],
-	open : [
+	openw : [
 		"listen - listen website traffic to find other users.",
 		"mine - mine bitcoins.",
 		"stop -l - stops listen.",
 		"stop -m - stops mining.",
+		"close - closes current website."
+	],
+	opent : [
+		"listen - listen website traffic to find other users.",
+		"stop -l - stops listen.",
+		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
+		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
 		"close - closes current website."
 	],
 	bank : [
@@ -115,7 +124,9 @@ const communicates = {
 	botnet_ready : "Preparing Botnet finished.",
 	botnet_attack_start : "Botnet connection process begin...",
 	botnet_attack_finished : "Botnet connection process finished.",
-	botnet_points_removed : "The number of artificial connections of your Botnet has decrased by: "
+	botnet_points_removed : "The number of artificial connections of your Botnet has decrased by: ",
+	tor_connection : "You have connected to a TOR website.",
+	connect_to_tor_website_first : "You have to connect to a specific website first."
 }
 
 

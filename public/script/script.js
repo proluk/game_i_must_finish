@@ -147,7 +147,6 @@ $(document).ready(function(){
 	    		input.val('');
 	    	}
 	    }
-	    console.log(command_num);
 	});
 
 	function command(data) {
