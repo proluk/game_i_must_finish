@@ -8,7 +8,7 @@ let crypt = require('crypto');
 function encrypt(text){
   if ( text ) {
     let cipher = crypt.createCipher(algorithm,password);
-    let crypted = cipher.update(text,'utf8','hex');
+    let crypted = cipher.update(text.toString(),'utf8','hex');
     crypted += cipher.final('hex');
     return crypted;
   }  
@@ -17,7 +17,7 @@ function encrypt(text){
 function decrypt(text){
   if ( text ) {
     let decipher = crypt.createDecipher(algorithm,password);
-    let dec = decipher.update(text,'hex','utf8');
+    let dec = decipher.update(text.toString(),'hex','utf8');
     dec += decipher.final('utf8');
     return dec;
   }
@@ -26,7 +26,7 @@ function decrypt(text){
 function simpleEncrypt(text){
   if ( text ) {
     let cipher = crypt.createCipher(algorithm,simplePassword);
-    let crypted = cipher.update(text,'utf8','hex');
+    let crypted = cipher.update(text.toString(),'utf8','hex');
     crypted += cipher.final('hex');
     return crypted;
   }  
@@ -34,7 +34,7 @@ function simpleEncrypt(text){
 function simpleDecrypt(text){
   if ( text ) {
     let decipher = crypt.createDecipher(algorithm,simplePassword);
-    let dec = decipher.update(text,'hex','utf8');
+    let dec = decipher.update(text.toString(),'hex','utf8');
     dec += decipher.final('utf8');
     return dec;
   } 
