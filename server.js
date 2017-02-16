@@ -411,7 +411,7 @@ io.on('connection', function(socket) {
 				let stats = '</br>~~~~~~~~~~~~~~~~ SYSTEM ~~~~~~~~~~~~~~~~</br></br>';
 				if ( connection ) {
 					databaseModule.systemStats(connection, function(res){
-						let num = (hash.decrypt(res.pin);
+						let num = hash.decrypt(res.pin);
 						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick))+"</br></br>";
 						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4))+"</br></br>";
 						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet)+"</br></br>";
@@ -420,7 +420,7 @@ io.on('connection', function(socket) {
 					});
 				} else {
 					databaseModule.systemStats(home, function(res){
-						let num = (hash.decrypt(res.pin);
+						let num = hash.decrypt(res.pin);
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
 						stats += "Binary Pin Representation : "+binaryModule.makeBinary(num, 1, 2, 4)+"</br></br>";
 						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
