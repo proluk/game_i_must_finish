@@ -350,10 +350,11 @@ io.on('connection', function(socket) {
 				
 					} else if ( option == '-s' ) {
 						databaseModule.showAuthorizedConnection(bank, function(res){
-							let reso = 'Connection Allowed For: </br>';
+							let reso = 'Connection Allowed For: </br></br>';
 							for ( let i = 0 ; i < res.length ; i ++ ) {
-								reso += res[i].nick+"</br>";
+								reso += hash.decrypt(res[i].nick)+"</br>";
 							}
+							res += "</br></br>";
 							socket.emit('communicate', {data: reso});
 						});	
 					} else {
