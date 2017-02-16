@@ -1,7 +1,6 @@
-mikrotranzakcje - konto premium za 5$, pozwala na zakładanie prywatnych IRC'ow, wstawianie wirusow i atakow botnet na TOR
-	wylaczone reklamy.
-	Albo 1$ stworzenie jednego irca
-		1$ wstawienie 10 przedmiotow na TOR. itd...
+mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
+
+
 
 Brama ma swoją odporność. czyli mozliwosc przetworzenia okreslonej ilosci polaczen na raz.
 Każdy posiada swoj botnet ktorym moze przeprowadzac ataki na bramy. Botnet ma "sile" ktora jest ilosc polaczen na raz.
@@ -55,18 +54,11 @@ listen - sluchanie inputu ofiary.
 
 mine - kopie dla siebie
 
-kasa - ranking widoczny dla wszystkich z twoim nickiem
+kasa - ranking widoczny dla wszystkich z twoim nickiem pierwsza i ostatnia litera.
 	kupowanie na czarnym rynku opcji ulatwiajacych hakowanie i ochrone, od innych graczy albo od gry
 	wchodzenie i siedzenie na stronach roznych generuje zysk
+
 happy hour - przez godzine nawet jak nie grasz moga cie zhakowac.
-
-//proces hakowania -->
-
-hashowanie danych
-
-MD5
-SHA-1
-SHA-256
 
 // system upgrade
 // system modification

@@ -39,7 +39,7 @@ let help_commands = {
 	bank : [
 		"balance - check balance of connected account.",
 		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
-		"rule -s - show established connection rules.",
+		"rule -s - shows set rules.",
 		"rule -a <i>nick</i> - add new connection rule.",
 		"rule -r <i>nick</i> - remove connection rule.",
 		"exit - exit account connection.",
