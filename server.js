@@ -408,19 +408,21 @@ io.on('connection', function(socket) {
 			} else if ( bank ) {
 				socket.emit("communicate", {data: communicates.communicates.account_close_first});
 			} else {	
-				let stats = '</br>~~~~~~~~ SYSTEM ~~~~~~~~~~ </br></br>';
+				let stats = '</br>~~~~~~~~~~~~~~~~ SYSTEM ~~~~~~~~~~~~~~~~</br></br>';
 				if ( connection ) {
 					databaseModule.systemStats(connection, function(res){
+						let num = (hash.decrypt(res.pin);
 						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick))+"</br></br>";
-						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(hash.decrypt(res.pin)))+"</br></br>";
+						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4))+"</br></br>";
 						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet)+"</br></br>";
 						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama)+"</br></br>";
 						socket.emit('communicate', {data: stats});
 					});
 				} else {
 					databaseModule.systemStats(home, function(res){
+						let num = (hash.decrypt(res.pin);
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
-						stats += "Binary Pin Representation : "+binaryModule.makeBinary(hash.decrypt(res.pin))+"</br></br>";
+						stats += "Binary Pin Representation : "+binaryModule.makeBinary(num, 1, 2, 4)+"</br></br>";
 						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
 						stats += "Gate Connections Resistance : "+res.brama+"</br></br>";
 						socket.emit('communicate', {data: stats});
