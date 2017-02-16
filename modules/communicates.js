@@ -33,6 +33,7 @@ let help_commands = {
 		"stop -l - stops listen.",
 		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
 		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
+		"buy -d <i>hash</i> - decrypts provided hash.",
 		"close - closes current website."
 	],
 	bank : [
@@ -131,7 +132,8 @@ const communicates = {
 	tor_connection : "You have connected to a TOR website.",
 	connect_to_tor_website_first : "You have to connect to a specific website first.",
 	add_auth_connection : "New rule established for connecting to your account.",
-	remove_auth_connection : "Rule removed."
+	remove_auth_connection : "Rule removed.",
+	decrypted_hash : "Hash decryption success."
 }
 
 

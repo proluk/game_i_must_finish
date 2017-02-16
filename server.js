@@ -302,7 +302,7 @@ io.on('connection', function(socket) {
 		balance : function() {
 			if ( bank ) {
 				databaseModule.showBalance(bank, function(data){
-					socket.emit("communicate", {data: communicates.communicates.account_balance+(Math.round(data*100)/100)});
+					socket.emit("communicate", {data: communicates.communicates.account_balance+data.toFixed(2)});
 				});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
@@ -433,6 +433,19 @@ io.on('connection', function(socket) {
 								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
 							}
 						});
+					} else if ( option == '-d' ) {
+						databaseModule.showBalance(home, function(res){
+							if ( 0.1 <= parseFloat(res) ) {
+								databaseModule.getMoney(home, 0.1, function(res){
+									socket.emit('communicate', {data: communicates.communicates.decrypted_hash});
+									socket.emit('communicate', {data: hash.simpleDecrypt(howmany)});
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
+							}
+						});
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
