@@ -405,6 +405,42 @@ function checkAuthorizedConnection(ine , name, callback){
         connection.release();
     });
 }
+function addAuthorizedConnection(name, socket){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('INSERT INTO authorizedConnections (id, nick) SELECT ( SELECT id FROM account WHERE socket = ? ) , ( SELECT nick FROM account WHERE nick = ? ) ;', [socket, name], function(err , results){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                    return err;
+                } else {
+                    callback(true);
+                }
+            });     
+        } else {
+            console.log("addAuthorizedConnection database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function removeAuthorizedConnection(name, socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('DELETE FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE id = ?) AND nick = (SELECT nick FROM account WHERE nick = ? );', [socket, name], function(err , results){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                    return err;
+                } else {
+                    callback(true);
+                }
+            });  
+        } else {
+            console.log("removeAuthorizedConnection database module getConnection error");
+        }
+        connection.release();
+    });
+}
 function systemStats(socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
@@ -424,6 +460,8 @@ function systemStats(socket, callback){
     });
 }
 
+module.exports.addAuthorizedConnection = addAuthorizedConnection;
+module.exports.removeAuthorizedConnection = removeAuthorizedConnection;
 module.exports.systemStats = systemStats;
 module.exports.checkBotnetPoints = checkBotnetPoints;
 module.exports.checkIfSocketInDatabase = checkIfSocketInDatabase;
