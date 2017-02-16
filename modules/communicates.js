@@ -38,6 +38,9 @@ let help_commands = {
 	bank : [
 		"balance - check balance of connected account.",
 		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
+		"rule -s - show established connection rules.",
+		"rule -a <i>nick</i> - add new connection rule.",
+		"rule -r <i>nick</i> - remove connection rule.",
 		"exit - exit account connection.",
 		"me - shows your address.",
 		"options -p - set 3 digit pin code to enter account."
@@ -126,7 +129,9 @@ const communicates = {
 	botnet_attack_finished : "Botnet connection process finished.",
 	botnet_points_removed : "The number of artificial connections of your Botnet has decrased by: ",
 	tor_connection : "You have connected to a TOR website.",
-	connect_to_tor_website_first : "You have to connect to a specific website first."
+	connect_to_tor_website_first : "You have to connect to a specific website first.",
+	add_auth_connection : "New rule established for connecting to your account.",
+	remove_auth_connection : "Rule removed."
 }
 
 

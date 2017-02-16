@@ -441,6 +441,24 @@ function removeAuthorizedConnection(name, socket, callback){
         connection.release();
     });
 }
+function showAuthorizedConnection(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT nick FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?', [socket], function(err , results){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                    return err;
+                } else {
+                    callback(results);
+                }
+            });  
+        } else {
+            console.log("removeAuthorizedConnection database module getConnection error");
+        }
+        connection.release();
+    });   
+}
 function systemStats(socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
@@ -460,6 +478,7 @@ function systemStats(socket, callback){
     });
 }
 
+module.exports.showAuthorizedConnection = showAuthorizedConnection;
 module.exports.addAuthorizedConnection = addAuthorizedConnection;
 module.exports.removeAuthorizedConnection = removeAuthorizedConnection;
 module.exports.systemStats = systemStats;

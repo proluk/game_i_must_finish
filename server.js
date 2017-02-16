@@ -328,19 +328,42 @@ io.on('connection', function(socket) {
 			}
 		},
 		rule : function(option, name){
-			if ( option ) {
-				let tmp = connection ? connection : home;
-				if ( option == '-a' ) {
-					databaseModule.addAuthorizedConnection(name, tmp, function(res){
-						socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
-					});			
-				} else if ( option == '-r' ) {
-					databaseModule.removeAuthorizedConnection(name, tmp, function(res){
-						socket.emit("communicate", {data: communicates.communicates.remove_auth_connection});
-					});					
-				}
+			if ( bank ) {
+				if ( option ) {
+					if ( option == '-a' ) {
+						if ( name ) {
+							databaseModule.addAuthorizedConnection(hash.encrypt(name), bank, function(res){
+								socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
+							});								
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+						}
+		
+					} else if ( option == '-r' ) {
+						if ( name ) {
+							databaseModule.removeAuthorizedConnection(hash.encrypt(name), bank, function(res){
+								socket.emit("communicate", {data: communicates.communicates.remove_auth_connection});
+							});	
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+						}
+				
+					} else if ( option == '-s' ) {
+						databaseModule.showAuthorizedConnection(bank, function(res){
+							let reso = 'Connection Allowed For: </br>';
+							for ( let i = 0 ; i < res.length ; i ++ ) {
+								reso += res[i].nick+"</br>";
+							}
+							socket.emit('communicate', {data: reso});
+						});	
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+					}
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}				
 			} else {
-				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}
 		}
 		mine : function() {
