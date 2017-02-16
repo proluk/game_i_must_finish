@@ -14,12 +14,10 @@ function makeBinary(number, fake, order_bin_size, number_bin_size) {
     }
     //shuffle array
     arr = shuffle(arr);
-    console.log(arr);
     //make order
     let order = makeOrder(arr, num_and_fake.length);
-    console.log(order);
     let result = makeBinaryOrder(order, order_bin_size)+makeBinaryNumber(arr, num_and_fake.length, number_bin_size);
-    console.log(result);
+    return result;
 }
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
