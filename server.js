@@ -9,6 +9,7 @@ let pause = require('pauseable');
 
 const communicates = require('./modules/communicates.js');
 let databaseModule = require('./modules/database.js');
+let binaryModule = require('./modules/binary.js');
 let hash = require('./modules/hash.js');
 let valid = require('./modules/validate.js');
 
@@ -411,7 +412,7 @@ io.on('connection', function(socket) {
 				if ( connection ) {
 					databaseModule.systemStats(connection, function(res){
 						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick))+"</br></br>";
-						stats += "Hashed Account Pin : "+hash.simpleEncrypt(hash.decrypt(res.pin))+"</br></br>";
+						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(hash.decrypt(res.pin)))+"</br></br>";
 						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet)+"</br></br>";
 						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama)+"</br></br>";
 						socket.emit('communicate', {data: stats});
@@ -419,7 +420,7 @@ io.on('connection', function(socket) {
 				} else {
 					databaseModule.systemStats(home, function(res){
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
-						stats += "Account Pin : "+hash.decrypt(res.pin)+"</br></br>";
+						stats += "Binary Pin Representation : "+binaryModule.makeBinary(hash.decrypt(res.pin))+"</br></br>";
 						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
 						stats += "Gate Connections Resistance : "+res.brama+"</br></br>";
 						socket.emit('communicate', {data: stats});
