@@ -327,6 +327,22 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}
 		},
+		rule : function(option, name){
+			if ( option ) {
+				let tmp = connection ? connection : home;
+				if ( option == '-a' ) {
+					databaseModule.addAuthorizedConnection(name, tmp, function(res){
+						socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
+					});			
+				} else if ( option == '-r' ) {
+					databaseModule.removeAuthorizedConnection(name, tmp, function(res){
+						socket.emit("communicate", {data: communicates.communicates.remove_auth_connection});
+					});					
+				}
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+			}
+		}
 		mine : function() {
 			if ( site ) {
 				//check if site avaiable for mining
