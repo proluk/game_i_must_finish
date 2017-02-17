@@ -1,5 +1,16 @@
 mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
 
+wirusowanie
+	gdy gracz polaczy sie z ofiara wpisuje command:
+	unpack -hash wirusa -3cyfrypin -sposobhashowania unpack 98asud0a8021d1j 123 sha1 ( powiedzmy )
+	ofiara dostaje komunikat unpacking started i ma 20sec ( powiedzmy ) na zablokowanie wirusa. wpisujac pin.
+	pin jest zhashowany podanym spodobem i w postaci binarnej.
+	ofiara musi rozhaszowac odpowiednim algorytmem i wprowadzic pin rozszyfrowujac go z postaci binarnej.
+	
+	jeden wirus na raz.
+	
+	jezeli ofiara zrobi disconnect, wirus wlaczy sie po zalogowaniu. wszyscy zostana wyrzuceni z pokoju.
+
 End game musi byc bardzo wymagajacy. Gdzie gra toczy sie o servery stron do wydobywania bitcoinow.
 	Zeby shakowac serwer strony potrzebne jest kilka kont.
 	Pierwsza linia obrony - gracze rozwiazuja bitowe ciagi znakow. co jakis czas przesylane sa nowe.
