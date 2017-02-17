@@ -477,7 +477,42 @@ function systemStats(socket, callback){
         connection.release();
     });
 }
+function showTransactionLogs(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT time, info FROM transaction_logs WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err, results){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                    return err;
+                } else {
+                    callback(results);
+                }
+            });
+        } else {
+            console.log("showTransactionLogs database module getConnection error");
+        }
+        connection.release();
+    });
+}
+function addTransactionLog(socket,info){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('INSERT INTO transaction_logs (id,time,info) SELECT ( SELECT id FROM account WHERE socket = ?), null , ?', [socket,info], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    return err;
+                } 
+            });
+        } else {
+            console.log("addTransactionLog database module getConnection error");
+        }
+        connection.release();
+    });
+}
 
+module.exports.addTransactionLog = addTransactionLog;
+module.exports.showTransactionLogs = showTransactionLogs;
 module.exports.showAuthorizedConnection = showAuthorizedConnection;
 module.exports.addAuthorizedConnection = addAuthorizedConnection;
 module.exports.removeAuthorizedConnection = removeAuthorizedConnection;
