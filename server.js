@@ -312,11 +312,9 @@ io.on('connection', function(socket) {
 				databaseModule.showBalance(bank, function(data){
 					if ( data-howmuch >= 0 ) {
 						databaseModule.getMoney(bank, howmuch, function(data){
-							databaseModule.addMoney(tmp,howmuch, function(data){
-								let db = hash.decrypt(bank);
-								let dt = hash.decrypt(tmp);
-								databaseModule.addTransactionLog(db,'Transfer to: '+dt+' completed. '+howmuch+'B');
-								databaseModule.addTransactionLog(dt,'Transfer recived from: '+db+'. '+howmuch+'B');
+							databaseModule.addMoney(tmp, howmuch, function(data){
+								databaseModule.addTransactionLog(bank,'Transfer to: '+hash.decrypt(tmp)+' completed. '+howmuch+'B');
+								databaseModule.addTransactionLog(tmp,'Transfer recived from: '+hash.decrypt(bank)+'. '+howmuch+'B');
 								socket.emit("communicate", {data: communicates.communicates.transaction_success});							
 							});
 						});						
@@ -333,9 +331,15 @@ io.on('connection', function(socket) {
 				if ( option ) {
 					if ( option == '-a' ) {
 						if ( name ) {
-							databaseModule.addAuthorizedConnection(hash.encrypt(name), bank, function(res){
-								socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
-							});								
+							databaseModule.checkIfNickExists(hash.encrypt(name), function(res){
+								if ( res ) {
+									databaseModule.addAuthorizedConnection(hash.encrypt(name), bank, function(res){
+										socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
+									});											
+								} else {
+									socket.emit('communicate', {data: communicates.communicates.no_nick});
+								}
+							});							
 						} else {
 							socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 						}
@@ -370,7 +374,7 @@ io.on('connection', function(socket) {
 		},
 		logs : function(){
 			if ( bank ) {
-				databaseModule.showTransctionLogs(bank, function(res){
+				databaseModule.showTransactionLogs(bank, function(res){
 					let reso = '=============================== LOGS ===============================</br></br>';
 					for ( let i = 0 ; i < res.length ; i ++ ){
 						reso += res[i].time+" : "+res[i].info+"</br></br>";
@@ -428,7 +432,7 @@ io.on('connection', function(socket) {
 								databaseModule.getMoney(home, (howmany*botnet_price), function(res){
 									databaseModule.addBotnetPoints(home, howmany, function(res){
 										socket.emit('communicate', {data: communicates.communicates.transaction_success});
-										databaseModule.addTransactionLog(hash.decrypt(home), 'TOR website. Artificial Connections Quantity: '+howmany+'. '+howmany*botnet_price+'B');
+										databaseModule.addTransactionLog(home, 'TOR website. Artificial Connections Quantity: '+howmany+'. '+howmany*botnet_price+'B');
 									});
 								});
 							} else {
@@ -442,7 +446,7 @@ io.on('connection', function(socket) {
 								databaseModule.getMoney(home, (howmany*gate_price), function(res){
 									databaseModule.addGatePoints(home, howmany, function(res){
 										socket.emit('communicate', {data: communicates.communicates.transaction_success});
-										databaseModule.addTransactionLog(hash.decrypt(home), 'TOR website. Gate Connections Resistance Quantity: '+howmany+'. '+howmany*gate_price+'B');
+										databaseModule.addTransactionLog(home, 'TOR website. Gate Connections Resistance Quantity: '+howmany+'. '+howmany*gate_price+'B');
 									});
 								});
 							} else {
@@ -455,7 +459,7 @@ io.on('connection', function(socket) {
 								databaseModule.getMoney(home, 0.1, function(res){
 									socket.emit('communicate', {data: communicates.communicates.decrypted_hash});
 									socket.emit('communicate', {data: hash.simpleDecrypt(howmany)});
-									databaseModule.addTransactionLog(hash.decrypt(home), 'TOR website. ShhhBreaker Decrypion Services. '+0.1+'B');
+									databaseModule.addTransactionLog(home, 'TOR website. ShhhBreaker Decrypion Services. '+0.1+'B');
 								});
 							} else {
 								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
@@ -489,7 +493,8 @@ io.on('connection', function(socket) {
 					});
 				} else {
 					databaseModule.systemStats(home, function(res){
-						let num = hash.decrypt(res.pin);
+						console.log(res.pin);
+						let num = hash.decrypt(res.pin.toString());
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
 						stats += "Binary Pin Representation : "+binaryModule.makeBinary(num, 1, 2, 4)+"</br></br>";
 						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
@@ -687,7 +692,7 @@ io.on('connection', function(socket) {
 			mv = Math.round(mv*1000)/1000;
 			databaseModule.addMoney(home,mv, function(){
 				socket.emit("communicate", {data: "You mined: "+mv+" bitcoin."});
-				databaseModule.addTransactionLog(hash.decrypt(home), site+' mining: '+mv+'B');
+				databaseModule.addTransactionLog(home, site+' mining: '+mv+'B');
 			});			
 		})
 

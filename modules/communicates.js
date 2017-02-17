@@ -134,7 +134,8 @@ const communicates = {
 	connect_to_tor_website_first : "You have to connect to a specific website first.",
 	add_auth_connection : "New rule established for connecting to your account.",
 	remove_auth_connection : "Rule removed.",
-	decrypted_hash : "Hash decryption success."
+	decrypted_hash : "Hash decryption success.",
+	no_nick : "No such nick in database."
 }
 
 

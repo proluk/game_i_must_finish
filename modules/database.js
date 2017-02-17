@@ -30,8 +30,9 @@ function login(login, password, callback) {
 function registerAccount(login,password,email,nick) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('INSERT INTO account (id,login,password,email,nick,money,pin,brama,botnet,socket) VALUES (null,?,?,?,?,0,null,0,0,null);',[login,password,email,nick],function(err, results){
+            connection.query('INSERT INTO account (id,login,password,email,nick,money,pin,brama,botnet,socket) VALUES (null,?,?,?,?,0,173763,0,0,null);',[login,password,email,nick],function(err, results){
                 if( err ) {
+                    console.log(err);
                     return err;
                 } else {
                     return true;
@@ -84,19 +85,20 @@ function checkIfEmailExists(email){
         }
     });
 }
-function checkIfNickExists(nick){
+function checkIfNickExists(nick, callback){
     connection.getConnection(function(error,connection){
         if(!error){
             connection.query('SELECT COUNT(nick) AS c FROM account WHERE nick=?;',[nick],function(err, results){
                 connection.release();
                 if ( err ) {
+                    callback(false);
+                    console.log(err);
                     return err;
                 } else {
                     if( results[0].c>0 ) {
-                        return true;
+                        callback(true);
                     } else {
-                        console.log(results[0].c);
-                        return false;
+                        callback(false);
                     }
                 }
             });
@@ -405,7 +407,7 @@ function checkAuthorizedConnection(ine , name, callback){
         connection.release();
     });
 }
-function addAuthorizedConnection(name, socket){
+function addAuthorizedConnection(name, socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
             connection.query('INSERT INTO authorizedConnections (id, nick) SELECT ( SELECT id FROM account WHERE socket = ? ) , ( SELECT nick FROM account WHERE nick = ? ) ;', [socket, name], function(err , results){
@@ -426,7 +428,7 @@ function addAuthorizedConnection(name, socket){
 function removeAuthorizedConnection(name, socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('DELETE FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE id = ?) AND nick = (SELECT nick FROM account WHERE nick = ? );', [socket, name], function(err , results){
+            connection.query('DELETE FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?) AND nick = (SELECT nick FROM account WHERE nick = ? )', [socket, name], function(err , results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
@@ -444,7 +446,7 @@ function removeAuthorizedConnection(name, socket, callback){
 function showAuthorizedConnection(socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('SELECT nick FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?', [socket], function(err , results){
+            connection.query('SELECT nick FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err , results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
@@ -480,7 +482,7 @@ function systemStats(socket, callback){
 function showTransactionLogs(socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('SELECT time, info FROM transaction_logs WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err, results){
+            connection.query('SELECT DATE_FORMAT(time,"%H:%i:%S") time, info FROM transaction_logs WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err, results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
