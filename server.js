@@ -682,10 +682,15 @@ io.on('connection', function(socket) {
 		}				
 	}
 	function mineFunc(){
-		databaseModule.addMoney(hash.encrypt(socket.id),mine_per_min, function(){
-			socket.emit("communicate", {data: "You mined: "+mine_per_min+" bitcoin."});
-			databaseModule.addTransactionLog(hash.decrypt(home), site+' mining: '+mine_per_min+'B');
-		});
+		databaseModule.checkBotnetPoints(home, function(res){
+			let mv = mine_per_min + (mine_per_min * res);
+			mv = Math.round(mv*1000)/1000;
+			databaseModule.addMoney(home,mv, function(){
+				socket.emit("communicate", {data: "You mined: "+mv+" bitcoin."});
+				databaseModule.addTransactionLog(hash.decrypt(home), site+' mining: '+mv+'B');
+			});			
+		})
+
 	}
 	function percentageChance(percent) {
 		let tmp = Math.floor( (Math.random() * 100 ) + 0);
