@@ -1,6 +1,6 @@
 mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
 
-
+Logi wejsc i logi tranzakcji. Logi resetowane codziennie razem z kopia bazy danych.
 
 Brama ma swoją odporność. czyli mozliwosc przetworzenia okreslonej ilosci polaczen na raz.
 Każdy posiada swoj botnet ktorym moze przeprowadzac ataki na bramy. Botnet ma "sile" ktora jest ilosc polaczen na raz.
