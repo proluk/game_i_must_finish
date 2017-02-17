@@ -1,5 +1,13 @@
 mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
 
+End game musi byc bardzo wymagajacy. Gdzie gra toczy sie o servery stron do wydobywania bitcoinow.
+	Zeby shakowac serwer strony potrzebne jest kilka kont.
+	Pierwsza linia obrony - gracze rozwiazuja bitowe ciagi znakow. co jakis czas przesylane sa nowe.
+	jezeli wszyscy gracze na wszystkich wejsciach linii obrony, rozwiaza ciagi znakow dobrze w danej turze,
+	to reszta graczy moze przejsc przez pierwsza linie obrony.
+	jezeli w ktorej turze ktos zle rozwiaze bitowy ciag znakow, lub nie zdąży rozwiązać w czasie.
+	wszyscy gracze są wyrzucani.
+
 Logi wejsc i logi tranzakcji. Logi resetowane codziennie razem z kopia bazy danych.
 
 Brama ma swoją odporność. czyli mozliwosc przetworzenia okreslonej ilosci polaczen na raz.
