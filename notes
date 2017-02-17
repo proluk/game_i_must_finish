@@ -3,9 +3,10 @@ mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie 
 wirusowanie
 	gdy gracz polaczy sie z ofiara wpisuje command:
 	unpack -hash wirusa -3cyfrypin -sposobhashowania unpack 98asud0a8021d1j 123 sha1 ( powiedzmy )
-	ofiara dostaje komunikat unpacking started i ma 20sec ( powiedzmy ) na zablokowanie wirusa. wpisujac pin.
-	pin jest zhashowany podanym spodobem i w postaci binarnej.
-	ofiara musi rozhaszowac odpowiednim algorytmem i wprowadzic pin rozszyfrowujac go z postaci binarnej.
+	ofiara dostaje:
+	caly komunikat zhashowany domyslnie i pin w postaci binarnej zhashowany podanym algorytmem hashowania.
+	i komunikat unpacking started.
+	ma 20sec ( powiedzmy ) na zablokowanie wirusa wpisujac pin.
 	
 	jeden wirus na raz.
 	
