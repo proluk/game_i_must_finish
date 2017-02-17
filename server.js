@@ -296,9 +296,6 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}	
 		},
-		sudo : function(command,link) {
-
-		},
 		balance : function() {
 			if ( bank ) {
 				databaseModule.showBalance(bank, function(data){

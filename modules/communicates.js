@@ -42,6 +42,7 @@ let help_commands = {
 		"rule -s - shows set rules.",
 		"rule -a <i>nick</i> - add new connection rule.",
 		"rule -r <i>nick</i> - remove connection rule.",
+		"logs - shows transaction log.",
 		"exit - exit account connection.",
 		"me - shows your address.",
 		"options -p - set 3 digit pin code to enter account."
