@@ -17,6 +17,7 @@ let help_commands = {
 		"open -t <i>url</i> - open TOR onion website.",
 		"close - closes current website.",
 		"ssh account - connects to account of current connection.",
+		"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
 		"exit - exit account connection.",
 		"system - shows information about account.",
 		"me - shows your address."
@@ -33,7 +34,6 @@ let help_commands = {
 		"stop -l - stops listen.",
 		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
 		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
-		"buy -d <i>hash</i> - decrypts provided hash.",
 		"close - closes current website."
 	],
 	bank : [
@@ -135,7 +135,14 @@ const communicates = {
 	add_auth_connection : "New rule established for connecting to your account.",
 	remove_auth_connection : "Rule removed.",
 	decrypted_hash : "Hash decryption success.",
-	no_nick : "No such nick in database."
+	no_nick : "No such nick in database.",
+	no_decryption_support : "Decryption method you provided is not supported.",
+	decrypt_error : "Decrypt Error! check used method or cipher.",
+	user_already_infected : "User is already infected.",
+	virus_error : "There is no such virus or is already in use.",
+	virus_block_success : "Aborting unpack success.",
+	virus_block_help : "Unpacking process begin. If you do not recal such activity, Abort This Process Immediately!",
+	virus_unpack_info : "Unpacking process will end in 30sec."
 }
 
 

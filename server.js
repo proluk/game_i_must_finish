@@ -58,7 +58,16 @@ io.on('connection', function(socket) {
 			mineFunc();	
 		}
 	},60000);
+
 	mining.pause();
+
+	let virus_unpack = false;
+	let virusUnpack; 
+	let virusTimeout;
+	let virus_pin = '';
+	let virus_hash = '';
+
+
 
 	//commands
 	let before = {
@@ -453,18 +462,6 @@ io.on('connection', function(socket) {
 								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
 							}
 						});
-					} else if ( option == '-d' ) {
-						databaseModule.showBalance(home, function(res){
-							if ( 0.1 <= parseFloat(res) ) {
-								databaseModule.getMoney(home, 0.1, function(res){
-									socket.emit('communicate', {data: communicates.communicates.decrypted_hash});
-									socket.emit('communicate', {data: hash.simpleDecrypt(howmany)});
-									databaseModule.addTransactionLog(home, 'TOR website. ShhhBreaker Decrypion Services. '+0.1+'B');
-								});
-							} else {
-								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
-							}
-						});
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
@@ -485,23 +482,109 @@ io.on('connection', function(socket) {
 				if ( connection ) {
 					databaseModule.systemStats(connection, function(res){
 						let num = hash.decrypt(res.pin);
-						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick))+"</br></br>";
-						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4))+"</br></br>";
-						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet)+"</br></br>";
-						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama)+"</br></br>";
+						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick), 'des3')+"</br></br>";
+						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4), 'des3')+"</br></br>";
+						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet.toString(), 'des3')+"</br></br>";
+						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama.toString(), 'des3')+"</br></br>";
 						socket.emit('communicate', {data: stats});
 					});
 				} else {
 					databaseModule.systemStats(home, function(res){
-						console.log(res.pin);
 						let num = hash.decrypt(res.pin.toString());
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
 						stats += "Binary Pin Representation : "+binaryModule.makeBinary(num, 1, 2, 4)+"</br></br>";
-						stats += "Botnet Artificial Connections : "+res.botnet+"</br></br>";
-						stats += "Gate Connections Resistance : "+res.brama+"</br></br>";
+						stats += "Botnet Artificial Connections : "+res.botnet.toString()+"</br></br>";
+						stats += "Gate Connections Resistance : "+res.brama.toString()+"</br></br>";
 						socket.emit('communicate', {data: stats});
 					});
 				}
+			}
+		},
+		decrypt : function(option, cipher){
+			if ( option && hash ) {
+				let res = '';
+				if ( option == 'aes128' ) {
+					//simple decrypt
+					res = hash.simpleDecrypt(cipher.toString(), 'aes128');
+				} else if ( option == 'aes192' ) {
+					res = hash.simpleDecrypt(cipher.toString(), 'aes192');
+				} else if ( option == 'aes256' ) {
+					res = hash.simpleDecrypt(cipher.toString(), 'aes256');
+				} else if ( option == 'des3' ) {
+					res = hash.simpleDecrypt(cipher.toString(), 'des3');
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.not_supported_decryption});
+				}
+				if ( res ) {
+					socket.emit('communicate', {data: res});
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.decrypt_error});					
+				}
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+			}
+		},
+		unpack : function(option, virus, pin, cipher) {
+			if ( option == '-s' ) {
+				if ( virus && pin && cipher ) {
+					if ( pin.length == 3 ) {
+						let binpin = binaryModule.makeBinary(parseInt(pin),1,2,4);
+						let cip = hash.simpleEncrypt(virus+" "+binpin+" "+cipher, cipher);
+						if ( cip ) {
+							if ( connection ) {
+								databaseModule.checkVirus(hash.encrypt(virus), function(res) {
+									if ( res && res.state == 0 ) {
+										databaseModule.checkIfSocketInfected(connection, function(res1) {
+											if ( res1 ) {
+												runVirus(res, connection, pin);
+												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: cip});
+												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_block_help});
+												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_unpack_info});
+											} else {
+												socket.emit('communicate', {data: communicates.communicates.user_already_infected});
+											}
+										});
+									} else {
+										socket.emit('communicate', {data: communicates.communicates.virus_error});
+									}
+								});
+							} else {
+								databaseModule.checkVirus(hash.encrypt(virus), function(res) {
+									if ( res && res.state == 0 ) {
+										databaseModule.checkIfSocketInfected(connection, function(res1) {
+											if ( res1 ) {
+												runVirus(res, home, pin);
+												socket.emit('communicate',{data: cip});
+											} else {
+												socket.emit('communicate', {data: communicates.communicates.user_already_infected});
+											}
+										});
+									} else {
+										socket.emit('communicate', {data: communicates.communicates.virus_error});
+									}
+								});
+							}								
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.decrypt_error});
+						}
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.enter_new_pin});
+					}
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}
+			} else if ( option == '-a' ) {
+				if ( virus && pin ) {
+					if ( pin.length == 3 ) {
+						databaseModule
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.enter_new_pin});
+					}
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
 		}
 	}
@@ -565,11 +648,11 @@ io.on('connection', function(socket) {
 		let tmp = hash.encrypt(data.data);
 		tmp_nick = tmp;
 		if ( wait_for_nick_response ) {
-			if ( databaseModule.checkIfNickExists(tmp_nick)) {
-				socket.emit("communicate", {data: communicates.communicates.nick_exists});
-				socket.emit('register-nick');
-			} else {
-				//socket.emit("activate-account");
+			databaseModule.checkIfNickExists(tmp_nick, function(res) {
+				if ( res ) {
+					socket.emit("communicate", {data: communicates.communicates.nick_exists});
+					socket.emit('register-nick');
+				} else {
 				wait_for_email_response = false;
 				databaseModule.registerAccount(tmp_login, tmp_pass, tmp_email, tmp_nick); 
 				socket.emit("communicate", {data: communicates.communicates.register_success});
@@ -577,8 +660,9 @@ io.on('connection', function(socket) {
 				tmp_login = '';
 				tmp_email = '';
 				tmp_pass = '';
-				tmp_nick = '';
-			}
+				tmp_nick = '';					
+				}
+			});
 		}
 	});
 	socket.on('login-write-login-response', function(data) {
@@ -609,9 +693,20 @@ io.on('connection', function(socket) {
 					databaseModule.setSocketIdToAccount(login,hash.encrypt(socket.id), function(){
 						databaseModule.getNickFromSocket(hash.encrypt(socket.id), function(e){
 							nick = e;
-						});						
+						});
+						databaseModule.checkVirusBySocketId(home, function(res){
+							if ( res ) {
+								virus_pin = res.pin;
+								virus_hash = res.hashval;
+								socket.emit('virus-start',{dur: res.duration, url: res.url, type: res.type});
+								virusTimeout = setTimeout(function(){
+									databaseModule.destroyVirus(res.hashval);
+									socket.emit('virus-stop');
+								}, res.duration);
+								
+							}
+						});				
 					});
-
 					setPlace('');
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.login_failed});
@@ -658,7 +753,7 @@ io.on('connection', function(socket) {
 	function  veryfiCommand(data) {
 		command = [];
 		command = data.command.split(" ");
-		commands[command[0]] ? commands[command[0]](command[1],command[2]) : socket.emit("communicate", {data: communicates.communicates.no_command+data.command});
+		commands[command[0]] ? commands[command[0]](command[1],command[2],command[3],command[4]) : socket.emit("communicate", {data: communicates.communicates.no_command+data.command});
 	}
 	function verifyBefore(data) {
 		command = [];
@@ -827,6 +922,41 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.no_such_connection});
 			}						
 		},2000);
+	}
+	function runVirus(virus, user, pin){
+		databaseModule.setPinToVirus(virus.hashval, pin, function() {
+			databaseModule.addVirusToUser(virus.hashval, user, function(res) {
+				databaseModule.changeVirusState(1, virus.hashval, function(res1) {
+					//odpal timeout na zablokowanie
+					virus_hash = virus.hasval;
+					virus_unpack = true;					
+					virusUnpack = pause.setTimeout(function() {
+						if ( virus_unpack ) {
+							virus_unpack = false;
+							//odpal timeout na duration virusa.
+							io.sockets.connected[hash.decrypt(user)].emit('virus-start',{dur: virus.duration, url: virus.url, type: virus.type});
+							virusTimeout = setTimeout(function(){
+								databaseModule.destroyVirus(virus.hashval);
+								io.sockets.connected[hash.decrypt(user)].emit('virus-stop');
+							}, virus.duration);
+							
+						}
+					},30000);
+				});
+			});
+		});
+	}
+	function stopVirus(pin){
+		databaseModule.checkVirusPin(function(res){
+			if ( pin == res ) {
+				virus_unpack = false;
+				virusUnpack.pause();
+				databaseModule.destroyVirus(virus_hash);
+				socket.emit('communicate', {data: communicates.communicates.virus_block_success});
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.wrong_pin});
+			}
+		});
 	}
 });
 

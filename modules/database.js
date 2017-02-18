@@ -75,7 +75,6 @@ function checkIfEmailExists(email){
                     if( results[0].c>0 ) {
                         return true;
                     } else {
-                        console.log(results[0].c);
                         return false;
                     }
                 }
@@ -512,7 +511,149 @@ function addTransactionLog(socket,info){
         connection.release();
     });
 }
+function checkVirus(virus, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT * FROM virus WHERE hashval = ?', [virus], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(results[0]);
+                }
+            });
+        } else {
+            console.log("addTransactionLog database module getConnection error");
+        }
+        connection.release();
+    });   
+}
+function checkIfSocketInfected(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT COUNT(*) AS c FROM virus_acc WHERE acc_id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    if ( results[0].c > 0 ) {
+                        callback(false);
+                    } else {
+                        callback(true);  
+                    }
+                    
+                }
+            });
+        } else {
+            console.log("addTransactionLog database module getConnection error");
+        }
+        connection.release();
+    }); 
+}
+function addVirusToUser(virus, socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('INSERT INTO virus_acc (acc_id,virus_id) SELECT (SELECT id FROM account WHERE socket = ?) , (SELECT id FROM virus WHERE hashval = ?)', [socket, virus], function(err, results){
+                if ( err ) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("addVirusToUser database module getConnection error");
+        }
+        connection.release();
+    }); 
+}
+function changeVirusState(virus, state, callback){
+    //state 0 = inactive, ready to use. state 1 = unpacking. state 2 = running.
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE virus SET state = ? WHERE hashval = ?', [state, virus], function(err, results){
+                if ( err ) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("changeVirusState database module getConnection error");
+        }
+        connection.release();
+    });    
+}
+function setPinToVirus(virus, pin, callback) {
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE virus SET pin = ? WHERE hashval = ?', [pin, virus], function(err, results){
+                if ( err ) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("changeVirusState database module getConnection error");
+        }
+        connection.release();
+    });   
+}
+function checkVirusBySocketId(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT * FROM virus WHERE id = (SELECT virus_id FROM virus_acc WHERE acc_id = (SELECT id FROM account WHERE socket = ?))', [socket], function(err, results){
+                if ( err ) {
+                    callback(false);
+                } else {
+                    callback(results[0]);
+                }
+            });
+        } else {
+            console.log("changeVirusState database module getConnection error");
+        }
+        connection.release();
+    });   
+}
+function checkVirusPin(virus, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT pin FROM virus WHERE hashval = ?', [virus], function(err, results){
+                if ( err ) {
+                    callback(false);
+                } else {
+                    callback(results[0]);
+                }
+            });
+        } else {
+            console.log("checkVirusPin database module getConnection error");
+        }
+        connection.release();
+    });   
+}
+function destroyVirus(virus){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('DELETE FROM virus WHERE hashval = ?', [virus], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                }
+            });
+        } else {
+            console.log("checkVirusPin database module getConnection error");
+        }
+        connection.release();
+    });   
+}
 
+module.exports.destroyVirus = destroyVirus;
+module.exports.checkIfSocketInfected = checkIfSocketInfected;
+module.exports.checkVirusPin = checkVirusPin;
+module.exports.checkVirusBySocketId = checkVirusBySocketId;
+module.exports.setPinToVirus = setPinToVirus;
+module.exports.changeVirusState = changeVirusState;
+module.exports.addVirusToUser = addVirusToUser;
+module.exports.checkVirus = checkVirus;
 module.exports.addTransactionLog = addTransactionLog;
 module.exports.showTransactionLogs = showTransactionLogs;
 module.exports.showAuthorizedConnection = showAuthorizedConnection;

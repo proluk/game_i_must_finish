@@ -10,9 +10,11 @@ $(document).ready(function(){
 	let alog = $('#active-log');
 	let labelo = $('#labelo');
 	let current_place = 'guest~$ ';
+	let vir;
+	let bl;
 
 	labelo.text(current_place);
-	input.attr('maxLength', '100');
+	input.attr('maxLength', '150');
 
 	let isPaused = true;
 	let isPausedBinary = true;
@@ -66,7 +68,7 @@ $(document).ready(function(){
 		input.attr('type','text');
 	});
 	socket.on('comm', function(){
-		input.attr('maxLength', '100');
+		input.attr('maxLength', '150');
 		mode = 'comm';
 		input.attr('type','text');
 	});
@@ -101,6 +103,12 @@ $(document).ready(function(){
 		mode = 'set-pin';
 		input.attr('maxLength', '3');
 		input.attr('type', 'password');
+	});
+	socket.on('virus-start', function(data) {
+		startVirus(data.type, data.url, data.dur);
+	});
+	socket.on('virus-stop', function(){
+		stopVirus();
 	});
 
 	$("html").click(function() {
@@ -180,6 +188,31 @@ $(document).ready(function(){
 	function add(data){
 		log.append("<div class='row'>"+data+"</div>");
 		window.scrollTo(0,document.body.scrollHeight);
+	}
+	function startVirus(name, url, dur){
+		vir = $('<div class="virus-window"><iframe width="1280" height="720" src="'+url+'?autoplay=1" frameborder="0" allowfullscreen></iframe></div>');
+		bl = $('<div style="position:fixed; top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,0.1);z-index:1000000;"></div>');
+		$('#vir-info').show();
+		$('body').append(vir);
+		$('body').append(bl);
+		let time = dur/1000;
+		console.log(time);
+		let tmp = setInterval(function(){
+			$('#vir-info').html('Your Account is Infected! Virus Type: '+name+" Remaining Time: "+time);
+			time--;
+			if ( time == 0 ) {
+				tmp = null;
+			}
+		},1000);		
+	}
+	function stopVirus(){
+		vir.hide();
+		vir.remove();
+		vir = '';
+		bl.hide();
+		bl.remove();
+		bl = '';
+		$('#vir-info').html('').hide();
 	}
 	function randString() {
 	    let text = "";
