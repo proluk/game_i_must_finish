@@ -645,7 +645,25 @@ function destroyVirus(virus){
         connection.release();
     });   
 }
+function addVirus(hashval,dur,type,url,callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('INSERT INTO virus (hashval,duration,type,url) VALUES (?,?,?,?)', [hashval,dur,type,url], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        } else {
+            console.log("addVirus database module getConnection error");
+        }
+        connection.release();
+    });  
+}
 
+module.exports.addVirus = addVirus;
 module.exports.destroyVirus = destroyVirus;
 module.exports.checkIfSocketInfected = checkIfSocketInfected;
 module.exports.checkVirusPin = checkVirusPin;

@@ -43,7 +43,16 @@ function simpleDecrypt(text, option){
     return false;
   }   
 }
-
+function random(bits){
+  try {
+    return crypt.randomBytes(bits).toString('hex');
+  } catch(e){
+    console.log("-----------");
+    console.log(e);
+    return false;
+  }
+}
+module.exports.random = random;
 module.exports.simpleEncrypt = simpleEncrypt;
 module.exports.simpleDecrypt = simpleDecrypt;
 module.exports.encrypt = encrypt;

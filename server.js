@@ -12,6 +12,7 @@ let databaseModule = require('./modules/database.js');
 let binaryModule = require('./modules/binary.js');
 let hash = require('./modules/hash.js');
 let valid = require('./modules/validate.js');
+let virusModule = require('./modules/virus.js');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -24,7 +25,7 @@ app.use('/',index);
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let botnet_price = 0.1;
-let gate_price = 0.05;
+let gate_price = 0.01;
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
@@ -220,18 +221,23 @@ io.on('connection', function(socket) {
 			}
 		},
 		listen : function() {
-			if ( !lis ) {
-				if ( site ) {
-					socket.emit('communicate' , {data: communicates.communicates.listen_process_begin});
-					socket.emit('listen-process');
-					lis = true;
-					listening.resume();
+			if ( !tor ) {
+				if ( !lis ) {
+					if ( site ) {
+						socket.emit('communicate' , {data: communicates.communicates.listen_process_begin});
+						socket.emit('listen-process');
+						lis = true;
+						listening.resume();
+					} else {
+						socket.emit("communicate", {data: communicates.communicates.no_listen_process});
+					}
 				} else {
-					socket.emit("communicate", {data: communicates.communicates.no_listen_process});
-				}
+					socket.emit("communicate", {data: communicates.communicates.already_listening});
+				}				
 			} else {
-				socket.emit("communicate", {data: communicates.communicates.already_listening});
+				socket.emit("communicate", {data: communicates.communicates.cannot_listen_on_tor});
 			}
+
 		},
 		stop : function(option) {
 			if ( option ){
@@ -299,7 +305,7 @@ io.on('connection', function(socket) {
 		exit : function(blank,blank) {
 			if ( bank ) {
 				socket.emit("communicate", {data: communicates.communicates.account_close});
-				bank = '';
+				bank = false;
 				setPlace('');
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
@@ -308,7 +314,7 @@ io.on('connection', function(socket) {
 		balance : function() {
 			if ( bank ) {
 				databaseModule.showBalance(bank, function(data){
-					socket.emit("communicate", {data: communicates.communicates.account_balance+data.toFixed(2)});
+					socket.emit("communicate", {data: communicates.communicates.account_balance+data.toFixed(3)});
 				});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
@@ -336,7 +342,7 @@ io.on('connection', function(socket) {
 			}
 		},
 		rule : function(option, name){
-			if ( bank ) {
+			if ( !bank && !site ) {
 				if ( option ) {
 					if ( option == '-a' ) {
 						if ( name ) {
@@ -378,7 +384,7 @@ io.on('connection', function(socket) {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				}				
 			} else {
-				socket.emit("communicate", {data: communicates.communicates.account_error});
+				socket.emit("communicate", {data: communicates.communicates.rule_error_wrong_place});
 			}
 		},
 		logs : function(){
@@ -473,9 +479,7 @@ io.on('connection', function(socket) {
 			}
 		},
 		system : function(){
-			if ( site ) {
-				socket.emit("communicate", {data: communicates.communicates.already_connected});
-			} else if ( bank ) {
+			if ( bank ) {
 				socket.emit("communicate", {data: communicates.communicates.account_close_first});
 			} else {	
 				let stats = '</br>~~~~~~~~~~~~~~~~ SYSTEM ~~~~~~~~~~~~~~~~</br></br>';
@@ -489,12 +493,17 @@ io.on('connection', function(socket) {
 						socket.emit('communicate', {data: stats});
 					});
 				} else {
+					let socks = '';
+					for ( let i in io.sockets.adapter.rooms[socket.id].sockets ) {
+						socks += i+"</br>";					
+					}
 					databaseModule.systemStats(home, function(res){
-						let num = hash.decrypt(res.pin.toString());
+						let num = hash.decrypt(res.pin);
 						stats += "Nick : "+hash.decrypt(res.nick)+"</br></br>";
 						stats += "Binary Pin Representation : "+binaryModule.makeBinary(num, 1, 2, 4)+"</br></br>";
 						stats += "Botnet Artificial Connections : "+res.botnet.toString()+"</br></br>";
 						stats += "Gate Connections Resistance : "+res.brama.toString()+"</br></br>";
+						stats += "=== List Of Connected users ===</br></br>"+socks+"</br></br>";
 						socket.emit('communicate', {data: stats});
 					});
 				}
@@ -555,6 +564,8 @@ io.on('connection', function(socket) {
 											if ( res1 ) {
 												runVirus(res, home, pin);
 												socket.emit('communicate',{data: cip});
+												io.sockets.connected[socket.id].emit('communicate',{data: communicates.communicates.virus_block_help});
+												io.sockets.connected[socket.id].emit('communicate',{data: communicates.communicates.virus_unpack_info});
 											} else {
 												socket.emit('communicate', {data: communicates.communicates.user_already_infected});
 											}
@@ -601,7 +612,7 @@ io.on('connection', function(socket) {
 		acc ? veryfiCommand(data) : verifyBefore(data);			
 	});
 	socket.on("disconnect", function(socket) {
-
+		virusTimeout = false;
 	});
 	socket.on("register-write-login-response", function(data) {
 		let tmp = hash.encrypt(data.data);
@@ -773,7 +784,7 @@ io.on('connection', function(socket) {
 						rand++;
 					}
 				}
-				socket.emit("communicate", {data: communicates.communicates.found_hash+rarray[rand]});
+				socket.emit("communicate", {data: communicates.communicates.found_hash+hash.simpleEncrypt(rarray[rand],'des3')});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.room_empty});
 			}
@@ -783,12 +794,18 @@ io.on('connection', function(socket) {
 	}
 	function mineFunc(){
 		databaseModule.checkBotnetPoints(home, function(res){
-			let mv = mine_per_min + (mine_per_min * res);
+			let mv = mine_per_min + (mine_per_min * res/10);
 			mv = Math.round(mv*1000)/1000;
 			databaseModule.addMoney(home,mv, function(){
 				socket.emit("communicate", {data: "You mined: "+mv+" bitcoin."});
-				databaseModule.addTransactionLog(home, site+' mining: '+mv+'B');
-			});			
+			});
+			if ( percentageChance(1) ) {
+				let uuid = hash.random(8);
+				let v = virusModule.randomVirus();
+				databaseModule.addVirus(hash.encrypt(uuid),v.duration,v.type,v.url,function(res){
+					socket.emit("communicate", {data: "You mined virus: "+uuid});
+				});
+			}
 		})
 
 	}
@@ -894,6 +911,7 @@ io.on('connection', function(socket) {
 										socket.join(hash.decrypt(tmp));
 										socket.emit('communicate', {data: communicates.communicates.connection_established});
 										socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+										io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.user_connected});
 										setPlace('');
 									},3000);
 								} else {
@@ -912,6 +930,7 @@ io.on('connection', function(socket) {
 								socket.join(hash.decrypt(tmp));
 								socket.emit('communicate', {data: communicates.communicates.connection_established});
 								socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+								io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.user_connected});
 								setPlace('');
 							},3000);
 						}

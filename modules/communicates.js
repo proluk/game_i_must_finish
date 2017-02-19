@@ -16,11 +16,13 @@ let help_commands = {
 		"open -w <i>url</i> - open website from provided url.",
 		"open -t <i>url</i> - open TOR onion website.",
 		"close - closes current website.",
+		"rule -s - shows set rules.",
+		"rule -a <i>nick</i> - add new connection rule.",
+		"rule -r <i>nick</i> - remove connection rule.",
 		"ssh account - connects to account of current connection.",
 		"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
 		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
 		"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
-		"exit - exit account connection.",
 		"system - shows information about account.",
 		"me - shows your address."
 	],
@@ -34,8 +36,6 @@ let help_commands = {
 		"close - closes current website."
 	],
 	opent : [
-		"listen - listen website traffic to find other users.",
-		"stop -l - stops listen.",
 		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
 		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
 		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
@@ -45,9 +45,6 @@ let help_commands = {
 	bank : [
 		"balance - check balance of connected account.",
 		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
-		"rule -s - shows set rules.",
-		"rule -a <i>nick</i> - add new connection rule.",
-		"rule -r <i>nick</i> - remove connection rule.",
 		"logs - shows transaction log.",
 		"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
 		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
@@ -151,7 +148,9 @@ const communicates = {
 	virus_error : "There is no such virus or is already in use.",
 	virus_block_success : "Aborting unpack success.",
 	virus_block_help : "Unpacking process begin. If you do not recal such activity, Abort This Process Immediately!",
-	virus_unpack_info : "Unpacking process will end in 30sec."
+	virus_unpack_info : "Unpacking process will end in 30sec.",
+	cannot_listen_on_tor : "Tor websites are immune to listening traffic. Cannot listen here.",
+	rule_error_wrong_place : "Exit account connection or close site you are currently visiting."
 }
 
 
