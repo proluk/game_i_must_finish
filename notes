@@ -1,5 +1,12 @@
 mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
 
+wyrzucanie ludzi z pokoju.
+	kill -s socket pin - gracz ktory ma byc wyrzucony dostaje informacje ze za 10 sec zostanie wyrzucony i dostaje binpin
+	kill -a socket pin - abort kill process, musi podac dobry pin i jazda.
+	jak ktos wbije do ofiary to moze ja wyrzucic.
+	
+	mozna wbijac na konto jezeli gracz jest offline?
+
 wirusowanie
 	gdy gracz polaczy sie z ofiara wpisuje command:
 	unpack -hash wirusa -3cyfrypin -sposobhashowania unpack 98asud0a8021d1j 123 sha1 ( powiedzmy )
