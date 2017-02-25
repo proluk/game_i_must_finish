@@ -1,7 +1,7 @@
 body, html {
 	background-color: #000;
-	color: #28E500;
-	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+	color:#00cba7;
+	font-family: 'Share Tech Mono', monospace;
 }
 #log {
 	display: block;
@@ -10,7 +10,8 @@ body, html {
 	display: block;
 	font-weight: bold;
 	font-size: 15px;
-	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+	color:#00cba7;
+	font-family: 'Share Tech Mono', monospace;
 }
 #active-log {
 	display: none;
@@ -28,11 +29,11 @@ body, html {
 	white-space: nowrap;
 }
 input {
-	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+	color:#00cba7;
+	font-family: 'Share Tech Mono', monospace;
 	display: inline-block;
 	border: none;
 	font-size:15px;
-	color:#28E500;
 	font-weight:bold;
 	width:100%;
 	background-color: rgba(0,0,0,0);
