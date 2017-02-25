@@ -12,6 +12,7 @@ $(document).ready(function(){
 	let current_place = 'guest~$ ';
 	let vir;
 	let bl;
+	let memo = '';
 
 	labelo.text(current_place);
 	input.attr('maxLength', '150');
@@ -30,6 +31,9 @@ $(document).ready(function(){
 		}
 	},50);
 
+	socket.on('set-memo', function(data){
+		memo = data.data;
+	});
 	socket.on('set-place', function(data) {
 		current_place = data.data+'~$ ';
 		labelo.text(current_place);
@@ -148,6 +152,9 @@ $(document).ready(function(){
 	    		command_num = commands.length;
 	    		input.val('');
 	    	}
+	    } else if (e.which == 192 ) {
+	    	e.preventDefault();
+	    	input.val(input.val()+memo);
 	    }
 	});
 

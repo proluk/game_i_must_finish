@@ -417,6 +417,7 @@ io.on('connection', function(socket) {
 		},
 		me : function() {
 			socket.emit("communicate", {data: "You are "+socket.id});
+			socket.emit('set-memo', {data:socket.id});
 		},
 		options : function(option) {
 			if ( bank ) {
@@ -484,11 +485,13 @@ io.on('connection', function(socket) {
 				if ( connection ) {
 					databaseModule.systemStats(connection, function(res){
 						let num = hash.decrypt(res.pin);
+						let binpin = hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4), 'des3');
 						stats += "Hashed Nick : "+hash.simpleEncrypt(hash.decrypt(res.nick), 'des3')+"</br></br>";
-						stats += "Hashed Binary Pin Representation: "+hash.simpleEncrypt(binaryModule.makeBinary(num, 1, 2, 4), 'des3')+"</br></br>";
+						stats += "Hashed Binary Pin Representation: "+binpin+"</br></br>";
 						stats += "Hashed Botnet Artificial Connections : "+hash.simpleEncrypt(res.botnet.toString(), 'des3')+"</br></br>";
 						stats += "Hashed Gate Connections Resistance : "+hash.simpleEncrypt(res.brama.toString(), 'des3')+"</br></br>";
 						socket.emit('communicate', {data: stats});
+						socket.emit('set-memo',{data:binpin});
 					});
 				} else {
 					let socks = '';
@@ -524,6 +527,7 @@ io.on('connection', function(socket) {
 				}
 				if ( res ) {
 					socket.emit('communicate', {data: res});
+					socket.emit('set-memo', {data: res});
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.decrypt_error});					
 				}
@@ -545,6 +549,7 @@ io.on('connection', function(socket) {
 											if ( res1 ) {
 												runVirus(res, connection, pin);
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: cip});
+												socket.emit('set-memo',{data:cip});
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_block_help});
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_unpack_info});
 											} else {
@@ -782,7 +787,9 @@ io.on('connection', function(socket) {
 						rand++;
 					}
 				}
-				socket.emit("communicate", {data: communicates.communicates.found_hash+hash.simpleEncrypt(rarray[rand],'des3')});
+				let fhash = hash.simpleEncrypt(rarray[rand],'des3');
+				socket.emit("communicate", {data: communicates.communicates.found_hash+fhash});
+				socket.emit('set-memo', {data:fhash});
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.room_empty});
 			}
@@ -853,39 +860,44 @@ io.on('connection', function(socket) {
 		let gate_strength = 0;
 		databaseModule.checkBotnetPoints(home, function(res0){
 			setTimeout(function(){
-				botnet_strength = res0;
-				socket.emit('communicate', {data: communicates.communicates.botnet_ready});
-				socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
-				databaseModule.checkIfSocketInDatabase(tmp , function(res1){
-					setTimeout(function(){
-						if ( res1 > 0 ) {
-							socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
-							socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
-							databaseModule.checkGatePoints(tmp, function(res2) {
-								gate_strength = res2;
-								socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
-								if ( botnet_strength >= gate_strength ) {
-									databaseModule.removeBotnetPoints(home, gate_strength, function(res3){
-										socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+gate_strength});
-										databaseModule.removeGatePoints(tmp, gate_strength , function(res4){
-											socket.emit('communicate', {data: communicates.communicates.gate_status+"0"});
+				if ( res0 ) {
+					botnet_strength = res0;
+					socket.emit('communicate', {data: communicates.communicates.botnet_ready});
+					socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
+					databaseModule.checkIfSocketInDatabase(tmp , function(res1){
+						setTimeout(function(){
+							if ( res1 > 0 ) {
+								socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+								socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
+								databaseModule.checkGatePoints(tmp, function(res2) {
+									gate_strength = res2;
+									socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
+									if ( botnet_strength >= gate_strength ) {
+										databaseModule.removeBotnetPoints(home, gate_strength, function(res3){
+											socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+gate_strength});
+											databaseModule.removeGatePoints(tmp, gate_strength , function(res4){
+												socket.emit('communicate', {data: communicates.communicates.gate_status+"0"});
+											});
 										});
-									});
-								} else {
-									databaseModule.removeBotnetPoints(home, botnet_strength, function(res3){
-										socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+botnet_strength});
-										databaseModule.removeGatePoints(tmp, botnet_strength , function(res4){
-											socket.emit('communicate', {data: communicates.communicates.gate_status+(gate_strength - botnet_strength)})
+									} else {
+										databaseModule.removeBotnetPoints(home, botnet_strength, function(res3){
+											socket.emit('communicate', {data: communicates.communicates.botnet_points_removed+botnet_strength});
+											databaseModule.removeGatePoints(tmp, botnet_strength , function(res4){
+												socket.emit('communicate', {data: communicates.communicates.gate_status+(gate_strength - botnet_strength)})
+											});
 										});
-									});
-								}
-							});
-						} else {
-							socket.emit('communicate', {data: communicates.communicates.no_such_connection});
-							//end
-						}
-					},3000);
-				});
+									}
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.no_such_connection});
+								//end
+							}
+						},3000);
+					});					
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.no_such_connection});
+				}
+
 			},3000);
 		});
 	}

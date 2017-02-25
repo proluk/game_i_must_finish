@@ -308,7 +308,12 @@ function checkBotnetPoints(socket , callback ){
                     console.log(err);
                     callback(false);
                 } else {
-                    callback(results[0].b);
+                    if ( results[0] ) {
+                        callback(results[0].b); 
+                    } else {
+                        callback(false);
+                    }
+                    
                 }
             });
         } else {
