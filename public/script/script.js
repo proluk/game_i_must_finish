@@ -37,12 +37,6 @@ $(document).ready(function(){
 	socket.on("communicate", function(data) {
 		add(data.data);
 	});
-	socket.on("open", function(data){
-		website = window.open(data.data);
-	});
-	socket.on("close", function(){s
-		website.close();
-	});
 	socket.on('login-write-login', function(){
 		mode = 'login-write-login';
 		input.attr('type','text');

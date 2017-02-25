@@ -178,7 +178,6 @@ io.on('connection', function(socket) {
 									site = link;
 									socket.join(link);
 									setPlace(site);
-									socket.emit("open", {data: link});
 									socket.emit("communicate", {data: communicates.communicates.open+link});
 								} else {
 									socket.emit("communicate", {data: communicates.communicates.no_website+link});
@@ -206,7 +205,6 @@ io.on('connection', function(socket) {
 			if ( site ) {
 				socket.emit("communicate", {data: communicates.communicates.closed});
 				socket.leave(site);
-				socket.emit("close");
 				site = false;
 				tor = false;
 				setPlace('');

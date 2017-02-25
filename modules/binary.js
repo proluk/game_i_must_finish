@@ -1,32 +1,28 @@
 function makeBinary(number, fake, order_bin_size, number_bin_size) {
-    fakeNumber(number,fake,function(res){
-        makeArrayOrder(res,function(res1){
-            arr = shuffle(arr);
-            let order;
-            makeOrder(arr, num_and_fake.length, function(res2){
-                order = res2;
-                let result = makeBinaryOrder(number, order, order_bin_size)+makeBinaryNumber(arr, num_and_fake.length, number_bin_size);
-                return result;
-            });
-        });
-    });
-}
-function makeArrayOrder(num,fake,callback){
+    let num = number.toString(); 
+    let num_and_fake = num;
+    for ( let i = 0 ; i < fake ; i ++ ) {
+        num_and_fake += Math.round(Math.random() * (10 - 0) + 0);
+    }
+    //make array
     let arr = [];
     for ( let i = 0 ; i < num.length+fake ; i ++ ) {
         arr[i] = {
             'key' : i,
             'val' : num_and_fake[i]
         }
-    }    
-}
-function fakeNumber(number,fake,callback){
-    let num = number.toString(); 
-    let num_and_fake = num;
-    for ( let i = 0 ; i < fake ; i ++ ) {
-        num_and_fake += Math.round(Math.random() * (10 - 0) + 0);
     }
-    callback(num_and_fake); 
+    //shuffle array
+    arr = shuffle(arr);
+    //make order
+    try {
+        let order = makeOrder(arr, 4);
+        let result = makeBinaryOrder(order, order_bin_size)+makeBinaryNumber(arr, num_and_fake.length, number_bin_size);
+        return result;
+    } catch(e) {
+        console.log(e);
+    }
+
 }
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -44,32 +40,22 @@ function shuffle(array) {
 }
 function makeOrder(arr, length){
     let order = [];
-    try {
-        for ( let i = 0 ; i < 3 ; i ++ ) {
-            for ( let m = 0 ; m < length ; m ++ ) {
-                if ( arr[m]['key'] == i ) {
-                    order[i] = m;        
-                }        
-            }
+    for ( let i = 0 ; i < 3 ; i ++ ) {
+        for ( let m = 0 ; m < length ; m ++ ) {
+            if ( arr[m]['key'] == i ) {
+                order[i] = m;        
+            }        
         }
-        return order;        
-    } catch (e) {
-        console.log(e);
     }
-
+    return order;
 }
 function makeBinaryOrder(order, bin_size){
     let bin = '';
-    try {
-        for ( let i = 0 ; i < 3 ; i ++ ) {
-            let tmp = parseInt(order[i], 10).toString(2);
-            bin += pad(tmp, bin_size);
-        }
-        return bin;        
-    } catch (e) {
-        console.log(e);
+    for ( let i = 0 ; i < 3 ; i ++ ) {
+        let tmp = parseInt(order[i], 10).toString(2);
+        bin += pad(tmp, bin_size);
     }
-
+    return bin;
 }
 function makeBinaryNumber(arr, length, bin_size){
     let bin_pin = '';
