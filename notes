@@ -15,7 +15,12 @@ End game musi byc bardzo wymagajacy. Gdzie gra toczy sie o servery stron do wydo
 	jezeli w ktorej turze ktos zle rozwiaze bitowy ciag znakow, lub nie zdąży rozwiązać w czasie.
 	wszyscy gracze są wyrzucani.
 
-
+wyrzucanie ludzi z pokoju.
+	kill -s socket pin - gracz ktory ma byc wyrzucony dostaje informacje ze za 10 sec zostanie wyrzucony i dostaje binpin
+	kill -a socket pin - abort kill process, musi podac dobry pin i jazda.
+	jak ktos wbije do ofiary to moze ja wyrzucic.
+	
+	mozna wbijac na konto jezeli gracz jest offline?
 
 wirusowanie
 	gdy gracz polaczy sie z ofiara wpisuje command:
