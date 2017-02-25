@@ -17,7 +17,7 @@ function makeBinary(number, fake, order_bin_size, number_bin_size) {
     //make order
     try {
         let order = makeOrder(arr, 4);
-        let result = makeBinaryOrder(order, order_bin_size)+makeBinaryNumber(arr, num_and_fake.length, number_bin_size);
+        let result = makeBinaryOrder(order, order_bin_size)+makeBinaryNumber(arr, 4, number_bin_size);
         return result;
     } catch(e) {
         console.log(e);
