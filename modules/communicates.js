@@ -1,6 +1,14 @@
 //communicates
 //before login
-let website = "https://mywebadventure.com"
+let website = "https://mywebadventure.com";
+let global_commands = [
+	"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
+	"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
+	"kill -s <i>address</i> <i>pin</i> <i>method</i> - Starting kill process",
+	"kill -a <i>address</i> <i>pin</i> - Abort killing process",
+	"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
+	"me - shows your address."
+];
 let help_commands = {
 	before : [
 		"register - create new account.",
@@ -19,38 +27,26 @@ let help_commands = {
 		"rule -s - shows set rules.",
 		"rule -a <i>nick</i> - add new connection rule.",
 		"rule -r <i>nick</i> - remove connection rule.",
-		"ssh account - connects to account of current connection.",
-		"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
-		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
-		"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
-		"system - shows information about account.",
-		"me - shows your address."
+		"ssh account - connects to account of current connection.",	
+		"system - shows information about account."
 	],
 	openw : [
 		"listen - listen website traffic to find other users.",
 		"mine - mine bitcoins.",
 		"stop -l - stops listen.",
 		"stop -m - stops mining.",
-		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
-		"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 		"close - closes current website."
 	],
 	opent : [
 		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
 		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
-		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
-		"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 		"close - closes current website."
 	],
 	bank : [
 		"balance - check balance of connected account.",
 		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
 		"logs - shows transaction log.",
-		"decrypt <i>method</i> <i>cipher</i> - decrypts cipher with provided method.",
-		"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
-		"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 		"exit - exit account connection.",
-		"me - shows your address.",
 		"options -p - set 3 digit pin code to enter account."
 	]
 };
@@ -58,6 +54,12 @@ function help(data){
 	let response = '</br>-------------------- HELP ---------------------</br>';
 	for ( let i = 0 ; i < help_commands[data].length ; i ++ ) {
 		response += "</br>"+help_commands[data][i]+"</br>";
+	}
+	if ( data != 'before' ) {
+		response += "</br>-------------- GLOBAL COMMANDS ----------------</br>";
+		for ( let i = 0 ; i < global_commands.length ; i ++ ) {
+			response += "</br>"+global_commands[i]+"</br>";
+		}		
 	}
 	response += "</br>-----------------------------------------------</br></br>";
 	return response;
