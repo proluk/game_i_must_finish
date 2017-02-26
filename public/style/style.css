@@ -48,11 +48,11 @@ input:focus{
 	position: fixed;
 	bottom:0;
 	left:0;
-	width: calc(100vw - 1px);
-	border: 1px solid #28E500;
+	width: calc(100vw - 2px);
+	border: 1px solid #00cba7;
 	padding: 10px 0;
 	text-align: center;
-	color:#28E500;
+	color:#00cba7;
 	display: none;
 }
 
@@ -60,4 +60,9 @@ input:focus{
 	position: fixed;
 	top:0;
 	left:0;
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	align-items: center;
+	justify-content: center;
 }

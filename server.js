@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
 		if ( minemine ) {
 			mineFunc();	
 		}
-	},60000);
+	},30000);
 
 	let killing;	
 	let killkill = false;
@@ -574,7 +574,11 @@ io.on('connection', function(socket) {
 											if ( res1 ) {
 												runVirus(res, connection, pin);
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: cip});
-												socket.emit('set-memo',{data:cip});
+												if ( connection ) {
+													socket.broadcast.to(hash.decrypt(connection).emit('set-memo',{data:cip}));
+												} else {
+													socket.emit('set-memo',{data:cip});
+												}
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_block_help});
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.virus_unpack_info});
 											} else {
@@ -940,7 +944,7 @@ io.on('connection', function(socket) {
 			databaseModule.addMoney(home,mv, function(){
 				socket.emit("communicate", {data: "You mined: "+mv+" bitcoin."});
 			});
-			if ( percentageChance(1) ) {
+			if ( percentageChance(10) ) {
 				let uuid = hash.random(8);
 				let v = virusModule.randomVirus();
 				databaseModule.addVirus(hash.encrypt(uuid),v.duration,v.type,v.url,function(res){

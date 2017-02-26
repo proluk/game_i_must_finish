@@ -200,7 +200,7 @@ $(document).ready(function(){
 		window.scrollTo(0,document.body.scrollHeight);
 	}
 	function startVirus(name, url, dur){
-		vir = $('<div class="virus-window"><iframe width="1280" height="720" src="'+url+'?autoplay=1" frameborder="0" allowfullscreen></iframe></div>');
+		vir = $('<div class="virus-window"><iframe width="640" height="480" style ="order:1" src="'+url+'?autoplay=1" frameborder="0" allowfullscreen></iframe></div>');
 		bl = $('<div style="position:fixed; top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,0.1);z-index:1000000;"></div>');
 		$('#vir-info').show();
 		$('body').append(vir);
