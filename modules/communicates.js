@@ -1,7 +1,8 @@
 //communicates
 //before login
-let website = "https://mywebadventure.com";
+let website = "https://networkconquer.com";
 let global_commands = [
+	"clear - clears your log.",
 	"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
 	"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 	"kill -s <i>address</i> <i>pin</i> <i>method</i> - Starting kill process",
@@ -17,7 +18,6 @@ let help_commands = {
 	],
 	//after login
 	home : [
-		"clear - clears your log.",
 		"connect -d <i>address</i> - direct connect to user.",
 		"connect -f <i>address</i> - preform botnet attack to Gate of provided address.",
 		"disconnect - disconnects from user.",
@@ -44,7 +44,8 @@ let help_commands = {
 	],
 	bank : [
 		"balance - check balance of connected account.",
-		"transfer <i>address</i> <i>howmuch</i> - transfer money to specific address.",
+		"transfer -s <i>address</i> <i>howmuch</i> - Start transfering money to specific address.",
+		"transfer -a - Aborts transfer process.",
 		"logs - shows transaction log.",
 		"exit - exit account connection.",
 		"options -p - set 3 digit pin code to enter account."
@@ -108,6 +109,9 @@ const communicates = {
 	no_listen_process : "No listening process found.",
 	unexpected_error : "Unexpected error occured. Refresh Page.",
 	transaction_success : "Transaction finished.",
+	transaction_stopped : "Transaction process Aborted.",
+	no_transaction_runnnig : "No transaction process is running. Cannot abort.",
+	transaction_running : "There is already transaction process running.",
 	not_enough_money : "Not enough funds to finish transaction.",
 	provide_url : "Please do not use www. Use http:// or https://",
 	room_empty : "Looks like you are alone. Try different website.",
@@ -155,7 +159,8 @@ const communicates = {
 	rule_error_wrong_place : "Exit account connection or close site you are currently visiting.",
 	killing_abort : "Killing process Aborted.",
 	killing_success : "Process Killed.",
-	killing_running : "Killing process is already running."
+	killing_running : "Killing process is already running.",
+
 }
 
 

@@ -42,8 +42,7 @@ io.on('connection', function(socket) {
 	let site = false;
 	let lis = false;
 	let minemine = false;
-	let killkill = false;
-	let killkillpin = false;
+
 	let mine_per_min = 0;
 	let login = '';
 	let nick = '';
@@ -62,7 +61,16 @@ io.on('connection', function(socket) {
 		}
 	},60000);
 
-	let killing;
+	let killing;	
+	let killkill = false;
+	let killkillpin = false;
+
+	let transfering;
+	let transtrans = false;
+	let transfer_to = false;
+	let transfer_from = false;
+	let transfer_money = false;
+	let transfer_author = false;
 
 	mining.pause();
 
@@ -314,23 +322,43 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}
 		},
-		transfer : function(to, howmuch) {
+		transfer : function(option, to, howmuch) {
 			let tmp = hash.encrypt(to);
 			if ( bank ) {
-				// function transfer money
-				databaseModule.showBalance(bank, function(data){
-					if ( data-howmuch >= 0 ) {
-						databaseModule.getMoney(bank, howmuch, function(data){
-							databaseModule.addMoney(tmp, howmuch, function(data){
-								databaseModule.addTransactionLog(bank,'Transfer to: '+hash.decrypt(tmp)+' completed. '+howmuch+'B');
-								databaseModule.addTransactionLog(tmp,'Transfer recived from: '+hash.decrypt(bank)+'. '+howmuch+'B');
-								socket.emit("communicate", {data: communicates.communicates.transaction_success});							
-							});
-						});						
-					} else {
-						socket.emit("communicate", {data: communicates.communicates.not_enough_money});
+				if ( option ) {
+					if ( option == '-s' ) {
+						if ( to && howmuch ) {
+							// function transfer money
+							databaseModule.showBalance(bank, function(data){
+								if ( data-howmuch >= 0 ) {
+									databaseModule.getMoney(bank, howmuch, function(data){
+										if ( connection ) {
+											socket.broadcast.to(hash.decrypt(bank)).emit('transfer-start', {to: tmp, from: bank, money: howmuch, author: socket.id});
+										} else {
+											socket.emit('transfer-start', {to: tmp, from: bank, money: howmuch, author: socket.id});
+										}
+										socket.emit('communicate', {data: "Transfer process will take: "+(5+Math.round(howmuch))+" seconds."});
+									});						
+								} else {
+									socket.emit("communicate", {data: communicates.communicates.not_enough_money});
+								}
+							});								
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+						}
+							
+					} else if ( option == '-a' ) {
+						if ( connection ) {
+							socket.broadcast.to(hash.decrypt(bank)).emit('transfer-stop', {data: socket.id});
+						} else {
+							socket.emit('transfer-stop', {data: socket.id});
+						}
 					}
-				});
+			
+				} else {
+					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+				}
+
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.account_error});
 			}
@@ -813,6 +841,45 @@ io.on('connection', function(socket) {
 			io.in(hash.decrypt(connection)).emit('communicate', {data: communicates.communicates.killing_running});
 		}
 
+	});
+	socket.on('transfer-start-response', function(data){
+		if ( !transtrans ) {
+			transtrans = true;
+			transfer_to = data.data.to;
+			transfer_from = data.data.from;
+			transfer_money = data.data.money;
+			transfer_author = data.data.author;
+			let time = 5 + Math.round(transfer_money);
+			transfering = pause.setTimeout(function(){
+				if ( transtrans ) {
+					databaseModule.addMoney(transfer_to, transfer_money, function(respo){
+						databaseModule.addTransactionLog(transfer_from,'Transfer to: '+hash.decrypt(transfer_to)+' completed. '+transfer_money+'B');
+						databaseModule.addTransactionLog(transfer_to,'Transfer recived from: '+hash.decrypt(transfer_from)+'. '+transfer_money+'B');
+						socket.emit("communicate", {data: communicates.communicates.transaction_success});
+						socket.broadcast.to(data.data.author).emit("communicate", {data: communicates.communicates.transaction_success});					
+					});					
+				}
+			},(time*1000));			
+		} else {
+			socket.broadcast.to(data.data.author).emit("communicate", {data: communicates.communicates.transaction_running});
+		}
+
+	});
+	socket.on('transfer-stop-response', function(data){
+		if ( transtrans ) {
+			transfering.pause();
+			transtrans = false;
+			databaseModule.addMoney(transfer_from, transfer_money, function(respo){
+				transfer_to = false;
+				transfer_from = false;
+				transfer_money = false;
+				transfer_author = false;
+				socket.emit('communicate', {data:communicates.communicates.transaction_stopped});
+				socket.broadcast.to(data.data).emit('communicate', {data:communicates.communicates.transaction_stopped});
+			});
+		} else {
+			socket.emit('communicate', {data: communicates.communicates.no_transaction_running});
+		}
 	});
 	function hashFunction(type, value, callback){
 		let res = '';

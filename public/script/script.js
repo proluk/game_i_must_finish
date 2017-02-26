@@ -111,6 +111,12 @@ $(document).ready(function(){
 	socket.on('kill-start', function(data){
 		socket.emit('kill-start-response', {data:data.data});
 	});
+	socket.on('transfer-start', function(data){
+		socket.emit('transfer-start-response', {data: data});
+	});
+	socket.on('transfer-stop', function(data){
+		socket.emit('transfer-stop-response', {data:data.data});
+	});
 
 	$("html").click(function() {
         input.val(input.val()).focus();
