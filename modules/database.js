@@ -627,7 +627,7 @@ function checkVirusPin(virus, callback){
                 if ( err ) {
                     callback(false);
                 } else {
-                    callback(results[0]);
+                    callback(results[0].pin);
                 }
             });
         } else {

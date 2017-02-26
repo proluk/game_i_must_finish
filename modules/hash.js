@@ -30,7 +30,7 @@ function simpleEncrypt(text, option){
     crypted += cipher.final('hex');
     return crypted;
   } catch (e) {
-    return false;
+    console.log(e);
   }   
 }
 function simpleDecrypt(text, option){
@@ -40,16 +40,14 @@ function simpleDecrypt(text, option){
     dec += decipher.final('utf8');
     return dec;
   } catch (e) {
-    return false;
+    console.log(e);
   }   
 }
 function random(bits){
   try {
     return crypt.randomBytes(bits).toString('hex');
   } catch(e){
-    console.log("-----------");
     console.log(e);
-    return false;
   }
 }
 module.exports.random = random;

@@ -148,9 +148,12 @@ const communicates = {
 	virus_error : "There is no such virus or is already in use.",
 	virus_block_success : "Aborting unpack success.",
 	virus_block_help : "Unpacking process begin. If you do not recal such activity, Abort This Process Immediately!",
-	virus_unpack_info : "Unpacking process will end in 30sec.",
+	virus_unpack_info : "Unpacking process will end in 45sec.",
 	cannot_listen_on_tor : "Tor websites are immune to listening traffic. Cannot listen here.",
-	rule_error_wrong_place : "Exit account connection or close site you are currently visiting."
+	rule_error_wrong_place : "Exit account connection or close site you are currently visiting.",
+	killing_abort : "Killing process Aborted.",
+	killing_success : "Process Killed.",
+	killing_running : "Killing process is already running."
 }
 
 

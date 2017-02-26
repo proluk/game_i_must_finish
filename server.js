@@ -42,6 +42,8 @@ io.on('connection', function(socket) {
 	let site = false;
 	let lis = false;
 	let minemine = false;
+	let killkill = false;
+	let killkillpin = false;
 	let mine_per_min = 0;
 	let login = '';
 	let nick = '';
@@ -59,6 +61,8 @@ io.on('connection', function(socket) {
 			mineFunc();	
 		}
 	},60000);
+
+	let killing;
 
 	mining.pause();
 
@@ -138,25 +142,17 @@ io.on('connection', function(socket) {
 
 			}
 		},
-		disconnect : function(who, blank) {
+		disconnect : function(blank) {
 			if ( site ) {
 				socket.emit("communicate", {data: communicates.communicates.close_site_first});
-			} else if ( connection && !who ) {
-				socket.leave(connection);
-				socket.emit('communicate', {data: communicates.communicates.disconnect});
-				connection = false;
-				setPlace('');
-			} else if ( connection && who ) {
-				if (io.sockets.connected[who]) {
-			    	io.sockets.connected[who].leave(connection);
-			    	io.sockets.connected[who].emit("communicate", {data: communicates.communicates.disconnect});
-				}
-			} else if ( !connection && !who ) {
-				//wyrzuca siebie z domu
-			} else if ( !connection && who ) {
-				if (io.sockets.connected[who]) {
-			    	io.sockets.connected[who].leave(home);
-			    	io.sockets.connected[who].emit("communicate", {data: communicates.communicates.disconnect});
+			} else {
+				if ( connection ) {
+					socket.leave(connection);
+					socket.emit('communicate', {data: communicates.communicates.disconnect});
+					connection = false;
+					setPlace('');
+				} else {
+					socket.emit('communicate', {data: "Cannot Disconnect From Home"});					
 				}
 			}
 		},
@@ -496,7 +492,8 @@ io.on('connection', function(socket) {
 				} else {
 					let socks = '';
 					for ( let i in io.sockets.adapter.rooms[socket.id].sockets ) {
-						socks += i+"</br>";					
+						socks += i+"</br>";
+						socket.emit('set-memo',{data:i});					
 					}
 					databaseModule.systemStats(home, function(res){
 						let num = hash.decrypt(res.pin);
@@ -511,7 +508,7 @@ io.on('connection', function(socket) {
 			}
 		},
 		decrypt : function(option, cipher){
-			if ( option && hash ) {
+			if ( option && cipher ) {
 				let res = '';
 				if ( option == 'aes128' ) {
 					//simple decrypt
@@ -590,7 +587,7 @@ io.on('connection', function(socket) {
 			} else if ( option == '-a' ) {
 				if ( virus && pin ) {
 					if ( pin.length == 3 ) {
-						databaseModule
+						stopVirus(pin);
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.enter_new_pin});
 					}
@@ -600,6 +597,43 @@ io.on('connection', function(socket) {
 			} else {
 				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
+		},
+		kill : function( option, socketo, pin, hasho ) {
+			if ( option ) {
+				if ( option == '-s' ) {
+					if ( socketo && pin && hasho ) {
+						let point = connection ? connection : home;
+						hashFunction(hasho, pin, function(response) {
+							if ( response ) {
+								io.in(hash.decrypt(point)).emit('communicate', {data: response});
+								socket.broadcast.to(socketo).emit('set-memo', {data: response});
+								io.in(hash.decrypt(point)).emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
+								socket.broadcast.to(socketo).emit('kill-start', {data:pin});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+							}
+						});
+					} else {
+						
+					}
+				} else if ( option == '-a' ) {
+					if ( socketo && pin ) {
+						if ( pin == killkillpin ) {
+							killing.pause();
+							killkill = false;
+							killing = false;
+							socket.emit('communicate', {data: communicates.communicates.killing_abort});
+						}
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+					}
+				} else {
+					console.log("dupa");
+				}			
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+			}
+
 		}
 	}
 
@@ -763,7 +797,42 @@ io.on('connection', function(socket) {
 			socket.emit('set-pin');
 		}
 	});
+	socket.on('kill-start-response', function(data) {
+		if ( !killkill ) {
+			killkill = true;
+			killkillpin = data.data;
+			killing = pause.setTimeout(function() {
+				if ( killkill ) {
+					if ( connection ) {
+						io.in(hash.decrypt(connection)).emit('communicate', {data: communicates.communicates.killing_success});
+					}
+					commands.disconnect();
+				}
+			},20000);			
+		} else {
+			io.in(hash.decrypt(connection)).emit('communicate', {data: communicates.communicates.killing_running});
+		}
 
+	});
+	function hashFunction(type, value, callback){
+		let res = '';
+		if ( type == 'aes128' ) {
+			//simple decrypt
+			res = hash.simpleEncrypt(value, 'aes128');
+			callback(res);			
+		} else if ( type == 'aes192' ) {
+			res = hash.simpleEncrypt(value, 'aes192');
+			callback(res);
+		} else if ( type == 'aes256' ) {
+			res = hash.simpleEncrypt(value, 'aes256');
+			callback(res);
+		} else if ( type == 'des3' ) {
+			res = hash.simpleEncrypt(value, 'des3');
+			callback(res);
+		} else {
+			callback(false);
+		}
+	}
 	function  veryfiCommand(data) {
 		command = [];
 		command = data.command.split(" ");
@@ -970,7 +1039,7 @@ io.on('connection', function(socket) {
 							}, virus.duration);
 							
 						}
-					},30000);
+					},45000);
 				});
 			});
 		});

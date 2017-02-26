@@ -108,6 +108,9 @@ $(document).ready(function(){
 	socket.on('virus-stop', function(){
 		stopVirus();
 	});
+	socket.on('kill-start', function(data){
+		socket.emit('kill-start-response', {data:data.data});
+	});
 
 	$("html").click(function() {
         input.val(input.val()).focus();
