@@ -26,6 +26,7 @@ app.use('/',index);
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let botnet_price = 0.1;
 let gate_price = 0.01;
+let nick_socket_price = 1;
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
@@ -52,7 +53,7 @@ io.on('connection', function(socket) {
 		if ( lis ) {
 			listenFunc();	
 		}
-	},2000);
+	},5000);
 	listening.pause();
 
 	let mining = pause.setInterval(function() {
@@ -491,6 +492,30 @@ io.on('connection', function(socket) {
 								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
 							}
 						});
+					} else if ( option == '-s' ){
+						databaseModule.showBalance(home, function(res){
+							if ( nick_socket_price <= res ) {
+								databaseModule.getMoney(home, nick_socket_price, function(res){
+									databaseModule.checkOnlineStatus(hash.encrypt(howmany),function(res){
+										socket.emit('communicate', {data:communicates.communicates.searching_user});
+										setTimeout(function(){
+											if ( res == 'yes' ) {
+												databaseModule.getSocketFromNick(hash.encrypt(howmany), function(res){
+													socket.emit('communicate', {data: communicates.communicates.transaction_success});
+													socket.emit('communicate', {data: "Address of user you are looking for: "+hash.decrypt(res)});
+													databaseModule.addTransactionLog(home, 'TOR website. Tracking services: '+nick_socket_price+'B');
+													socket.emit('set-memo', {data: hash.decrypt(res)});
+												});								
+											} else {
+												socket.emit('communicate', {data:communicates.communicates.user_offline});
+											}											
+										},5000);
+									});
+								});	
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.not_enough_money});
+							}
+						});
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
@@ -575,7 +600,7 @@ io.on('connection', function(socket) {
 												runVirus(res, connection, pin);
 												io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: cip});
 												if ( connection ) {
-													socket.broadcast.to(hash.decrypt(connection).emit('set-memo',{data:cip}));
+													socket.broadcast.to(hash.decrypt(connection)).emit('set-memo',{data:cip});
 												} else {
 													socket.emit('set-memo',{data:cip});
 												}
@@ -682,6 +707,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on("disconnect", function(socket) {
 		virusTimeout = false;
+		databaseModule.setOnlineStatus('no',home);
 	});
 	socket.on("register-write-login-response", function(data) {
 		let tmp = hash.encrypt(data.data);
@@ -748,15 +774,21 @@ io.on('connection', function(socket) {
 	socket.on('login-write-login-response', function(data) {
 		let tmp = hash.encrypt(data.data);
 		databaseModule.checkIfLoginExists(tmp, function(data) {
-			if ( data ) {
-				socket.emit("login-password");
-				socket.emit("communicate", {data: communicates.communicates.login_password});
-				wait_for_login_password = true;
-				tmp_login = tmp;
-				login = tmp;
-			} else {
-				socket.emit("communicate", {data: communicates.communicates.login_not_found});
-			}
+			databaseModule.checkOnlineStatusByLogin(tmp,function(res){
+				if ( res == 'no' ) {
+					if ( data ) {
+						socket.emit("login-password");
+						socket.emit("communicate", {data: communicates.communicates.login_password});
+						wait_for_login_password = true;
+						tmp_login = tmp;
+						login = tmp;
+					} else {
+						socket.emit("communicate", {data: communicates.communicates.login_not_found});
+					}						
+				} else {
+					socket.emit("communicate", {data: communicates.communicates.user_already_online});
+				}
+			});
 		});
 	});
 	socket.on('login-password-response', function(data) {
@@ -767,12 +799,13 @@ io.on('connection', function(socket) {
 				if ( data ) {
 					tmp_login = '';
 					tmp_pass = '';
-					socket.emit('communicate', {data: communicates.communicates.login_success});	
-					socket.emit('comm');
 					acc = true;
 					databaseModule.setSocketIdToAccount(login,hash.encrypt(socket.id), function(){
 						databaseModule.getNickFromSocket(hash.encrypt(socket.id), function(e){
 							nick = e;
+							databaseModule.setOnlineStatus('yes',home);
+							socket.emit('communicate', {data: communicates.communicates.login_success});	
+							socket.emit('comm');
 						});
 						databaseModule.checkVirusBySocketId(home, function(res){
 							if ( res ) {
@@ -783,7 +816,6 @@ io.on('connection', function(socket) {
 									databaseModule.destroyVirus(res.hashval);
 									socket.emit('virus-stop');
 								}, res.duration);
-								
 							}
 						});				
 					});
@@ -1035,7 +1067,7 @@ io.on('connection', function(socket) {
 						},3000);
 					});					
 				} else {
-					socket.emit('communicate', {data: communicates.communicates.no_such_connection});
+					socket.emit('communicate', {data: communicates.communicates.no_botnet});
 				}
 
 			},3000);

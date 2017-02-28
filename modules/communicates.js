@@ -40,6 +40,7 @@ let help_commands = {
 	opent : [
 		"buy -b <i>quantity</i> - buys artificial connections to your Botnet.",
 		"buy -g <i>quantity</i> - buys gate ability to process more connections.",
+		"buy -s <i>nick</i> - Search for user current address for a small fee.",
 		"close - closes current website."
 	],
 	bank : [
@@ -160,6 +161,10 @@ const communicates = {
 	killing_abort : "Killing process Aborted.",
 	killing_success : "Process Killed.",
 	killing_running : "Killing process is already running.",
+	no_botnet : "You have no artificial connections. Cannot use Botnet attack.",
+	searching_user : "Tracking user address...",
+	user_offline : "User is currently offline.",
+	user_already_online : "This user is already Connected"
 
 }
 

@@ -390,6 +390,27 @@ function getNickFromSocket ( socket , callback ) {
         connection.release();
     });
 }
+function getSocketFromNick ( nick , callback ) {
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT socket FROM account WHERE nick = ?', [nick], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    if ( results ) {
+                        callback(results[0].socket);    
+                    } else {
+                        callback('sorry, unexpected error. oh well...'); 
+                    }
+                }
+            });
+        } else {
+            console.log("getSocketFromNick database module getConnection error");
+        }
+        connection.release();
+    });
+}
 function checkAuthorizedConnection(ine , name, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
@@ -627,7 +648,9 @@ function checkVirusPin(virus, callback){
                 if ( err ) {
                     callback(false);
                 } else {
-                    callback(results[0].pin);
+                    if ( results[0] ) {
+                        callback(results[0].pin);                        
+                    }
                 }
             });
         } else {
@@ -667,7 +690,62 @@ function addVirus(hashval,dur,type,url,callback){
         connection.release();
     });  
 }
+function setOnlineStatus(status,socket){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('UPDATE account SET online = ? WHERE socket = ?', [status,socket], function(err){
+                if ( err ) {
+                    console.log(err);
+                } 
+            });
+        } else {
+            console.log("setOnlineStatus database module getConnection error");
+        }
+        connection.release();
+    });  
+}
+function checkOnlineStatus(nick,callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT online FROM account WHERE nick = ?', [nick], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    if ( results[0] ) {
+                        callback(results[0].online);
+                    }
+                }
+            });
+        } else {
+            console.log("checkOnlineStatus database module getConnection error");
+        }
+        connection.release();
+    });  
+}
+function checkOnlineStatusByLogin(login,callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query('SELECT online FROM account WHERE login = ?', [login], function(err, results){
+                if ( err ) {
+                    console.log(err);
+                    callback(false);
+                } else {
+                    if ( results[0] ) {
+                        callback(results[0].online);
+                    }
+                }
+            });
+        } else {
+            console.log("checkOnlineStatus database module getConnection error");
+        }
+        connection.release();
+    });  
+}
 
+module.exports.checkOnlineStatusByLogin = checkOnlineStatusByLogin;
+module.exports.setOnlineStatus = setOnlineStatus;
+module.exports.checkOnlineStatus = checkOnlineStatus;
 module.exports.addVirus = addVirus;
 module.exports.destroyVirus = destroyVirus;
 module.exports.checkIfSocketInfected = checkIfSocketInfected;
@@ -686,6 +764,7 @@ module.exports.systemStats = systemStats;
 module.exports.checkBotnetPoints = checkBotnetPoints;
 module.exports.checkIfSocketInDatabase = checkIfSocketInDatabase;
 module.exports.getNickFromSocket = getNickFromSocket;
+module.exports.getSocketFromNick = getSocketFromNick;
 module.exports.checkGatePoints = checkGatePoints;
 module.exports.checkAuthorizedConnection = checkAuthorizedConnection;
 module.exports.addGatePoints = addGatePoints;
