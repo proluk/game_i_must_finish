@@ -71,7 +71,7 @@ $(document).ready(function(){
 		input.attr('type','text');
 	});
 	socket.on('open-help', function() {
-		 window.open('https://mywebadventure.com');
+		 window.open('https://networkconquer.com');
 	});
 	socket.on('clear', function() {
 		log.empty();

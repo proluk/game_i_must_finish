@@ -354,8 +354,9 @@ io.on('connection', function(socket) {
 						} else {
 							socket.emit('transfer-stop', {data: socket.id});
 						}
+					} else {
+						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
-			
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 				}
