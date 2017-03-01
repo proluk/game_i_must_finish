@@ -5,11 +5,15 @@ mikrotranzakcja - zmiana nicku, 1$
 
 kupowanie socketu po nicku, za 1 bitcoin, nawet jezeli player jest offline i nie ma socketu to zabiera bitcoin.
 
+Daily - na stronie pojawia sie hash z  cytatem, pierwsza litera kazdego slowa to czesc adresu strony tor.
+	po wejsciu na strone, system będzie próbował Cię wyrzucić, wysyłając komendy typu kill i wirusy.
+	Gracz musi odpierać ataki przez jakiś czas, dodatkowo musi rozszyfrować pin i napisać jakas komende.
+	
+	Dodatkowo, kilka stron tego typu ktore maja ograniczona ilosc bitcoinow, 
+	po wykopaniu wszystkiego ze strony, generuje sie nowa na jej miejsce
+	
 Co trzeba poprawić zeby gameplay byl lepszy. 
-	Daily missions na pewno! 
-	Pomysl na wyszukiwanie socketu po adresie.
-	Wstawianie przedmiotow na tor.
-	Pomysl na pozbycie sie hakera z pokoju.
+	Daily missions na pewno!
 
 
 End game musi byc bardzo wymagajacy. Gdzie gra toczy sie o servery stron do wydobywania bitcoinow.
