@@ -262,9 +262,11 @@ io.on('connection', function(socket) {
 					minemine = false;
 					mining.pause();
 					socket.emit('communicate', {data: communicates.communicates.mine_stop});
-				}	
-				if ( during_daily ) {
-
+				}
+				if ( daily_status ) {
+					daily_interval.pause();
+					daily_interval = false;
+					daily_status = false;
 				}
 			} else {
 				socket.emit("communicate", {data: communicates.communicates.no_connection});
