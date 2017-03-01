@@ -161,10 +161,13 @@ const communicates = {
 	killing_abort : "Killing process Aborted.",
 	killing_success : "Process Killed.",
 	killing_running : "Killing process is already running.",
+	killing_process_not_found : "There is no such killing process.",
 	no_botnet : "You have no artificial connections. Cannot use Botnet attack.",
 	searching_user : "Tracking user address...",
 	user_offline : "User is currently offline.",
-	user_already_online : "This user is already Connected"
+	user_already_online : "This user is already Connected",
+	daily_enter : "You have connected to a daily website. To aquire Daily reward write: mine <i>pin</i>. Good luck.",
+	daily_success : "Success! Daily finished."
 
 }
 

@@ -40,7 +40,7 @@ function simpleDecrypt(text, option){
     dec += decipher.final('utf8');
     return dec;
   } catch (e) {
-    console.log(e);
+    return 'Wrong Decryption Method or Wrong Cipher. Use another one.';
   }   
 }
 function random(bits){

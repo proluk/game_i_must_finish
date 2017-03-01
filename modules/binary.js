@@ -53,7 +53,7 @@ function makeBinaryOrder(order, bin_size){
     let bin = '';
     for ( let i = 0 ; i < 3 ; i ++ ) {
         let tmp = parseInt(order[i], 10).toString(2);
-        bin += pad(tmp, bin_size);
+        bin += pad(tmp, bin_size)+' ';
     }
     return bin;
 }
@@ -61,7 +61,7 @@ function makeBinaryNumber(arr, length, bin_size){
     let bin_pin = '';
     for ( let i = 0 ; i < length ; i ++ ) {
         let tmp = parseInt(arr[i]['val'], 10).toString(2);
-        bin_pin += pad(tmp,bin_size);
+        bin_pin += pad(tmp,bin_size)+' ';
     }
     return bin_pin;  
 }
