@@ -11,7 +11,7 @@ let connection = mysql.createPool(
 function login(login, password, callback) {
     connection.getConnection(function(error,connection){
         if(!error){
-            connection.query('SELECT COUNT(id) AS c FROM Account WHERE login=? AND password=?;',[login,password],function(err, results){
+            connection.query('SELECT COUNT(id) AS c FROM account WHERE login=? AND password=?;',[login,password],function(err, results){
                 if ( err ) {
                     return err;
                 } else {
