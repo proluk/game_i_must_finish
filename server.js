@@ -855,21 +855,28 @@ io.on('connection', function(socket) {
 	socket.on('login-write-login-response', function(data) {
 		let tmp = hash.encrypt(data.data);
 		databaseModule.checkIfLoginExists(tmp, function(data) {
-			databaseModule.checkOnlineStatusByLogin(tmp,function(res){
-				if ( res == 'no' ) {
-					if ( data ) {
-						socket.emit("login-password");
-						socket.emit("communicate", {data: communicates.communicates.login_password});
-						wait_for_login_password = true;
-						tmp_login = tmp;
-						login = tmp;
+			if ( data ) {
+				databaseModule.checkOnlineStatusByLogin(tmp,function(res){
+					if ( res == 'no' ) {
+						if ( data ) {
+							socket.emit("login-password");
+							socket.emit("communicate", {data: communicates.communicates.login_password});
+							wait_for_login_password = true;
+							tmp_login = tmp;
+							login = tmp;
+						} else {
+							socket.emit("communicate", {data: communicates.communicates.login_not_found});
+						}						
 					} else {
-						socket.emit("communicate", {data: communicates.communicates.login_not_found});
-					}						
-				} else {
-					socket.emit("communicate", {data: communicates.communicates.user_already_online});
-				}
-			});
+						socket.emit("communicate", {data: communicates.communicates.user_already_online});
+					}
+				});				
+			} else {
+				socket.emit('communicate', {data: communicates.communicates.login_not_found+"</br>Write register or try login command again."});
+
+				socket.emit('comm');
+			}
+
 		});
 	});
 	socket.on('login-password-response', function(data) {
@@ -903,7 +910,7 @@ io.on('connection', function(socket) {
 					setPlace('');
 				} else {
 					socket.emit('communicate', {data: communicates.communicates.login_failed});
-					socket.emit("login-write-login");	
+					socket.emit("comm");	
 				}
 			});
 		}
