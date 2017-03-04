@@ -222,7 +222,6 @@ io.on('connection', function(socket) {
 								let randpin = genRandPin();
 								let randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
 								daily_status = true;
-								let stage = 1;
 								setTimeout(function(){
 									commands.kill('-s', socket.id, randpin, randhash);
 								},5000);
@@ -234,7 +233,6 @@ io.on('connection', function(socket) {
 										let pino = hash.simpleEncrypt(binaryModule.makeBinary(daily_pin,1,2,4), 'des3');
 										socket.emit('communicate', {data: pino+"</br>=========================================="});
 										socket.emit('set-memo',{data: pino});
-										stage++;
 										setTimeout(function(){
 											if ( daily_status ) {
 												let randVirus = virusModule.randomVirus();
