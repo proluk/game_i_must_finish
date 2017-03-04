@@ -23,6 +23,8 @@ let index = require(path.join(__dirname, '/routes/index.js'));
 
 app.use('/',index);
 
+databaseModule.setAllOffline();
+
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let daily_website = "http://dailywebsite.onion";
 let daily_reward = 5;
@@ -645,6 +647,12 @@ io.on('connection', function(socket) {
 		},
 		decrypt : function(option, cipher){
 			if ( option && cipher ) {
+				hashFunction(option, cipher, function(response){
+					if ( response ) {
+						socket.emit('set-memo', {data: response});
+						socket.emit('communicate', {data: response});
+					}
+				});
 				let res = '';
 				if ( option == 'aes128' ) {
 					//simple decrypt
@@ -743,7 +751,7 @@ io.on('connection', function(socket) {
 				if ( option == '-s' ) {
 					if ( socketo && pin && hasho ) {
 						let point = connection ? connection : home;
-						hashFunction(hasho, pin, function(response) {
+						hashFunction(hasho, pin, function(response, bool) {
 							if ( response ) {
 								if ( daily_status ) {
 									socket.emit('communicate', {data: response});

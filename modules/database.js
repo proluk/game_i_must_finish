@@ -742,7 +742,17 @@ function checkOnlineStatusByLogin(login,callback){
         connection.release();
     });  
 }
+function setAllOffline(){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("UPDATE account SET online = 'no'");
+        } else {
+            console.log("setAllOffline databasse module getconnection error");
+        }
+    });
+}
 
+module.exports.setAllOffline = setAllOffline;
 module.exports.checkOnlineStatusByLogin = checkOnlineStatusByLogin;
 module.exports.setOnlineStatus = setOnlineStatus;
 module.exports.checkOnlineStatus = checkOnlineStatus;
