@@ -196,8 +196,45 @@ $(document).ready(function(){
 		socket.emit('set-pin-response', {data: data});
 	}
 	function add(data){
-		log.append("<div class='row'>"+data+"</div>");
+		let text_cont = $("<div class='row'></div>");
+		log.append(text_cont);
 		window.scrollTo(0,document.body.scrollHeight);
+		console.log(data);
+		typeWrite(text_cont,data,0,'',false,false);
+	}
+	function typeWrite(container, text, ite, tage, isTag, isEndTag){
+		window.scrollTo(0,document.body.scrollHeight);
+		if ( ite < text.length ) {
+			if ( !isTag ) {
+				if ( text[ite] == '<' ) {
+					tage += '<';
+					isTag = true;
+					typeWrite(container, text, ite+1, tage, isTag, isEndTag);
+				} else {
+					setTimeout(function(){
+						container.append(text[ite]);
+						typeWrite(container, text, ite+1, tage, isTag, isEndTag);
+					},5);						
+				}
+			} else {
+				if ( text[ite] == '/' ) {
+					isEndTag = true;
+					tage += text[ite];
+					typeWrite(container, text, ite+1, tage, isTag, isEndTag);
+				} else if ( text[ite] == '>' && isEndTag ) {
+					isTag = false;
+					isEndTag = false;
+					tage += text[ite];
+					container.append(tage);
+					tage = '';
+					typeWrite(container, text, ite+1, tage, isTag, isEndTag);
+				} else {
+					tage += text[ite];
+					typeWrite(container, text, ite+1, tage, isTag, isEndTag);
+				}
+				
+			}
+		}
 	}
 	function startVirus(name, url, dur){
 		vir = $('<div class="virus-window"><iframe width="640" height="480" style ="order:1" src="'+url+'?autoplay=1" frameborder="0" allowfullscreen></iframe></div>');

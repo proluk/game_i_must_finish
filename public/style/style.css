@@ -37,7 +37,7 @@ input {
 	font-weight:bold;
 	width:100%;
 	background-color: rgba(0,0,0,0);
-	padding-bottom: 20vh;
+	padding-bottom: 40vh;
 	flex-shrink:2;
 	order:2;
 }
