@@ -199,7 +199,6 @@ $(document).ready(function(){
 		let text_cont = $("<div class='row'></div>");
 		log.append(text_cont);
 		window.scrollTo(0,document.body.scrollHeight);
-		console.log(data);
 		typeWrite(text_cont,data,0,'',false,false);
 	}
 	function typeWrite(container, text, ite, tage, isTag, isEndTag){
