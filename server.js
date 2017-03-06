@@ -119,17 +119,27 @@ io.on('connection', function(socket) {
 		}
 	}
 	let commands = {
-		help : function() {
+		help : function(option) {
 			let help_data = '';
-			if ( bank ) {
-				help_data = communicates.help('bank');
-			} else if ( connection || home && !site ) { 
-				help_data = communicates.help('home');
-			} else if ( site && !tor ) {
-				help_data = communicates.help('openw');
-			} else if ( site && tor ) {
-				help_data = communicates.help('opent');
+			if ( option ) {
+				if ( option == '-g' ) {
+					help_data = communicates.help('global');
+				} else {
+					socket.emit("communicate", {data: communicates.communicates.wrong_command_use});
+				}
+			} else {
+				if ( bank ) {
+					help_data = communicates.help('bank');
+				} else if ( connection || home && !site ) { 
+					help_data = communicates.help('home');
+				} else if ( site && !tor ) {
+					help_data = communicates.help('openw');
+				} else if ( site && tor ) {
+					help_data = communicates.help('opent');
+				}				
 			}
+
+
 			socket.emit("communicate", {data: help_data});
 		},
 		morehelp : function() {
