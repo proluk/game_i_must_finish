@@ -168,7 +168,7 @@ $(document).ready(function(){
 	});
 
 	function command(data) {
-	    add(current_place+data);
+	    userAddText(current_place+data);
 		socket.emit("command", {command: data});
 	}
 	function registerLogin(data) {
@@ -200,6 +200,12 @@ $(document).ready(function(){
 		log.append(text_cont);
 		window.scrollTo(0,document.body.scrollHeight);
 		typeWrite(text_cont,data,0,'',false,false);
+	}
+	function userAddText(data){
+		let text_cont = $("<div class='row'></div>");
+		log.append(text_cont);
+		text_cont.append(data);
+		window.scrollTo(0,document.body.scrollHeight);
 	}
 	function typeWrite(container, text, ite, tage, isTag, isEndTag){
 		window.scrollTo(0,document.body.scrollHeight);

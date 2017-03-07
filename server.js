@@ -599,8 +599,7 @@ io.on('connection', function(socket) {
 										setTimeout(function(){
 											if ( res == 'yes' ) {
 												databaseModule.getSocketFromNick(hash.encrypt(howmany), function(res){
-													socket.emit('communicate', {data: communicates.communicates.transaction_success});
-													socket.emit('communicate', {data: "Address of user you are looking for: "+hash.decrypt(res)});
+													socket.emit('communicate', {data: communicates.communicates.transaction_success+"</br>Address of user you are looking for: "+hash.decrypt(res)});
 													databaseModule.addTransactionLog(home, 'TOR website. Tracking services: '+nick_socket_price+'B');
 													socket.emit('set-memo', {data: hash.decrypt(res)});
 												});								
@@ -767,10 +766,9 @@ io.on('connection', function(socket) {
 						hashFunction(hasho, pin, function(response, bool) {
 							if ( response ) {
 								if ( daily_status ) {
-									socket.emit('communicate', {data: response});
+									socket.emit('communicate', {data: response+"</br>Process: "+socketo+" will be killed in 20sec."});
 									socket.emit('set-memo', {data: response});
 									socket.emit('kill-start', {data:pin});
-									socket.emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
 								} else {
 									io.in(hash.decrypt(point)).emit('communicate', {data: response});
 									socket.broadcast.to(socketo).emit('set-memo', {data: response});
@@ -1159,13 +1157,11 @@ io.on('connection', function(socket) {
 			setTimeout(function(){
 				if ( res0 ) {
 					botnet_strength = res0;
-					socket.emit('communicate', {data: communicates.communicates.botnet_ready});
-					socket.emit("communicate", {data: communicates.communicates.connection_stage_one_try});
+					socket.emit('communicate', {data: communicates.communicates.botnet_ready+"</br>"+communicates.communicates.connection_stage_one_try});
 					databaseModule.checkIfSocketInDatabase(tmp , function(res1){
 						setTimeout(function(){
 							if ( res1 > 0 ) {
-								socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
-								socket.emit('communicate', {data: communicates.communicates.botnet_attack_start});
+								socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success+"</br>"+communicates.communicates.botnet_attack_start});
 								databaseModule.checkGatePoints(tmp, function(res2) {
 									gate_strength = res2;
 									socket.emit('communicate', {data: communicates.communicates.botnet_attack_finished});
@@ -1202,41 +1198,35 @@ io.on('connection', function(socket) {
 		socket.emit('communicate', {data: communicates.communicates.connection_stage_one_try});
 		setTimeout(function(){
 			if ( checkIfRoomExist(hash.decrypt(tmp)) ) {
-				socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success});
+				socket.emit('communicate', {data: communicates.communicates.connection_stage_one_success+"</br>"+communicates.communicates.connection_stage_two_try});
 				//socket.emit('connection-stage-two');
-				socket.emit('communicate', {data: communicates.communicates.connection_stage_two_try});
 				setTimeout(function(){
 					let tmp_gate_points;
 					databaseModule.checkGatePoints(tmp, function(res0){
 						if ( res0 > 0 ) {
 							databaseModule.checkAuthorizedConnection(tmp , nick, function(res1) {
 								if ( res1 ) {
-									socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
-									socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+									socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success+"</br>"+communicates.communicates.connection_pre_established});
 									setTimeout(function(){
 										connection = tmp;
 										socket.join(hash.decrypt(tmp));
-										socket.emit('communicate', {data: communicates.communicates.connection_established});
-										socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+										socket.emit('communicate', {data: communicates.communicates.connection_established+"</br>"+communicates.communicates.connected+hash.decrypt(connection)});
 										io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.user_connected});
 										setPlace('');
 									},3000);
 								} else {
 									socket.emit('')
 									databaseModule.removeGatePoints(tmp, 1,  function(res2){
-										socket.emit("communicate", {data: communicates.communicates.connection_handshake_failed});
-										socket.emit("communicate", {data: communicates.communicates.gate_status+(res0 - 1) });
+										socket.emit("communicate", {data: communicates.communicates.connection_handshake_failed+"</br>"+communicates.communicates.gate_status+(res0 - 1)});
 									});												  
 								}
 							});
 						} else {
-							socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success});
-							socket.emit('communicate', {data: communicates.communicates.connection_pre_established});
+							socket.emit('communicate', {data: communicates.communicates.connection_stage_two_success+"</br>"+communicates.communicates.connection_pre_established});
 							setTimeout(function(){
 								connection = tmp;
 								socket.join(hash.decrypt(tmp));
-								socket.emit('communicate', {data: communicates.communicates.connection_established});
-								socket.emit("communicate", {data: communicates.communicates.connected+hash.decrypt(connection)});
+								socket.emit('communicate', {data: communicates.communicates.connection_established+"</br>"+communicates.communicates.connected+hash.decrypt(connection)});
 								io.sockets.connected[hash.decrypt(connection)].emit('communicate',{data: communicates.communicates.user_connected});
 								setPlace('');
 							},3000);
