@@ -101,7 +101,7 @@ const communicates = {
 	rules_breaking : "Follow the rules. Do not play with us.",
 	email_exists : "This Email is already in database.",
 	nick_exists : "This Nick is already in database.",
-	login_success : "You are in. Type <i>help</i> everytime you want to see available commands.",
+	login_success : "You are in. Type <i>help</i> everytime you want to see available commands.</br>Type <i>help -g</i> to see global commands.",
 	login_failed : "Login Failed. Try Again ",
 	register_started : "Register process started. Follow further instructions.</br> Type your future unique login.",
 	register_password : "Write your password.",
@@ -170,7 +170,8 @@ const communicates = {
 	user_offline : "User is currently offline.",
 	user_already_online : "This user is already Connected",
 	daily_enter : "You have connected to a daily website. To aquire Daily reward write: mine <i>pin</i>. Good luck.",
-	daily_success : "Success! Daily finished."
+	daily_success : "Success! Daily finished.",
+	cannot_connect_yourself : "You cannot connect to yourself"
 
 }
 

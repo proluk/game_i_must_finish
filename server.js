@@ -154,6 +154,8 @@ io.on('connection', function(socket) {
 				socket.emit("communicate", {data: communicates.communicates.already_connected});
 			} else if ( site ) {
 				socket.emit("communicate", {data: communicates.communicates.close_site_first});
+			} else if ( tmp == home ) {
+				socket.emit("communicate", {data: communicates.communicates.cannot_connect_yourself});
 			} else {
 				//socket.emit('connection-stage-one');
 				if ( !option ) {
@@ -443,12 +445,13 @@ io.on('connection', function(socket) {
 		},
 		rule : function(option, name){
 			if ( !bank && !site ) {
+				let tmp_connection = connection ? connection : home;
 				if ( option ) {
 					if ( option == '-a' ) {
 						if ( name ) {
 							databaseModule.checkIfNickExists(hash.encrypt(name), function(res){
 								if ( res ) {
-									databaseModule.addAuthorizedConnection(hash.encrypt(name), bank, function(res){
+									databaseModule.addAuthorizedConnection(hash.encrypt(name), tmp_connection, function(res){
 										socket.emit("communicate", {data: communicates.communicates.add_auth_connection});
 									});											
 								} else {
@@ -461,7 +464,7 @@ io.on('connection', function(socket) {
 		
 					} else if ( option == '-r' ) {
 						if ( name ) {
-							databaseModule.removeAuthorizedConnection(hash.encrypt(name), bank, function(res){
+							databaseModule.removeAuthorizedConnection(hash.encrypt(name), tmp_connection, function(res){
 								socket.emit("communicate", {data: communicates.communicates.remove_auth_connection});
 							});	
 						} else {
@@ -469,7 +472,7 @@ io.on('connection', function(socket) {
 						}
 				
 					} else if ( option == '-s' ) {
-						databaseModule.showAuthorizedConnection(bank, function(res){
+						databaseModule.showAuthorizedConnection(tmp_connection, function(res){
 							let reso = 'Connection Allowed For: </br></br>';
 							for ( let i = 0 ; i < res.length ; i ++ ) {
 								reso += hash.decrypt(res[i].nick)+"</br>";

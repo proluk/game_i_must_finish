@@ -435,7 +435,7 @@ function checkAuthorizedConnection(ine , name, callback){
 function addAuthorizedConnection(name, socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('INSERT INTO authorizedConnections (id, nick) SELECT ( SELECT id FROM account WHERE socket = ? ) , ( SELECT nick FROM account WHERE nick = ? ) ;', [socket, name], function(err , results){
+            connection.query('INSERT INTO authorizedconnections (id, nick) SELECT ( SELECT id FROM account WHERE socket = ? ) , ( SELECT nick FROM account WHERE nick = ? )', [socket, name], function(err , results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
@@ -453,7 +453,7 @@ function addAuthorizedConnection(name, socket, callback){
 function removeAuthorizedConnection(name, socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('DELETE FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?) AND nick = (SELECT nick FROM account WHERE nick = ? )', [socket, name], function(err , results){
+            connection.query('DELETE FROM authorizedconnections WHERE id = (SELECT id FROM account WHERE socket = ?) AND nick = (SELECT nick FROM account WHERE nick = ? )', [socket, name], function(err , results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
@@ -471,7 +471,7 @@ function removeAuthorizedConnection(name, socket, callback){
 function showAuthorizedConnection(socket, callback){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query('SELECT nick FROM authorizedConnections WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err , results){
+            connection.query('SELECT nick FROM authorizedconnections WHERE id = (SELECT id FROM account WHERE socket = ?)', [socket], function(err , results){
                 if ( err ) {
                     callback(false);
                     console.log(err);
