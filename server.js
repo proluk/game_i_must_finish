@@ -245,7 +245,7 @@ io.on('connection', function(socket) {
 								},3000);
 								setTimeout(function(){
 									if ( daily_status ) {
-										socket.emit('communicate', {data: "Get ready..."});
+										socket.emit('communicate', {data: "Fun will start in 10 seconds. Get Ready..."});
 									}
 								},10000);
 								daily_interval = pause.setInterval(function(){
@@ -254,7 +254,7 @@ io.on('connection', function(socket) {
 										randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
 										commands.kill('-s', socket.id, randpin, randhash);											
 									}
-								},22000);
+								},21000);
 							} else {
 								socket.emit('communicate', {data: 'Cannot Enter Now'});
 							}
@@ -772,8 +772,11 @@ io.on('connection', function(socket) {
 							socket.emit('communicate', {data: communicates.communicates.killing_abort});
 							if ( daily_status ) {
 								if ( daily_pin_tmp < 3 ) {
-									socket.emit("communicate", {data: "Pin number: "+daily_pin[daily_pin_tmp]});
-									daily_pin_tmp++;
+									setTimeout(function(){
+										socket.emit("communicate", {data: "Pin number: "+daily_pin[daily_pin_tmp]});
+										daily_pin_tmp++;										
+									},1000);
+
 								} else {
 									socket.emit("communicate", {data: "Pin: "+daily_pin});
 								}
