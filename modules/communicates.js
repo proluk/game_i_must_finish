@@ -3,6 +3,7 @@
 let website = "https://networkconquer.com";
 let global_commands = [
 	"clear - clears your log.",
+	"info <i>virus</i> - gets the type of Virus.",
 	"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
 	"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 	"kill -s <i>address</i> <i>pin</i> <i>method</i> - Starting kill process",
@@ -169,7 +170,7 @@ const communicates = {
 	searching_user : "Tracking user address...",
 	user_offline : "User is currently offline.",
 	user_already_online : "This user is already Connected",
-	daily_enter : "You have connected to a daily website. To aquire Daily reward write: mine <i>pin</i>. Good luck.",
+	daily_enter : "You have connected to a daily website. To aquire Daily reward write: mine <i>pin</i>.",
 	daily_success : "Success! Daily finished.",
 	cannot_connect_yourself : "You cannot connect to yourself"
 

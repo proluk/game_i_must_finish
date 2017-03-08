@@ -751,7 +751,28 @@ function setAllOffline(){
         }
     });
 }
+function getTypeOfVirus(hashval, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("SELECT type FROM virus WHERE hashval = ? ", [hashval], function(err, result){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                } else {
+                    if ( result ) {
+                        callback(result[0].type);
+                    } else {
+                        callback(false);
+                    }
+                }
+            });
+        } else {
+            console.log("setAllOffline databasse module getconnection error");
+        }
+    });
+}
 
+module.exports.getTypeOfVirus = getTypeOfVirus;
 module.exports.setAllOffline = setAllOffline;
 module.exports.checkOnlineStatusByLogin = checkOnlineStatusByLogin;
 module.exports.setOnlineStatus = setOnlineStatus;
