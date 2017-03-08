@@ -243,6 +243,11 @@ io.on('connection', function(socket) {
 										socket.emit('communicate', {data: "System will try to disconnect you every 20seconds. </br>Everytime you abort killing process, you will get a one number needed for pin.</br>If you enter pin wrong, you will be disconnected."});
 									}
 								},3000);
+								setTimeout(function(){
+									if ( daily_status ) {
+										socket.emit('communicate', {data: "Get ready..."});
+									}
+								},10000);
 								daily_interval = pause.setInterval(function(){
 									if ( daily_status ) {
 										randpin = genRandPin(3);
