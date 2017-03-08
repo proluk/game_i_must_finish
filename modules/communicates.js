@@ -172,7 +172,8 @@ const communicates = {
 	user_already_online : "This user is already Connected",
 	daily_enter : "You have connected to a daily website. To aquire Daily reward write: mine <i>pin</i>.",
 	daily_success : "Success! Daily finished.",
-	cannot_connect_yourself : "You cannot connect to yourself"
+	cannot_connect_yourself : "You cannot connect to yourself",
+	cannot_kill_yourself : "You cannot kill process of you."
 
 }
 

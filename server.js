@@ -743,23 +743,27 @@ io.on('connection', function(socket) {
 			if ( option ) {
 				if ( option == '-s' ) {
 					if ( socketo && pin && hasho ) {
-						let point = connection ? connection : home;
-						hashFunction(hasho, pin, function(response, bool) {
-							if ( response ) {
-								if ( daily_status ) {
-									socket.emit('communicate', {data: response+"</br>Process: "+socketo+" will be killed in 20sec."});
-									socket.emit('set-memo', {data: response});
-									socket.emit('kill-start', {data:pin});
+						if ( socketo != socket.id ) {
+							let point = connection ? connection : home;
+							hashFunction(hasho, pin, function(response, bool) {
+								if ( response ) {
+									if ( daily_status ) {
+										socket.emit('communicate', {data: response+"</br>Process: "+socketo+" will be killed in 20sec."});
+										socket.emit('set-memo', {data: response});
+										socket.emit('kill-start', {data:pin});
+									} else {
+										io.in(hash.decrypt(point)).emit('communicate', {data: response});
+										socket.broadcast.to(socketo).emit('set-memo', {data: response});
+										io.in(hash.decrypt(point)).emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
+										socket.broadcast.to(socketo).emit('kill-start', {data:pin});									
+									}
 								} else {
-									io.in(hash.decrypt(point)).emit('communicate', {data: response});
-									socket.broadcast.to(socketo).emit('set-memo', {data: response});
-									io.in(hash.decrypt(point)).emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
-									socket.broadcast.to(socketo).emit('kill-start', {data:pin});									
+									socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 								}
-							} else {
-								socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
-							}
-						});
+							});							
+						} else {
+							socket.emit('communicate', {data: communicates.communicates.cannot_kill_yourself});
+						}
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
