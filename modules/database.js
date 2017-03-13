@@ -771,7 +771,58 @@ function getTypeOfVirus(hashval, callback){
         }
     });
 }
+function setDailyFinished(socket){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("UPDATE account SET daily = 1 WHERE socket = ?", [socket], function(err, result){
+                if ( err ) {
+                    console.log(err);
+                } 
+            });
+        } else {
+            console.log("setDailyFinished databasse module getconnection error");
+        }
+    });
+}
 
+function setDailyUnfinished(){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("UPDATE account SET daily = 0 ", function(err, result){
+                if ( err ) {
+                    console.log(err);
+                }
+            });
+        } else {
+            console.log("setDailyUnfinished databasse module getconnection error");
+        }
+    }); 
+}
+
+function checkDaily(socket, callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("SELECT daily FROM account WHERE socket = ? ", [socket], function(err, result){
+                if ( err ) {
+                    callback(false);
+                    console.log(err);
+                } else {
+                    if ( result ) {
+                        callback(result[0].daily);
+                    } else {
+                        callback(false);
+                    }
+                }
+            });
+        } else {
+            console.log("setAllOffline databasse module getconnection error");
+        }
+    });    
+}
+
+module.exports.checkDaily = checkDaily;
+module.exports.setDailyUnfinished = setDailyUnfinished;
+module.exports.setDailyFinished = setDailyFinished;
 module.exports.getTypeOfVirus = getTypeOfVirus;
 module.exports.setAllOffline = setAllOffline;
 module.exports.checkOnlineStatusByLogin = checkOnlineStatusByLogin;

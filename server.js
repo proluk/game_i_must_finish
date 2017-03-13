@@ -24,6 +24,7 @@ let index = require(path.join(__dirname, '/routes/index.js'));
 app.use('/',index);
 
 databaseModule.setAllOffline();
+databaseModule.setDailyUnfinished();
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let daily_website = "http://dailywebsite.onion";
@@ -229,32 +230,39 @@ io.on('connection', function(socket) {
 							socket.emit("communicate", {data: communicates.communicates.tor_connection});							
 						} else if ( link == daily_website ) {
 							if ( !!virusTimeout == false ) {
-								daily_pin = genRandPin(3);
-								tor = daily_website;
-								site = daily_website;
-								socket.join(link);
-								setPlace(site);
-								let randpin = genRandPin(3);
-								let randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
-								daily_status = true;
-								socket.emit('communicate', {data: communicates.communicates.daily_enter});
-								setTimeout(function(){
-									if ( daily_status ) {
-										socket.emit('communicate', {data: "System will try to disconnect you every 20seconds. </br>Everytime you abort killing process, you will get a one number needed for pin.</br>If you enter pin wrong, you will be disconnected."});
-									}
-								},3000);
-								setTimeout(function(){
-									if ( daily_status ) {
-										socket.emit('communicate', {data: "Fun will start in 10 seconds. Get Ready..."});
-									}
-								},10000);
-								daily_interval = pause.setInterval(function(){
-									if ( daily_status ) {
-										randpin = genRandPin(3);
-										randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
-										commands.kill('-s', socket.id, randpin, randhash);											
-									}
-								},21000);
+								databaseModule.checkDaily(home, function(res){
+									if ( res == 0 ) {
+										daily_pin = genRandPin(3);
+										tor = daily_website;
+										site = daily_website;
+										socket.join(link);
+										setPlace(site);
+										let randpin = genRandPin(3);
+										let randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
+										daily_status = true;
+										socket.emit('communicate', {data: communicates.communicates.daily_enter});
+										setTimeout(function(){
+											if ( daily_status ) {
+												socket.emit('communicate', {data: "System will try to disconnect you every 20seconds. </br>Everytime you abort killing process, you will get a one number needed for pin.</br>If you enter pin wrong, you will be disconnected."});
+											}
+										},3000);
+										setTimeout(function(){
+											if ( daily_status ) {
+												socket.emit('communicate', {data: "Fun will start in 10 seconds. Get Ready..."});
+											}
+										},10000);
+										daily_interval = pause.setInterval(function(){
+											if ( daily_status ) {
+												randpin = genRandPin(3);
+												randhash = simpleHashes[Math.round(Math.random() * 3) + 0];
+												commands.kill('-s', socket.id, randpin, randhash);											
+											}
+										},21000);										
+									} else {
+										socket.emit('communicate', {data: "You already finished daily today."});
+									}	
+								});
+
 							} else {
 								socket.emit('communicate', {data: 'Cannot Enter Now'});
 							}
@@ -498,6 +506,7 @@ io.on('connection', function(socket) {
 							socket.emit('communicate', {data: communicates.communicates.daily_success});
 							databaseModule.addMoney(home,daily_reward,function(res){
 								databaseModule.addTransactionLog(home,"Daily reward: "+daily_reward+"B.");
+								databaseModule.setDailyFinished(home);
 							});
 							commands.disconnect();
 						} else {
@@ -743,27 +752,23 @@ io.on('connection', function(socket) {
 			if ( option ) {
 				if ( option == '-s' ) {
 					if ( socketo && pin && hasho ) {
-						if ( socketo != socket.id ) {
-							let point = connection ? connection : home;
-							hashFunction(hasho, pin, function(response, bool) {
-								if ( response ) {
-									if ( daily_status ) {
-										socket.emit('communicate', {data: response+"</br>Process: "+socketo+" will be killed in 20sec."});
-										socket.emit('set-memo', {data: response});
-										socket.emit('kill-start', {data:pin});
-									} else {
-										io.in(hash.decrypt(point)).emit('communicate', {data: response});
-										socket.broadcast.to(socketo).emit('set-memo', {data: response});
-										io.in(hash.decrypt(point)).emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
-										socket.broadcast.to(socketo).emit('kill-start', {data:pin});									
-									}
+						let point = connection ? connection : home;
+						hashFunction(hasho, pin, function(response, bool) {
+							if ( response ) {
+								if ( daily_status ) {
+									socket.emit('communicate', {data: response+"</br>Process: "+socketo+" will be killed in 20sec."});
+									socket.emit('set-memo', {data: response});
+									socket.emit('kill-start', {data:pin});
 								} else {
-									socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+									io.in(hash.decrypt(point)).emit('communicate', {data: response});
+									socket.broadcast.to(socketo).emit('set-memo', {data: response});
+									io.in(hash.decrypt(point)).emit('communicate',{data: "Process: "+socketo+" will be killed in 20sec."});
+									socket.broadcast.to(socketo).emit('kill-start', {data:pin});									
 								}
-							});							
-						} else {
-							socket.emit('communicate', {data: communicates.communicates.cannot_kill_yourself});
-						}
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+							}
+						});							
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
