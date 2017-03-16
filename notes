@@ -1,7 +1,20 @@
 mikrotranzakcje ! zdecydowanie ! male kwoty po 1$. Odblokowujace opcje, glownie wizualne.
+mikrotranzakcja - gdy sie z kims polaczysz to zmienia sie widok ofierze, jakies matrixy w tle czyc os
 mikrotranzakcja - mozliwosc zmiany koloru
 
 mikrotranzakcja - zmiana nicku, 1$
+
+Widoczne serwery ktore przechowuja informacje o nodach w ktorych jest ograniczona ilosc bitcoinow do wydobycia.
+Gdy nody beda mialy mniej niz 0.0 bitcoina, znikaja i pojawiaja sie pod innym adresem.
+Widoczne serwery na stronie glownej na mapie. Podpisane adresem i keypair.
+Laczymy sie z TOR store, wbijamy na irc chat do johnsona, podajemy mu adres serwera a on nam daje login.
+Pozniej dodajemy keypair do swojego konta. Wtedy mozemy polaczyc sie z serwerem komenda ssh login@adresserwera
+zeby wyciagnac informacje o nodzie z serwera wpisujemy cos typu 
+	sudo root config
+Dostajemy zaszyfrowane kilka wiadomosci kazda w innej lini. Pierwsza linia to info o serwerze cos typu. 
+NetServer 01. adres serwera.
+w drugiej jest hash ktory jest adresem noda. Wtedy mozemy polaczyc sie z nodem.
+
 
 kupowanie socketu po nicku, za 1 bitcoin, nawet jezeli player jest offline i nie ma socketu to zabiera bitcoin.
 
