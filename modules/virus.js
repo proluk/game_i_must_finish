@@ -2,12 +2,12 @@
 const virus = [
 	{
 		'type' : 'RickRold',
-		'duration' : 120000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/dQw4w9WgXcQ'
 	},
 	{
 		'type' : 'HEYHEYHEYA',
-		'duration' : 100000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/ZZ5LpwO-An4'
 	},
 	{
@@ -17,17 +17,17 @@ const virus = [
 	},
 	{
 		'type' : "Look at my horse",
-		'duration' : 100000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/fe4fyhzS3UM'
 	},
 	{
 		'type' : "Nyan Cat",
-		'duration' : 100000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/wZZ7oFKsKzY'
 	},
 	{
 		'type' : "Gandalf Sax",
-		'duration' : 100000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/Sagg08DrO5U'
 	},
 	{
@@ -37,8 +37,28 @@ const virus = [
 	},
 	{
 		'type' : "My Heart Will Go On",
-		'duration' : 120000,
+		'duration' : 60000,
 		'url' : 'https://www.youtube.com/embed/X2WH8mHJnhM'
+	},
+	{
+		'type' : "Trolololo",
+		'duration' : 60000,
+		'url' : 'https://www.youtube.com/embed/2Z4m4lnjxkY'
+	},
+	{
+		'type' : "PPAP",
+		'duration' : 60000,
+		'url' : 'https://www.youtube.com/embed/Ct6BUPvE2sM'
+	},
+	{
+		'type' : 'Dance',
+		'duration' : 60000,
+		'url' : 'https://www.youtube.com/embed/UcRtFYAz2Yo'
+	},
+	{
+		'type' : 'Kazooo',
+		'duration' : 60000,
+		'url' : 'https://www.youtube.com/embed/g-sgw9bPV4A'
 	}
 ];
 
