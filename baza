@@ -29,8 +29,9 @@ CREATE TABLE IF NOT EXISTS `account` (
   `botnet` int(11) DEFAULT '0',
   `socket` varchar(50) DEFAULT NULL,
   `online` char(3) NOT NULL DEFAULT 'no',
+  `daily` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Zrzut struktury tabela baza.authorizedconnections
@@ -63,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `pass_programs` (
 CREATE TABLE IF NOT EXISTS `transaction_logs` (
   `id` int(11) DEFAULT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `info` varchar(100) DEFAULT NULL,
+  `info` varchar(150) DEFAULT NULL,
   KEY `FK_transaction_logs_account` (`id`),
   CONSTRAINT `FK_transaction_logs_account` FOREIGN KEY (`id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
