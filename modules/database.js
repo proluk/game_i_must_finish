@@ -820,6 +820,21 @@ function checkDaily(socket, callback){
     });    
 }
 
+function makeNewNode(login, address, money){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("INSERT into node (login, address, money) VALUES (?,?,?)", [login, address, money], function(err, result){
+                if ( err ) {
+                    console.log(err);
+                } 
+            });
+        } else {
+            console.log("setAllOffline databasse module getconnection error");
+        }
+    });   
+}
+
+module.exports.makeNewNode = makeNewNode;
 module.exports.checkDaily = checkDaily;
 module.exports.setDailyUnfinished = setDailyUnfinished;
 module.exports.setDailyFinished = setDailyFinished;

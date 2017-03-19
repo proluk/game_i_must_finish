@@ -35,6 +35,11 @@ let gate_price = 0.01;
 let nick_socket_price = 1;
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
+let nodes = [];
+
+databaseModule.getNodes(function(res){
+	nodes.push(res);
+});
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
@@ -370,7 +375,13 @@ io.on('connection', function(socket) {
 							});					
 						}
 					} else {
-						socket.emit("communicate", {data: communicates.communicates.no_command+func});
+						for ( let i = 0 ; i < nodes.length ; i ++ ) {
+							if ( func == nodes[i] ) {
+
+							} else {
+								socket.emit("communicate", {data: "Wrong command or wrong address."});
+							}
+						}
 					}
 				}				
 			} else {
