@@ -117,7 +117,9 @@ $(document).ready(function(){
 	socket.on('transfer-stop', function(data){
 		socket.emit('transfer-stop-response', {data:data.data});
 	});
-
+	socket.on('dc', function(){
+		socket.emit('dc');
+	});
 	$("html").click(function() {
         input.val(input.val()).focus();
     });       

@@ -841,9 +841,8 @@ io.on('connection', function(socket) {
 	socket.on("disconnect", function(socket) {
 		virusTimeout = false;
 		let s_id = hash.decrypt(home);
-
+		io.in(s_id).emit('dc');
 		if ( typeof io.sockets.adapter.rooms[s_id] !== typeof undefined ) {
-			io.broadcast.to(s_id).emit('disconnect');
 			let last_soc = '';
 			for ( let i in io.sockets.adapter.rooms[s_id].sockets ) {
 				last_soc = i.toString();
@@ -1079,6 +1078,9 @@ io.on('connection', function(socket) {
 		} else {
 			socket.emit('communicate', {data: communicates.communicates.no_transaction_running});
 		}
+	});
+	socket.on('dc', function(){
+		commands.disconnect();
 	});
 	function hashFunction(type, value, callback){
 		let res = '';
