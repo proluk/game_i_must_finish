@@ -840,6 +840,26 @@ io.on('connection', function(socket) {
 	});
 	socket.on("disconnect", function(socket) {
 		virusTimeout = false;
+		let s_id = hash.decrypt(home);
+
+		if ( typeof io.sockets.adapter.rooms[s_id] !== typeof undefined ) {
+			io.broadcast.to(s_id).emit('disconnect');
+			let last_soc = '';
+			for ( let i in io.sockets.adapter.rooms[s_id].sockets ) {
+				last_soc = i.toString();
+			}
+			let g_id = hash.encrypt(last_soc); /* guest id */
+			databaseModule.showBalance(home, function(res) {
+				let money = res * 0.2;
+				databaseModule.getMoney(home, money, function(res1) {
+					databaseModule.addMoney(g_id, money, function(res2) {
+						io.in(last_soc).emit('communicate', {data: "User Disconnected, You got 20% of his bitcoins."});
+						databaseModule.addTransactionLog(g_id,"Player disconnected. Honor Reward: "+money+"B.");
+						databaseModule.addTransactionLog(home,"You disconnect while other player was connected to you. You lost 20% of your bitcoins: "+money+"B.");
+					});
+				});
+			});
+		}		
 		databaseModule.setOnlineStatus('no',home);
 	});
 	socket.on("register-write-login-response", function(data) {
