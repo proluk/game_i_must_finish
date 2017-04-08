@@ -146,14 +146,13 @@ function setSocketIdToAccount(login, id, callback){
         if( !error ) {
             connection.query('UPDATE account SET socket = ? WHERE login = ?;',[id,login],  function(err, results) {
                 if ( err ) {
-                    return err;
+                    console.error(err);
                 } else {
                     callback();
-                    return true;
                 }
             });
         } else {
-            console.log('setSocketIdToAccount database module getConnection error');
+            console.error(error);
         } 
         connection.release();        
     });
@@ -379,14 +378,14 @@ function getNickFromSocket ( socket , callback ) {
         if ( !error ) {
             connection.query('SELECT nick AS n FROM account WHERE socket = ?', [socket], function(err, results){
                 if ( err ) {
-                    console.log(err);
+                    console.error(err);
                     callback(false);
                 } else {
                     callback(results[0].n);
                 }
             });
         } else {
-            console.log("removeGatePoints database module getConnection error");
+            console.error(error);
         }
         connection.release();
     });
@@ -631,13 +630,14 @@ function checkVirusBySocketId(socket, callback){
         if ( !error ) {
             connection.query('SELECT * FROM virus WHERE id = (SELECT virus_id FROM virus_acc WHERE acc_id = (SELECT id FROM account WHERE socket = ?))', [socket], function(err, results){
                 if ( err ) {
+                    console.error(err);
                     callback(false);
                 } else {
                     callback(results[0]);
                 }
             });
         } else {
-            console.log("changeVirusState database module getConnection error");
+            console.error(error);
         }
         connection.release();
     });   
@@ -696,11 +696,11 @@ function setOnlineStatus(status,socket){
         if ( !error ) {
             connection.query('UPDATE account SET online = ? WHERE socket = ?', [status,socket], function(err){
                 if ( err ) {
-                    console.log(err);
+                    console.error(err);
                 } 
             });
         } else {
-            console.log("setOnlineStatus database module getConnection error");
+            console.error(error);
         }
         connection.release();
     });  
