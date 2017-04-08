@@ -14,14 +14,14 @@ let hash = require('./modules/hash.js');
 let valid = require('./modules/validate.js');
 let virusModule = require('./modules/virus.js');
 
-app.use('/console', express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
 let index = require(path.join(__dirname, '/routes/index.js'));
 
-app.use('/console',index);
+app.use('/',index);
 
 databaseModule.setAllOffline();
 databaseModule.setDailyUnfinished();
@@ -36,7 +36,7 @@ let nick_socket_price = 1;
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
-io.of('/console').on('connection', function(socket) {
+io.on('connection', function(socket) {
 	socket.join(socket.id);
 	console.log("new socket: "+socket.id);
 	let acc = false;
@@ -686,7 +686,7 @@ io.of('/console').on('connection', function(socket) {
 					});
 				} else {
 					let socks = '';
-					for ( let i in io.nsps['/console'].adapter.rooms[socket.id].sockets ) {
+					for ( let i in io.sockets.adapter.rooms[socket.id].sockets ) {
 						socks += i+"</br>";
 						socket.emit('set-memo',{data:i});					
 					}
