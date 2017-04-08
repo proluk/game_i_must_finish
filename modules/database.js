@@ -4,7 +4,9 @@ let connection = mysql.createPool(
         host: 'localhost',
         user: 'gameserver',
         password: 'alweiq941',
-        database: 'baza'
+        database: 'baza',
+        connectTimeout: 20000,
+        acquireTimeout: 20000
     }
 );
 
