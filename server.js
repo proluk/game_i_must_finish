@@ -25,6 +25,8 @@ app.use('/',index);
 
 databaseModule.setAllOffline();
 databaseModule.setDailyUnfinished();
+let ddd = new Date();
+databaseModule.addServerLog("Server start success:"+ddd);
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let daily_website = "http://dailywebsite.onion";

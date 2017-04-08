@@ -838,6 +838,20 @@ function makeNewNode(login, address, money){
     });   
 }
 
+function addServerLog(message){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("INSERT into serverlogs (message) VALUES (?)", [message], function(err, result){
+                if ( err ) {
+                    console.error(err);
+                } 
+            });
+        } else {
+            console.error(error);
+        }
+    });   
+}
+
 module.exports.makeNewNode = makeNewNode;
 module.exports.checkDaily = checkDaily;
 module.exports.setDailyUnfinished = setDailyUnfinished;
