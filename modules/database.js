@@ -729,7 +729,7 @@ function checkOnlineStatusByLogin(login,callback){
         if ( !error ) {
             connection.query('SELECT online FROM account WHERE login = ?', [login], function(err, results){
                 if ( err ) {
-                    console.log(err);
+                    console.error(err);
                     callback(false);
                 } else {
                     if ( results[0] ) {
@@ -738,7 +738,7 @@ function checkOnlineStatusByLogin(login,callback){
                 }
             });
         } else {
-            console.log("checkOnlineStatus database module getConnection error");
+            console.error(error);
         }
         connection.release();
     });  
