@@ -852,6 +852,22 @@ function addServerLog(message){
     });   
 }
 
+function setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("UPDATE gameinfo SET daily_website = ?, daily_reward = ?, botnet_price = ?, gate_price=?, nick_socket_price = ? ",[daily_website,daily_reward,botnet_price,gate_price,nick_socket_price], function(err, result){
+                if ( err ) {
+                    console.log(err);
+                }
+            });
+        } else {
+            console.error(error);
+        }
+        connection.release();
+    }); 
+}
+
+module.exports.setInfo = setInfo;
 module.exports.addServerLog = addServerLog;
 module.exports.makeNewNode = makeNewNode;
 module.exports.checkDaily = checkDaily;

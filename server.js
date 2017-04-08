@@ -25,16 +25,18 @@ app.use('/',index);
 
 databaseModule.setAllOffline();
 databaseModule.setDailyUnfinished();
-let ddd = new Date();
-databaseModule.addServerLog("Server start success:"+ddd);
+databaseModule.addServerLog("Server start success");
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let daily_website = "http://dailywebsite.onion";
+
 let daily_reward = 5;
 let daily_interval;
 let botnet_price = 0.1;
 let gate_price = 0.01;
 let nick_socket_price = 1;
+
+databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price);
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
