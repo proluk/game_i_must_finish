@@ -686,7 +686,7 @@ io.of('/console').on('connection', function(socket) {
 					});
 				} else {
 					let socks = '';
-					for ( let i in io.sockets.adapter.rooms[socket.id].sockets ) {
+					for ( let i in io.nsps['/console'].adapter.rooms[socket.id].sockets ) {
 						socks += i+"</br>";
 						socket.emit('set-memo',{data:i});					
 					}
