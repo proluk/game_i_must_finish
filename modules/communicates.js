@@ -48,6 +48,8 @@ let help_commands = {
 		"balance - check balance of connected account.",
 		"transfer -s <i>address</i> <i>howmuch</i> - Start transfering money to specific address.",
 		"transfer -a - Aborts transfer process.",
+		"transfer -sg <i>address</i> <i>howmuch</i> - Sends Gate points to someone",
+		"transfer -sb <i>address</i> <i>howmuch</i> - Sends Botnet points to someone",
 		"logs - shows transaction log.",
 		"exit - exit account connection.",
 		"options -p - set 3 digit pin code to enter account."
