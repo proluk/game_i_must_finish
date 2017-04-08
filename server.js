@@ -13,6 +13,7 @@ let binaryModule = require('./modules/binary.js');
 let hash = require('./modules/hash.js');
 let valid = require('./modules/validate.js');
 let virusModule = require('./modules/virus.js');
+let dailyModule = require('./modules/daily.js');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -28,21 +29,25 @@ databaseModule.setDailyUnfinished();
 databaseModule.addServerLog("Server start success");
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
-let daily_website = "http://dailywebsite.onion";
+let gen_daily;
 
-let daily_reward = 5;
+databaseModule.getDailyNum(function(res){
+	gen_daily = dailyModule.makeDaily(res);
+});
+ 
+let daily_website = gen_daily.address;
+let daily_reward = random(5,10);
 let daily_interval;
-let botnet_price = 0.1;
-let gate_price = 0.01;
-let nick_socket_price = 1;
+let botnet_price = random(1,9)/10;
+let gate_price = random(1,9)/100;
+let nick_socket_price = random(1,3);
 
-databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price);
+databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number);
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
-	console.log("new socket: "+socket.id);
 	let acc = false;
 	let wait_for_password_response = false;
 	let wait_for_email_response = false;

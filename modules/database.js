@@ -852,10 +852,10 @@ function addServerLog(message){
     });   
 }
 
-function setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price){
+function setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,number){
     connection.getConnection(function(error, connection){
         if ( !error ) {
-            connection.query("UPDATE gameinfo SET daily_website = ?, daily_reward = ?, botnet_price = ?, gate_price=?, nick_socket_price = ? ",[daily_website,daily_reward,botnet_price,gate_price,nick_socket_price], function(err, result){
+            connection.query("UPDATE gameinfo SET daily_website = ?, daily_reward = ?, botnet_price = ?, gate_price=?, nick_socket_price = ? , number = ?",[daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,number], function(err, result){
                 if ( err ) {
                     console.log(err);
                 }
@@ -867,6 +867,24 @@ function setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_
     }); 
 }
 
+function getDailyNum(callback){
+    connection.getConnection(function(error, connection){
+        if ( !error ) {
+            connection.query("SELECT number FROM gameinfo", function(err, result){
+                if ( err ) {
+                    console.error(err);
+                } else {
+                    callback(result[0].number);
+                }
+            });
+        } else {
+            console.error(error);
+        }
+        connection.release();
+    }); 
+}
+
+module.exports.getDailyNum = getDailyNum;
 module.exports.setInfo = setInfo;
 module.exports.addServerLog = addServerLog;
 module.exports.makeNewNode = makeNewNode;
