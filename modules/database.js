@@ -13,7 +13,7 @@ function login(login, password, callback) {
         if(!error){
             connection.query('SELECT COUNT(id) AS c FROM account WHERE login=? AND password=?;',[login,password],function(err, results){
                 if ( err ) {
-                    return err;
+                    console.error(err);
                 } else {
                     if( results[0].c>0 ) {
                         callback(true);
@@ -23,8 +23,9 @@ function login(login, password, callback) {
                 }
             });
         } else {
-            return 'login database module getConnection error';
+            console.error(error);
         }
+        connection.release();
     });
 }
 function registerAccount(login,password,email,nick) {
@@ -491,7 +492,7 @@ function systemStats(socket, callback){
         if ( !error ) {
             connection.query('SELECT nick, pin, botnet, brama FROM account WHERE socket = ?', [socket], function(err , results){
                 if ( err ) {
-                    console.log(err);
+                    console.error(err);
                     callback(false);
                     return err;
                 } else {
@@ -499,7 +500,7 @@ function systemStats(socket, callback){
                 }
             });            
         } else {
-            console.log("checkAuthorizedConnection database module getConnection error");
+            console.error(error);
         }
         connection.release();
     });
