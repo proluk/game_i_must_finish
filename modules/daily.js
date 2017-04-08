@@ -10,6 +10,7 @@ function makeDaily(numo) {
         num = 0;
     } 
     let daily = {
+        quote : daily_list[num],
         address : convertQuoteToUrl(num),
         number : num
     };

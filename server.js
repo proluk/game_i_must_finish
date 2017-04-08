@@ -36,10 +36,11 @@ let daily_interval;
 let botnet_price = random(1,9)/10;
 let gate_price = random(1,9)/100;
 let nick_socket_price = random(1,3);
+
 databaseModule.getDailyNum(function(res){
 	gen_daily = dailyModule.makeDaily(res);
 	daily_website = gen_daily.address;
-	databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number);
+	databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number,gen_daily.quote);
 });
  
 function random(min,max) {
