@@ -747,8 +747,8 @@ function setAllOffline(){
         if ( !error ) {
             connection.query("UPDATE account SET online = 'no'");
         } else {
-            console.log(error);
-            console.log("setAllOffline databasse module getconnection error");
+            console.error(error);
+            return;
         }
     });
 }
