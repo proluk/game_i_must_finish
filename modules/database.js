@@ -750,6 +750,7 @@ function setAllOffline(){
             console.error(error);
             return;
         }
+        connection.release();
     });
 }
 function getTypeOfVirus(hashval, callback){
@@ -797,6 +798,7 @@ function setDailyUnfinished(){
         } else {
             console.log("setDailyUnfinished databasse module getconnection error");
         }
+        connection.release();
     }); 
 }
 
