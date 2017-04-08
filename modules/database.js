@@ -852,6 +852,7 @@ function addServerLog(message){
     });   
 }
 
+module.exports.addServerLog = addServerLog;
 module.exports.makeNewNode = makeNewNode;
 module.exports.checkDaily = checkDaily;
 module.exports.setDailyUnfinished = setDailyUnfinished;
