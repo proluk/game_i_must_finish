@@ -35,11 +35,6 @@ let gate_price = 0.01;
 let nick_socket_price = 1;
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
-let nodes = [];
-
-databaseModule.getNodes(function(res){
-	nodes.push(res);
-});
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
@@ -375,13 +370,7 @@ io.on('connection', function(socket) {
 							});					
 						}
 					} else {
-						for ( let i = 0 ; i < nodes.length ; i ++ ) {
-							if ( func == nodes[i] ) {
-
-							} else {
-								socket.emit("communicate", {data: "Wrong command or wrong address."});
-							}
-						}
+						socket.emit("communicate", {data: "Wrong command or wrong address."});
 					}
 				}				
 			} else {
@@ -937,11 +926,15 @@ io.on('connection', function(socket) {
 	socket.on('register-password-response', function(data) {
 		let tmp = hash.encrypt(data.data);
 		if ( wait_for_password_response ) {
-			socket.emit("register-email");
-			socket.emit("communicate", {data: communicates.communicates.register_email});
+			socket.emit("register-nick");
+			socket.emit('communicate', {data: communicates.communicates.register_nick});
+			wait_for_nick_response = true;
+			/*
+			socket.emit("communicate", {data: communicates.communicates.register_email});*/
 			wait_for_password_response = false;
-			wait_for_email_response = true;
+			//wait_for_email_response = true;
 			tmp_pass = tmp;
+			tmp_email = "email";
 		} else {
 			socket.emit("communicate", {data: communicates.communicates.rules_breaking});
 		}
