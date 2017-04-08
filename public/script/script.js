@@ -1,4 +1,4 @@
-let socket = io.connect('https://networkconquer.com/console');
+let socket = io.connect('https://networkconquer.com', {resource:'console/socket.io'});
 
 $(document).ready(function(){
 	let commands = [];

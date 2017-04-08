@@ -36,10 +36,6 @@ let nick_socket_price = 1;
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
-const namespacee = io.of('/console');
-namespacee.removeAllListeners();
-delete io.nsps['/console'];
-
 io.on('connection', function(socket) {
 	socket.join(socket.id);
 	console.log("new socket: "+socket.id);
