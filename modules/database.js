@@ -60,7 +60,7 @@ function checkIfLoginExists(login, callback){
                 connection.release();
             });
         } else {
-            return 'checkIfLoginExists database module getConnection error';
+            console.error(error);
         }
     });
 }
