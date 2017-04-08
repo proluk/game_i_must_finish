@@ -42,9 +42,9 @@ databaseModule.getDailyNum(function(res){
 	databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number);
 });
  
- 
-
-
+function random(min,max) {
+	return Math.floor( (Math.random() * max ) + min);
+}
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
