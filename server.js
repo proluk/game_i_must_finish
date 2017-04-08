@@ -1377,6 +1377,6 @@ io.on('connection', function(socket) {
 	}
 });
 
-server.listen(8000, function(){
-	console.log("Server listening on port 8000...");
+server.listen(8082, function(){
+	console.log("Server listening on port 8082...");
 });
