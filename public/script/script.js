@@ -1,4 +1,4 @@
-let socket = io.connect('http://localhost:8082');
+let socket = io.connect('https://networkconquer.com/console');
 
 $(document).ready(function(){
 	let commands = [];
