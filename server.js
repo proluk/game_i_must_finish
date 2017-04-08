@@ -14,14 +14,14 @@ let hash = require('./modules/hash.js');
 let valid = require('./modules/validate.js');
 let virusModule = require('./modules/virus.js');
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use('/console', express.static(path.join(__dirname, '/public')));
 
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
 let index = require(path.join(__dirname, '/routes/index.js'));
 
-app.use('/',index);
+app.use('/console',index);
 
 databaseModule.setAllOffline();
 databaseModule.setDailyUnfinished();
