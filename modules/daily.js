@@ -10,7 +10,7 @@ function makeDaily(numo) {
         num = 0;
     } 
     let daily = {
-        addres : convertQuoteToUrl(num),
+        address : convertQuoteToUrl(num),
         number : num
     };
     return daily;
