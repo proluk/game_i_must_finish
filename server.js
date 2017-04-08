@@ -30,19 +30,21 @@ databaseModule.addServerLog("Server start success");
 
 let onion_website = 'http://atw4mhgtbbs1.onion'; //a tor website 4 my hacker game to buy botnet strength 1
 let gen_daily;
-
-databaseModule.getDailyNum(function(res){
-	gen_daily = dailyModule.makeDaily(res);
-});
- 
-let daily_website = gen_daily.address;
+let daily_website = "";
 let daily_reward = random(5,10);
 let daily_interval;
 let botnet_price = random(1,9)/10;
 let gate_price = random(1,9)/100;
 let nick_socket_price = random(1,3);
+databaseModule.getDailyNum(function(res){
+	gen_daily = dailyModule.makeDaily(res);
+	daily_website = gen_daily.address;
+	databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number);
+});
+ 
+ 
 
-databaseModule.setInfo(daily_website,daily_reward,botnet_price,gate_price,nick_socket_price,gen_daily.number);
+
 
 let simpleHashes = ['des3','aes128','aes192','aes256'];
 
