@@ -438,6 +438,54 @@ io.on('connection', function(socket) {
 						} else {
 							socket.emit('transfer-stop', {data: socket.id});
 						}
+					} else if ( option == '-sb' ) {
+						if ( connection ) {
+							socket.emit('communicate', {data: "You do not have permission to do this."});
+						} else {
+							if ( to && howmuch ) {
+								databaseModule.checkBotnetPoints(home, function(res){
+									if ( res >= howmuch ) {
+										databaseModule.removeBotnetPoints(home, (res - howmuch), function(res){
+											if ( res ) {
+												databaseModule.addBotnetPoints(tmp, howmuch, function(res) {
+													databaseModule.addTransactionLog(home, howmuch+" Botnet transfer to: "+to+", success.");
+													databaseModule.addTransactionLog(tmp, howmuch+" Botnet recived from: "+socket.id);
+													socket.emit('communicate', {data: "Transfering Botner Success."});
+												});
+											}
+										});
+									} else {
+										socket.emit('communicate', {data: "Not enough Botnet."});
+									}
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+							}
+						}
+					} else if ( option == '-sg' ) {
+						if ( connection ) {
+							socket.emit('communicate', {data: "You do not have permission to do this."});
+						} else {
+							if ( to && howmuch ) {
+								databaseModule.checkGatePoints(home, function(res){
+									if ( res >= howmuch ) {
+										databaseModule.removeGatePoints(home, (res - howmuch), function(res){
+											if ( res ) {
+												databaseModule.addGatePoints(tmp, howmuch, function(res) {
+													databaseModule.addTransactionLog(home, howmuch+" Gate transfer to: "+to+", success.");
+													databaseModule.addTransactionLog(tmp, howmuch+" Gate recived from: "+socket.id);
+													socket.emit('communicate', {data: "Transfering Gate Success."});
+												});
+											}
+										});
+									} else {
+										socket.emit('communicate', {data: "Not enough Gate Points."});
+									}
+								});
+							} else {
+								socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
+							}
+						}
 					} else {
 						socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 					}
