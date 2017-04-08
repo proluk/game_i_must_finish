@@ -38,6 +38,7 @@ let simpleHashes = ['des3','aes128','aes192','aes256'];
 
 io.on('connection', function(socket) {
 	socket.join(socket.id);
+	console.log("new socket: "+socket.id);
 	let acc = false;
 	let wait_for_password_response = false;
 	let wait_for_email_response = false;
