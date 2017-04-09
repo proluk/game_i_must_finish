@@ -21,11 +21,11 @@ function login(login, password, callback) {
                         callback(false);
                     }
                 }
+                connection.release();
             });
         } else {
             console.error(error);
         }
-        connection.release();
     });
 }
 function registerAccount(login,password,email,nick) {
@@ -34,13 +34,13 @@ function registerAccount(login,password,email,nick) {
             connection.query('INSERT INTO account (id,login,password,email,nick,money,pin,brama,botnet,socket) VALUES (null,?,?,?,?,0,173763,0,0,null);',[login,password,email,nick],function(err, results){
                 if( err ) {
                     console.log(err);
-                    return err;
                 } else {
                     return true;
                 }
+                connection.release();
             });
         } else {
-            return 'registerAccount database module getConnection error';
+            console.error(error);
         }
     });
 }
@@ -71,7 +71,7 @@ function checkIfEmailExists(email){
             connection.query('SELECT COUNT(email) AS c FROM account WHERE email=?;',[email],function(err, results){
                 connection.release();
                 if ( err ) {
-                    return err;
+                    console.error(err);
                 } else {
                     if( results[0].c>0 ) {
                         return true;
@@ -80,8 +80,9 @@ function checkIfEmailExists(email){
                     }
                 }
             });
+            connection.release();
         } else {
-            return 'checkIfEmailExists database module getConnection error';
+            console.error(error);
         }
     });
 }
@@ -92,8 +93,7 @@ function checkIfNickExists(nick, callback){
                 connection.release();
                 if ( err ) {
                     callback(false);
-                    console.log(err);
-                    return err;
+                    console.error(err);
                 } else {
                     if( results[0].c>0 ) {
                         callback(true);
@@ -103,7 +103,7 @@ function checkIfNickExists(nick, callback){
                 }
             });
         } else {
-            return 'checkIfNickExists database module getConnection error';
+           console.error(error);
         }
     });
 }
@@ -113,14 +113,14 @@ function checkIfSocketInDatabase(socket, callback){
             connection.query('SELECT COUNT(socket) AS c FROM account WHERE socket=?;',[socket],function(err, results){
                 connection.release();
                 if ( err ) {
-                    return err;
+                    console.error(err);
                     callback(0);
                 } else {
                     callback(results[0].c);
                 }
             });
         } else {
-            return 'checkIfNickExists database module getConnection error';
+            console.error(error);
         }
     });       
 }
@@ -135,7 +135,7 @@ function activateAccount(hash, callback) {
                 }
             });
         } else {
-            return 'activateAccounts database module getConnection error';
+           console.error(error);
         }
         connection.release();   
     });
@@ -749,7 +749,6 @@ function setAllOffline(){
             connection.query("UPDATE account SET online = 'no'");
         } else {
             console.error(error);
-            return;
         }
         connection.release();
     });
@@ -759,8 +758,8 @@ function getTypeOfVirus(hashval, callback){
         if ( !error ) {
             connection.query("SELECT type FROM virus WHERE hashval = ? ", [hashval], function(err, result){
                 if ( err ) {
+                    console.error(err);
                     callback(false);
-                    console.log(err);
                 } else {
                     if ( result ) {
                         callback(result[0].type);
@@ -770,8 +769,9 @@ function getTypeOfVirus(hashval, callback){
                 }
             });
         } else {
-            console.log("setAllOffline databasse module getconnection error");
+            console.error(error);
         }
+        connection.release();
     });
 }
 function setDailyFinished(socket){
@@ -785,6 +785,7 @@ function setDailyFinished(socket){
         } else {
             console.log("setDailyFinished databasse module getconnection error");
         }
+        connection.release();
     });
 }
 
@@ -821,6 +822,7 @@ function checkDaily(socket, callback){
         } else {
             console.log("setAllOffline databasse module getconnection error");
         }
+        connection.release();
     });    
 }
 
@@ -835,6 +837,7 @@ function makeNewNode(login, address, money){
         } else {
             console.log("setAllOffline databasse module getconnection error");
         }
+        connection.release();
     });   
 }
 
@@ -849,6 +852,7 @@ function addServerLog(message){
         } else {
             console.error(error);
         }
+        connection.release();
     });   
 }
 

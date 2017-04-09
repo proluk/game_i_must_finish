@@ -871,16 +871,13 @@ io.on('connection', function(socket) {
 		},
 		info : function(hashval) {
 			if ( hashval ) {
+				socket.emit('communicate', {data: "Looking for virus type..."});
 				databaseModule.getTypeOfVirus(hash.encrypt(hashval), function(res){
-					socket.emit('communicate', {data: "Looking for virus type..."});
-					setTimeout(function(){
-						if ( res ) {
-							socket.emit('communicate', {data: "Type of virus is: "+res});
-						} else {
-							socket.emit('communicate', {data: "Wrong virus hash"});
-						}						
-					},5000);
-
+					if ( res ) {
+						socket.emit('communicate', {data: "Type of virus is: "+res});				
+					} else {
+						socket.emit('communicate', {data: "Wrong virus hash"});
+					}	
 				});
 			} else {
 				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
