@@ -3,7 +3,7 @@
 let website = "https://networkconquer.com";
 let global_commands = [
 	"clear - clears your log.",
-	"info <i>virus</i> - gets the type of Virus.",
+	/*"info <i>virus</i> - gets the type of Virus.",*/
 	"unpack -s <i>package</i> <i>pin</i> <i>method</i> - starts unpacking process.",
 	"unpack -a <i>package</i> <i>pin</i> - aborts unpacking process",
 	"kill -s <i>address</i> <i>pin</i> <i>method</i> - Starting kill process",

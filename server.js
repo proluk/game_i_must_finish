@@ -868,7 +868,7 @@ io.on('connection', function(socket) {
 			} else {
 				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
-		},
+		}/*,
 		info : function(hashval) {
 			if ( hashval ) {
 				socket.emit('communicate', {data: "Looking for virus type..."});
@@ -882,7 +882,7 @@ io.on('connection', function(socket) {
 			} else {
 				socket.emit('communicate', {data: communicates.communicates.wrong_command_use});
 			}
-		}
+		}*/
 	}
 
 	let command = [];
